@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>icons8-books-64.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="arrow.png" />
+    <None Remove="Views\arrow.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Mainndow.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="icons8-books-64.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\aemCore\aemCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="tectonics.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="3.0.0-alpha0492" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="arrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>

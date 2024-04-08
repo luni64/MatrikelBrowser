@@ -1,0 +1,139 @@
+﻿<mah:MetroWindow x:Class="ArchiveBrowser.MainWindow"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"             
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:vm="clr-namespace:ArchiveBrowser.ViewModels"
+                 xmlns:view="clr-namespace:ArchiveBrowser"
+                 mc:Ignorable="d"
+                 d:DataContext="{d:DesignInstance Type={x:Type vm:MainViewModel}}"                                                   
+                 Title="Matrikel Browser" Height="900" Width="1440">
+
+    <Window.DataContext>
+        <vm:MainViewModel x:Name="vm"/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <view:nullToVisibiltiyConverter x:Key="nullToVisibiltiyConverter"/>
+        <view:StringToImageConverter x:Key="StringToImageConverter"/>
+        <view:StringToImageConverter x:Key="valueconverter"/>
+
+        
+
+
+
+    </Window.Resources>
+
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button Command="{Binding cmdSave}">
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconModern 
+                                Width="16"
+                                Height="16"
+                                VerticalAlignment="Center"
+                                Kind="Save" />
+                            <TextBlock 
+                                Margin="4 0 0 0"
+                                VerticalAlignment="Center"
+                                Text="Save" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+
+
+    <!--*************************************************************************-->
+
+    <mah:MetroWindow.Flyouts>
+        <mah:FlyoutsControl x:Name="flyoutsControl">
+            <mah:Flyout 
+                x:Name="FirstFlyout"                
+                Margin="0 30 0 0"
+                Width="400"
+                AreAnimationsEnabled="True"
+                AnimateOpacity="True"                      
+                IsOpen="True"
+                Header="Gemeinden"
+                Position="Right"
+                Theme="Inverse"
+             >
+                <Border BorderBrush="Transparent" BorderThickness="3 0 0 0">
+                    <view:Tectonics Margin="3   "/>
+                </Border>
+            </mah:Flyout>
+
+            <mah:Flyout 
+                x:Name="NotesFlyout"
+                DataContext="{Binding selectedBook}"
+                Header="{Binding ParishVM.Title}"
+                Width="350" Margin="0,30,0,0" Position="Left"                     
+                Theme="Inverse"
+                AreAnimationsEnabled="True"
+                AnimateOpacity="True">
+                <view:NotesFlyout/>
+            </mah:Flyout>
+        </mah:FlyoutsControl>
+    </mah:MetroWindow.Flyouts>
+
+    <Grid DataContext="{Binding selectedBook}" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+          
+
+        <view:PageSelector         
+            Grid.Column="1" Grid.Row="0" Width="500" 
+            Margin="0,5,0,5" VerticalAlignment="Stretch"  />
+
+        <view:PageDisplay 
+            Page="{Binding SelectedPage}"  
+            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0">
+
+            <!-- Having CommandParameter is crucial here --><!--
+            <view:PageDisplay.ContextMenu x:Key="contextMenu">
+                <MenuItem Header="View"
+              Click="View_OnClick"
+              CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                <MenuItem Header="Edit"
+              Click="Edit_OnClick"
+              CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" />
+                <MenuItem Header="Delete"
+              Click="Delete_OnClick"
+              CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+            </view:PageDisplay.ContextMenu>-->
+
+        </view:PageDisplay>
+
+        <Button 
+            Click="Button_Click_1"
+            Grid.Column="0" Grid.Row="0" Width="42" Height="42"  Margin="20,30,0,0" VerticalAlignment="Top"                        
+            ToolTip="Leesezeichen und Notizen"
+            ToolTipService.InitialShowDelay="200"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}">
+            <iconPacks:PackIconVaadinIcons Width="20" Height="20" Kind="Edit" />
+        </Button>
+
+        <Button 
+            Click="Button_Click"
+            Grid.Column="2" Grid.Row="0" Width="42" Height="42" Margin="0,30,20,0" VerticalAlignment="Top"
+            ToolTip="Matrikel Auswahl"
+            ToolTipService.InitialShowDelay="200"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}">
+            <iconPacks:PackIconMaterial Width="20" Height="20" Kind="FileTreeOutline"/>
+        </Button>
+    </Grid>
+</mah:MetroWindow>
+

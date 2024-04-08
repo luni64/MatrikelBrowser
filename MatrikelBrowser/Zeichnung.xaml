@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<Viewbox xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform">
+    <Canvas UseLayoutRounding="False" Width="210.0" Height="297.0">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,210.0,297.0"/>
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Stroke="#ff000000" StrokeThickness="0.551438" StrokeDashCap="Flat">
+                <Path.Data>
+                    <PathGeometry Figures="m 0 0 l 10.0 -15.0 h 50.0 v 30.0 h -50.0 z" FillRule="Nonzero"/>
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+</Viewbox>
