@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -22,30 +23,30 @@ namespace ArchiveBrowser
     /// </summary>
     public partial class Bookmark : UserControl
     {
-
-
         public string Text
         {
             get { return (string)GetValue(TextProperty); }
             set { SetValue(TextProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(Bookmark), new PropertyMetadata(""));
 
-        public int X
+        public double W
         {
-            get { return (int)GetValue(XProperty); }
-            set { SetValue(XProperty, value); }
+            get { return (double)GetValue(WProperty); }
+            set { SetValue(WProperty, value); }
         }
+        public static readonly DependencyProperty WProperty =
+            DependencyProperty.Register("W", typeof(double), typeof(Bookmark), new PropertyMetadata(0.0));
 
-        // Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty XProperty =
-            DependencyProperty.Register("X", typeof(int), typeof(Bookmark), new PropertyMetadata(0));
-
-
-        Point? oldMousePosition;
+        public double H
+        {
+            get { return (double)GetValue(HProperty); }
+            set { SetValue(HProperty, value); }
+        }
+        public static readonly DependencyProperty HProperty =
+            DependencyProperty.Register("H", typeof(double), typeof(Bookmark), new PropertyMetadata(0.0));
 
         public Bookmark()
         {
@@ -55,11 +56,15 @@ namespace ArchiveBrowser
             Canvas.SetTop(this, 0);
         }
 
+        #region Moving --------------------------------------------------
+
+        Point? oldMousePosition;
+
         private void imgArr_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             oldMousePosition = e.GetPosition(Parent as FrameworkElement);
 
-            img.CaptureMouse();
+            bookmarkRect.CaptureMouse();
             e.Handled = true;
         }
 
@@ -79,11 +84,6 @@ namespace ArchiveBrowser
                 Canvas.SetTop(this, curY + deltaMousePosition.Y);
 
                 flip(newMousePosition.X);
-                //bool left = newMousePosition.X < 1500;
-
-                //var st = img.RenderTransform as TransformGroup;
-                //var y = (ScaleTransform)st!.Children.First(tr => tr is ScaleTransform);
-                //y.ScaleX = left ? 1 : -1;
             }
 
             e.Handled = true;
@@ -94,7 +94,7 @@ namespace ArchiveBrowser
         {
             bool left = xPos < 1500;
 
-            var st = img.RenderTransform as TransformGroup;
+            var st = bookmarkRect.RenderTransform as TransformGroup;
             var y = (ScaleTransform)st!.Children.First(tr => tr is ScaleTransform);
             y.ScaleX = left ? 1 : -1;
         }
@@ -103,28 +103,47 @@ namespace ArchiveBrowser
         {
 
             oldMousePosition = null;
-            img.ReleaseMouseCapture();
+            bookmarkRect.ReleaseMouseCapture();
             e.Handled = true;
         }
 
-        private void txt_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        #endregion
+
+        #region Scaling ---------------------------------------
+        Point? oldScalerPosition;
+
+        private void Scaler_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is TextBox tb)
+
+            oldScalerPosition = e.GetPosition(Parent as FrameworkElement);
+
+            Scaler.CaptureMouse();
+            e.Handled = true;
+        }
+
+        private void Scaler_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            oldScalerPosition = null;
+            Scaler.ReleaseMouseCapture();
+            e.Handled = true;
+        }
+
+        private void Scaler_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (oldScalerPosition != null && e.LeftButton == MouseButtonState.Pressed)
             {
-                tb.IsEnabled = true;
-                e.Handled = true;
+                Point newScalerPosition = e.GetPosition(Parent as UIElement);
+                Vector delta = newScalerPosition - oldScalerPosition.Value;
+                oldScalerPosition = newScalerPosition;
+
+                W = Math.Max(txt.ActualWidth, bookmarkRect.Width + delta.X);
+                H = Math.Max(70, bookmarkRect.Height + delta.Y);
             }
+
+            e.Handled = true;
         }
 
-        private void txt_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
-
-        private void txt_PreviewMouseDoubleClick_1(object sender, MouseButtonEventArgs e)
-        {
-
-        }
+        #endregion
     }
 }
 

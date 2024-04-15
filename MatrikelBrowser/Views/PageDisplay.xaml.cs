@@ -112,6 +112,24 @@ namespace ArchiveBrowser
                 Mode = BindingMode.TwoWay,
             });
 
+            bookmark.SetBinding(Bookmark.WProperty, new Binding
+            {
+                Source = bmVM,
+                Path = new PropertyPath("W"),
+                Mode = BindingMode.TwoWay,
+            });
+
+            bookmark.SetBinding(Bookmark.HProperty, new Binding
+            {
+                Source = bmVM,
+                Path = new PropertyPath("H"),
+                Mode = BindingMode.TwoWay,
+            });
+
+
+            //bookmark.Width = bmVM.W;
+            //bookmark.Height = bmVM.H;
+
             Canvas.SetLeft(bookmark, bmVM.X);
             Canvas.SetTop(bookmark, bmVM.Y);
             bookmark.flip(bmVM.X);

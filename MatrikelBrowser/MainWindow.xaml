@@ -19,16 +19,11 @@
         <view:nullToVisibiltiyConverter x:Key="nullToVisibiltiyConverter"/>
         <view:StringToImageConverter x:Key="StringToImageConverter"/>
         <view:StringToImageConverter x:Key="valueconverter"/>
-
-        
-
-
-
     </Window.Resources>
 
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
-            <Button Command="{Binding cmdSave}">
+            <Button Click="SaveButton_Click" >
                 <Button.ContentTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -94,27 +89,15 @@
         </Grid.RowDefinitions>
           
 
-        <view:PageSelector         
+        <view:PageSelector    
+            Focusable="True"
+            x:Name="pageSelector"
             Grid.Column="1" Grid.Row="0" Width="500" 
             Margin="0,5,0,5" VerticalAlignment="Stretch"  />
 
         <view:PageDisplay 
             Page="{Binding SelectedPage}"  
-            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0">
-
-            <!-- Having CommandParameter is crucial here --><!--
-            <view:PageDisplay.ContextMenu x:Key="contextMenu">
-                <MenuItem Header="View"
-              Click="View_OnClick"
-              CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
-                <MenuItem Header="Edit"
-              Click="Edit_OnClick"
-              CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}" />
-                <MenuItem Header="Delete"
-              Click="Delete_OnClick"
-              CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
-            </view:PageDisplay.ContextMenu>-->
-
+            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0">      
         </view:PageDisplay>
 
         <Button 

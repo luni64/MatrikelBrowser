@@ -36,6 +36,7 @@ namespace ArchiveBrowser.ViewModels
                     Title = "Neues Lesezeichen",
                     X = x,
                     Y = y,
+                   // cutOut = new System.Drawing.Rectangle((System.Drawing.Point) pos!, new System.Drawing.Size(0,0)),
                 };
 
                 bookmarkVMs.Add(
@@ -45,7 +46,7 @@ namespace ArchiveBrowser.ViewModels
                         Page = SelectedPage
                     }
                 );
-                model.Note.Bookmarks.Add(bm);
+                model.Info.Bookmarks.Add(bm);
             }
         }
 
@@ -55,11 +56,20 @@ namespace ArchiveBrowser.ViewModels
             var bm = SelectedBookmark;
             if (SelectedBookmark != null)
             {
-                model.Note.Bookmarks.Remove(SelectedBookmark.model);
+                model.Info.Bookmarks.Remove(SelectedBookmark.model);
                 bookmarkVMs.Remove(SelectedBookmark);
             }
         }
 
+        public RelayCommand cmdGenerateReport => _cmdGenerateReport ??= new RelayCommand(doGenerateReport);
+        void doGenerateReport(object? s)
+        {
+            //reportVM = new ReportVM(this.model);            
+        }
+
+
+        private ReportVM _reportVM;
+        public ReportVM reportVM => _reportVM ??= new ReportVM(this.model);
 
         #endregion
 
@@ -86,8 +96,8 @@ namespace ArchiveBrowser.ViewModels
             {
                 if (_noteVM == null)
                 {
-                    model.Note.BookID = model.ID;
-                    _noteVM = new NoteVM(model.Note);
+                    model.Info.BookID = model.ID;
+                    _noteVM = new NoteVM(model.Info);
                 }
                 return _noteVM;
             }
@@ -129,7 +139,7 @@ namespace ArchiveBrowser.ViewModels
                             SubTitle = $"{PageVMs.Count} Blätter";
 
 
-                            foreach (var bm in model.Note.Bookmarks)
+                            foreach (var bm in model.Info.Bookmarks)
                             {
                                 if (bm.Sheet < PageVMs.Count) // just to be sure...
                                 {
@@ -226,6 +236,7 @@ namespace ArchiveBrowser.ViewModels
         private RelayCommand? _cmdDelBookmark;
         private RelayCommand? _cmdChangePage = null;
         private RelayCommand? _cmdAddBookmark = null;
+        private RelayCommand? _cmdGenerateReport = null;
         private int _selectedPageNr = 0;
         private bool _isSelected;
         private PageVM? _selectedPage;

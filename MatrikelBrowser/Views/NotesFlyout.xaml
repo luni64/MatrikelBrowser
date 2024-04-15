@@ -25,12 +25,13 @@
             <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{DynamicResource MahApps.Font.Size.Default}"/>
         </StackPanel>
 
-        <TextBox  Text="{Binding NoteVM.document}"                   
+        <TextBox  Text="{Binding NoteVM.document, Mode=TwoWay}"                   
                   Grid.Row="1" Grid.Column="0" Margin="10,0,10,10" VerticalAlignment="Stretch"
                   FontSize="{DynamicResource MahApps.Font.Size.Default}"
                   TextWrapping="WrapWithOverflow" AcceptsReturn="True" AcceptsTab="True"
-                  mah:TextBoxHelper.Watermark="Notizen"         
-                  VerticalScrollBarVisibility="Visible"
+                  mah:TextBoxHelper.Watermark="Notizen" 
+                  mah:TextBoxHelper.IsSpellCheckContextMenuEnabled="False"
+                  VerticalScrollBarVisibility="Visible"                  
                   />
 
         <GridSplitter Grid.Row="2" ResizeDirection="Rows" />
@@ -41,6 +42,12 @@
                 DockPanel.Dock="Top" Margin="10,0,0,0"
                 FontSize="{DynamicResource MahApps.Font.Size.Default}"
             />
+
+            <Button 
+                Content="Report" 
+                 Click="Button_Click"               
+                DockPanel.Dock="Bottom" Margin="10,0,10,0"
+                />
 
             <Button 
                 Content="Lesezeichen Löschen" 

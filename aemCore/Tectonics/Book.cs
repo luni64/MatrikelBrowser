@@ -11,13 +11,15 @@ namespace AEM
 {
     public class Book
     {
+        public Parish? Parish { get; set; } = null;
         public string ID { get; set; } = "";
         public string Title { get; set; } = "";
         public string? Details { get; set; } = null;
         public Guid BookInfoID { get; set; }
         public Guid DescriptionID { get; set; }
+        public string BookDescriptionURL => $"https://digitales-archiv.erzbistum-muenchen.de/actaproweb/document/Vz_{DescriptionID}";
         public List<Page> Pages { get; } = [];
-        public BookInfo Note { get; set; } = new();//=> _bookinfo ??= new BookInfo(this);
+        public BookInfo Info { get; set; } = new();//=> _bookinfo ??= new BookInfo(this);
         public bool hasInfo { get; set; } = false;
         public string Type
         {

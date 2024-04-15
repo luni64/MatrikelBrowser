@@ -34,6 +34,18 @@ namespace ArchiveBrowser.ViewModels
             get => model.Y;
             set => model.Y = value;
         }
+        public double W
+        {
+            get => model.W;
+            set => model.W = value;
+        }
+
+        public double H
+        {
+            get => model.H;
+            set => model.H = value;
+        }
+
         public string ID { get; set; } = Guid.Empty.ToString();
         public PageVM? Page { get; set; }
 
