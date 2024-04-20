@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
 	  <Nullable>enable</Nullable>
     <RootNamespace>AEM</RootNamespace>
   </PropertyGroup>
@@ -11,6 +11,12 @@
     <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0-preview.3.24172.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\centaur.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

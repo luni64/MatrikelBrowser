@@ -33,15 +33,17 @@ namespace AEM
                 return "Verschiedenes";
             }
         }
-        public static string? baseFolder { get; set; }
+        public static DirectoryInfo? baseFolder { get; set; }
+        public DirectoryInfo? bookFolder { get; internal set; }
+        public DirectoryInfo? pagesFolder { get; internal set; }
         public override string ToString() => $"{ID}-{Title}-{BookInfoID}";
 
         public void LoadInfo()
         {
             if (hasInfo) return;  // did we already load the page info? -> no need to parse again
 
-            DirectoryInfo bookFolder = new(Path.Combine(baseFolder!, "books", ID));
-            DirectoryInfo pagesFolder = new(Path.Combine(bookFolder.FullName, "pages"));
+            bookFolder = new(Path.Combine(baseFolder!.FullName, "books", ID));
+            pagesFolder = new(Path.Combine(bookFolder.FullName, "pages"));
 
             loadBookInfo(bookFolder);
             //loadBookDetails(bookFolder);

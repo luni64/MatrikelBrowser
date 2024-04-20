@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ArchiveBrowser.ViewModels;
+using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,13 +17,19 @@ using System.Windows.Shapes;
 namespace ArchiveBrowser.Views
 {
     /// <summary>
-    /// Interaction logic for ReportView.xaml
+    /// Interaction logic for BookmarkData.xaml
     /// </summary>
-    public partial class ReportView : Window
+    public partial class BookmarkDetailsView : MetroWindow
     {
-        public ReportView()
+        public BookmarkDetailsView(BookmarkVM DataContext)
         {
             InitializeComponent();
+            this.DataContext = DataContext;
+        }
+
+        private void StackPanel_TextInput(object sender, TextCompositionEventArgs e)
+        {
+
         }
     }
 }

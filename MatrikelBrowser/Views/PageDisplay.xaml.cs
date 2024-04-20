@@ -88,7 +88,7 @@ namespace ArchiveBrowser
 
         void AddBookmark(BookmarkVM bmVM)
         {
-            var bookmark = new Bookmark();
+            var bookmark = new Bookmark(bmVM);           
 
             bookmark.SetBinding(Bookmark.TextProperty, new Binding
             {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.SymbolStore;
-using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -10,19 +8,6 @@ using System.Threading.Tasks;
 
 namespace AEM
 {
-    public class Bookmark
-    {
-        public string Title { get; set; } = String.Empty;
-        public int Sheet { get; set; }
-
-        public Rectangle cutOut { get; set; }
-
-        public int X { get; set; }
-        public int Y { get; set; }
-        public double W { get; set; } = 300;
-        public double H { get; set; } = 200;
-
-    }
 
     public class Page
     {

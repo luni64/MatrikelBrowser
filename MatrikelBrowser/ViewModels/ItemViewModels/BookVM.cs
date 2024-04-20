@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Security.Permissions;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace ArchiveBrowser.ViewModels
                 AEM.Bookmark bm = new()
                 {
                     Sheet = PageVMs.IndexOf(SelectedPage),
-                    Title = "Neues Lesezeichen",
+                    Title = "Neue Fundstelle",
                     X = x,
                     Y = y,
                    // cutOut = new System.Drawing.Rectangle((System.Drawing.Point) pos!, new System.Drawing.Size(0,0)),
@@ -64,7 +65,7 @@ namespace ArchiveBrowser.ViewModels
         public RelayCommand cmdGenerateReport => _cmdGenerateReport ??= new RelayCommand(doGenerateReport);
         void doGenerateReport(object? s)
         {
-            //reportVM = new ReportVM(this.model);            
+            AEM.Report.Generate(model);
         }
 
 

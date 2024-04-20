@@ -1,5 +1,6 @@
 ﻿using ArchiveBrowser.ViewModels;
-using MatrikelBrowser.Views;
+using System.ComponentModel;
+using ArchiveBrowser.Views;
 using SimpleWPFReporting;
 using System;
 using System.Collections.Generic;
@@ -26,23 +27,20 @@ namespace ArchiveBrowser
         public NotesFlyout()
         {
             InitializeComponent();
-
-            lbBookmarks.Items.SortDescriptions.Add(
-                new System.ComponentModel.SortDescription("Sheet", System.ComponentModel.ListSortDirection.Ascending)
-                );
+            lbBookmarks.Items.SortDescriptions.Add(new SortDescription("Sheet", ListSortDirection.Ascending));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(DataContext is BookVM vm) 
+            if (DataContext is BookVM vm)
             {
-                //vm.cmdGenerateReport.Execute(null);
-                                
-                ReportView report = new ReportView();
-                report.DataContext = vm.reportVM;
-                report.ShowDialog();
+                ////vm.cmdGenerateReport.Execute(null);
 
-             //   Report.PrintReport(report.mainGrid,vm.reportVM,ReportOrientation.Portrait);
+                //ReportView report = new ReportView();
+                //report.DataContext = vm.reportVM;
+                //report.ShowDialog();
+
+                //   Report.PrintReport(report.mainGrid,vm.reportVM,ReportOrientation.Portrait);
             }
         }
     }

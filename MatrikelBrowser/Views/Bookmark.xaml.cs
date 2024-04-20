@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ArchiveBrowser.ViewModels;
+using ArchiveBrowser.Views;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -48,9 +50,10 @@ namespace ArchiveBrowser
         public static readonly DependencyProperty HProperty =
             DependencyProperty.Register("H", typeof(double), typeof(Bookmark), new PropertyMetadata(0.0));
 
-        public Bookmark()
+        public Bookmark(BookmarkVM DataContext)
         {
             InitializeComponent();
+            this.DataContext = DataContext;
 
             Canvas.SetLeft(this, 0);
             Canvas.SetTop(this, 0);
@@ -114,7 +117,6 @@ namespace ArchiveBrowser
 
         private void Scaler_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
             oldScalerPosition = e.GetPosition(Parent as FrameworkElement);
 
             Scaler.CaptureMouse();
@@ -136,7 +138,7 @@ namespace ArchiveBrowser
                 Vector delta = newScalerPosition - oldScalerPosition.Value;
                 oldScalerPosition = newScalerPosition;
 
-                W = Math.Max(txt.ActualWidth, bookmarkRect.Width + delta.X);
+                W = Math.Max(txt.ActualWidth + 60, bookmarkRect.Width + delta.X);
                 H = Math.Max(70, bookmarkRect.Height + delta.Y);
             }
 
@@ -144,6 +146,15 @@ namespace ArchiveBrowser
         }
 
         #endregion
+
+        private void EditDetails(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is BookmarkVM dc)
+            {
+                var bookmarkDetails = new BookmarkDetailsView(dc);
+                bookmarkDetails.Show();
+            }
+        }
     }
 }
 

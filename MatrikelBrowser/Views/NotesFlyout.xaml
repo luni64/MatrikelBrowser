@@ -38,14 +38,14 @@
 
         <DockPanel Grid.Column="0" Grid.Row="3" LastChildFill="True">
             <Label  
-                Content="Lesezeichen:" 
+                Content="Fundstellen:" 
                 DockPanel.Dock="Top" Margin="10,0,0,0"
                 FontSize="{DynamicResource MahApps.Font.Size.Default}"
             />
 
             <Button 
                 Content="Report" 
-                 Click="Button_Click"               
+                Command="{Binding cmdGenerateReport}"         
                 DockPanel.Dock="Bottom" Margin="10,0,10,0"
                 />
 

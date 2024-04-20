@@ -31,7 +31,7 @@ namespace AEM
             //if(File.Exists(imgFile) )
             //{
             //    System.Drawing.Image img  = new System.Drawing.Bitmap(imgFile);
-               
+
             //    Rectangle crop = new Rectangle(444, 1040+50, 1110, 214);
 
             //    var bmp = new Bitmap(crop.Width, crop.Height);
@@ -52,11 +52,11 @@ namespace AEM
             //Document document = new Document(pdfDocument);
 
             //PdfFont font = PdfFontFactory.CreateFont(StandardFonts.COURIER);
-          
+
             //document.Add(new Paragraph("iText is:").SetFont(font));
-          
+
             //List list = new List().SetSymbolIndent(32).SetListSymbol("-").SetFont(font);
-           
+
             //list
             //    .Add(new ListItem("Never gonna give you up"))
             //    .Add(new ListItem("Never gonna let you down"))
@@ -64,7 +64,7 @@ namespace AEM
             //    .Add(new ListItem("Never gonna make you cry"))
             //    .Add(new ListItem("Never gonna say goodbye"))
             //    .Add(new ListItem("Never gonna tell a lie and hurt you"));
-            
+
             //for(int i =0; i<50; i++)
             //{
             //    list.Add(new ListItem(i.ToString()));
@@ -123,7 +123,6 @@ namespace AEM
                     allBooks[note.BookID].Info = note;
                 }
 
-                Report.Generate(allBooks["M9972"], new FileInfo("report.pdf"));
             }
             else
             {
@@ -131,9 +130,21 @@ namespace AEM
                 //Notes = new();
             }
 
-            Book.baseFolder = baseFolder.FullName;
+            Book.baseFolder =  baseFolder;
 
             
+
+            //Book bk = Parishes
+            //    .First(p => p.Place == "Ruhpolding").Books
+            //    .First(b => b.ID == "M9972");
+
+            //if (bk.Pages.Count == 0)
+            //    bk.LoadInfo();
+
+            //Report.Generate(bk, new FileInfo("report2.pdf"));
+
+            //bk.Pages.Clear();
+            //bk.hasInfo = false;
 
             return;
         }

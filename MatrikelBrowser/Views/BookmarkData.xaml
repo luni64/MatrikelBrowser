@@ -1,0 +1,163 @@
+﻿<mah:MetroWindow
+        x:Class="ArchiveBrowser.Views.BookmarkDetailsView" 
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"        
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArchiveBrowser.Views" 
+        xmlns:vm="clr-namespace:ArchiveBrowser.ViewModels"
+        xmlns:viewmodels="clr-namespace:ArchiveBrowser.ViewModels" 
+        xmlns:ArchiveBrowser="clr-namespace:ArchiveBrowser" 
+        d:DataContext="{d:DesignInstance Type={x:Type viewmodels:BookmarkVM}}"
+        mc:Ignorable="d"
+        Title="BookmarkData" Height="450" Width="800">
+    <mah:MetroWindow.Resources>
+        <ArchiveBrowser:ComparisonConverter x:Key="ComparisonConverter"/>
+    </mah:MetroWindow.Resources>
+    <Grid x:Name="grid" Margin="20,15,10,15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+
+        <TextBox 
+            Text="{Binding Title}"
+            Grid.Row="0" Grid.Column="0"
+            Style="{StaticResource MahApps.Styles.TextBox}"
+            mah:TextBoxHelper.UseFloatingWatermark="True"
+            mah:TextBoxHelper.Watermark="Kurzbezeichnung der Fundstelle"       
+            Margin="0,0,5,10"
+            />
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel >
+                <Label Content="Art der Fundstelle" Style="{StaticResource MahApps.Styles.Label}"  />
+                <RadioButton 
+                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:BookmarkType.birth}}"                   
+                    Content="Geburt" 
+                    GroupName="type" 
+                    Style="{StaticResource MahApps.Styles.RadioButton.Win10}" 
+                    />
+                <RadioButton 
+                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:BookmarkType.marriage}}"    
+                    Content="Hochzeit" 
+                    GroupName="type" 
+                    Style="{StaticResource MahApps.Styles.RadioButton.Win10}"/>
+                <RadioButton 
+                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:BookmarkType.death}}"
+                    Content="Todesfall"
+                    GroupName="type" 
+                    Style="{StaticResource MahApps.Styles.RadioButton.Win10}"/>
+                <RadioButton 
+                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:BookmarkType.misc}}"
+                    Content="Verschiedenes"
+                    GroupName="type" 
+                    Style="{StaticResource MahApps.Styles.RadioButton.Win10}"/>
+            </StackPanel>
+
+            <ContentControl 
+                Grid.Row="1" Grid.Column="1"
+                Content="{Binding SelectedViewModel}"
+                />
+            <Grid.Resources>
+                <DataTemplate DataType="{x:Type vm:BirthBookmarkVM}">
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+
+                        </Grid.RowDefinitions>
+                        <TextBox 
+                            Text="{Binding BaptizeDate}" 
+                            mah:TextBoxHelper.Watermark="Taufdatum"
+                            Grid.Row="0" Grid.Column="0" Margin="5"
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+                        <TextBox 
+                            Text="{Binding Child}" 
+                            mah:TextBoxHelper.Watermark="Name des Kindes"
+                            Grid.Row="0" Grid.Column="1" Margin="5"
+                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+
+                        <TextBox 
+                            Text="{Binding Father}" 
+                            mah:TextBoxHelper.Watermark="Name des Vaters"
+                            Grid.Row="1" Grid.Column="0" Margin="5"
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+                        <TextBox 
+                            Text="{Binding Mother}" 
+                            mah:TextBoxHelper.Watermark="Name der Mutter"
+                            Grid.Row="1" Grid.Column="1" Margin="5"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                        />
+                        <TextBox 
+                            Text="{Binding Witnesses}" 
+                            mah:TextBoxHelper.Watermark="Paten"
+                            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+                        <TextBox 
+                            Text="{Binding Transcript}"
+                            Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                            Margin="5"
+                            TextWrapping="WrapWithOverflow" AcceptsReturn="True"  AcceptsTab="True"               
+                            SpellCheck.IsEnabled="True"
+                            Style="{StaticResource MahApps.Styles.TextBox}"
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            mah:TextBoxHelper.Watermark="Transkript / Notizen"
+               />
+
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:MarriageBookmarkVM}">
+                    <TextBox Text="Mariage"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:DeathBookmarkVM}">
+                    <TextBox Text="Death"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:MiscBookmarkVM}">
+                    <TextBox Text="Misc"/>
+                </DataTemplate>
+            </Grid.Resources>
+
+
+
+        </Grid>
+
+
+        <DockPanel  Grid.Row="2" LastChildFill="False" Margin="0,10,0,0">
+            <Button 
+                DockPanel.Dock="Right" Width="100" Margin="10,0,0,0"
+                Style="{StaticResource MahApps.Styles.Button.Accent.Win10}"
+                IsDefault="True"
+                >
+                Speichern
+            </Button>
+            <Button 
+                DockPanel.Dock="Right" Width="100" 
+                Style="{StaticResource MahApps.Styles.Button.Accent.Win10}">
+                Abbruch
+            </Button>
+
+        </DockPanel>
+
+    </Grid>
+</mah:MetroWindow>
