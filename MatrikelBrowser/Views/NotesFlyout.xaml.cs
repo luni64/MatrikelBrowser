@@ -43,5 +43,22 @@ namespace ArchiveBrowser
                 //   Report.PrintReport(report.mainGrid,vm.reportVM,ReportOrientation.Portrait);
             }
         }
+
+        private void ReportClick(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is BookVM dc)
+            {
+                Cursor = Cursors.Wait;
+                dc.cmdGenerateReport.Execute(null);
+                if (dc.ReportFile != null)
+                {
+                    var view = new ReportView(dc.ReportFile);
+                    view.Show();
+                }
+                Cursor = Cursors.Arrow;
+
+            }
+
+        }
     }
 }

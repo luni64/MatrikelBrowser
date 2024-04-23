@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
+using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -65,7 +66,7 @@ namespace ArchiveBrowser.ViewModels
         public RelayCommand cmdGenerateReport => _cmdGenerateReport ??= new RelayCommand(doGenerateReport);
         void doGenerateReport(object? s)
         {
-            AEM.Report.Generate(model);
+            ReportFile = AEM.Report.Generate(model)?.FullName;
         }
 
 
@@ -205,6 +206,9 @@ namespace ArchiveBrowser.ViewModels
         }
 
         #endregion
+
+        public string? ReportFile { get; internal set; }
+
 
         public BookVM(Book model, ParishVM parish)
         {

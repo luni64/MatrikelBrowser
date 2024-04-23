@@ -45,7 +45,7 @@
 
             <Button 
                 Content="Report" 
-                Command="{Binding cmdGenerateReport}"         
+                Click="ReportClick"  
                 DockPanel.Dock="Bottom" Margin="10,0,10,0"
                 />
 
