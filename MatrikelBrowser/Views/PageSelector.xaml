@@ -7,10 +7,10 @@
     xmlns:sys ="clr-namespace:System;assembly=mscorlib" 
     xmlns:viewmodels="clr-namespace:ArchiveBrowser.ViewModels" 
     xmlns:local1="clr-namespace:ArchiveBrowser"  
-    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"        
-        
-    d:DataContext="{d:DesignInstance Type={x:Type viewmodels:BookVM}}"
-    mc:Ignorable="d" d:DesignWidth="500" d:Background="White" d:DesignHeight="60">
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"                
+    mc:Ignorable="d" 
+    d:DesignWidth="500" d:Background="White" d:DesignHeight="60"
+    d:DataContext="{d:DesignInstance Type={x:Type viewmodels:BookVM}}">
 
     <UserControl.Resources>
         <local1:nullToEnabledConverter x:Key="nullToEnabledConverter"/>

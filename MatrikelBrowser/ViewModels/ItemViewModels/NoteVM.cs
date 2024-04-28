@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AEM;
+﻿using Interfaces;
+
 namespace ArchiveBrowser.ViewModels
 {
     public class NoteVM : BaseViewModel
@@ -21,27 +17,12 @@ namespace ArchiveBrowser.ViewModels
             }
         }
 
-        //public string? BookID
-        //{
-        //    get => model.AffectedBookID;
-        //    set
-        //    {
-        //        if(model.AffectedBookID != value)
-        //        {
-        //            model.AffectedBookID = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
-
-        public NoteVM(BookInfo model)
+        public NoteVM(IBookInfo model)
         {
-            this.model = model;
-        
+            this.model = model;        
         }
 
-        private BookInfo model;
+        private IBookInfo model;
 
     }
 }

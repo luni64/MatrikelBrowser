@@ -1,22 +1,12 @@
 ﻿using ArchiveBrowser.ViewModels;
 using ArchiveBrowser.Views;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Effects;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ArchiveBrowser
 {
@@ -57,6 +47,57 @@ namespace ArchiveBrowser
 
             Canvas.SetLeft(this, 0);
             Canvas.SetTop(this, 0);
+
+            if (DataContext is BookmarkVM vm)
+            {
+                vm.PropertyChanged += Dc_PropertyChanged;
+                doLock(vm.isLocked);
+            }
+        }
+
+        void doLock(bool locked)
+        {
+            if (locked)
+            {
+                bookmarkRect.PreviewMouseDown -= imgArr_PreviewMouseDown;
+                bookmarkRect.PreviewMouseMove -= imgArr_PreviewMouseMove;
+                bookmarkRect.PreviewMouseUp -= imgArr_PreviewMouseUp;
+                bookmarkRect.Stroke = new SolidColorBrush(new Color() { A=0x60,R=0x0,G=0x0,B=0xFF}) ;
+            }
+            else
+            {
+                bookmarkRect.PreviewMouseDown += imgArr_PreviewMouseDown;
+                bookmarkRect.PreviewMouseMove += imgArr_PreviewMouseMove;
+                bookmarkRect.PreviewMouseUp += imgArr_PreviewMouseUp;
+                bookmarkRect.Stroke = new SolidColorBrush(Colors.Red);
+            }
+        }
+
+
+        private void Dc_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is BookmarkVM vm)
+            {
+                if (e.PropertyName == "isLocked")
+                {
+                    doLock(vm.isLocked);
+
+                    //if (vm.isLocked)
+                    //{
+                    //    bookmarkRect.PreviewMouseDown -= imgArr_PreviewMouseDown;
+                    //    bookmarkRect.PreviewMouseMove -= imgArr_PreviewMouseMove;
+                    //    bookmarkRect.PreviewMouseUp -= imgArr_PreviewMouseUp;
+                    //    bookmarkRect.Stroke = new SolidColorBrush(Colors.DarkBlue);
+                    //}
+                    //else
+                    //{
+                    //    bookmarkRect.PreviewMouseDown += imgArr_PreviewMouseDown;
+                    //    bookmarkRect.PreviewMouseMove += imgArr_PreviewMouseMove;
+                    //    bookmarkRect.PreviewMouseUp += imgArr_PreviewMouseUp;
+                    //    bookmarkRect.Stroke = new SolidColorBrush(Colors.Red);
+                    //}
+                }
+            }
         }
 
         #region Moving --------------------------------------------------
@@ -147,12 +188,15 @@ namespace ArchiveBrowser
 
         #endregion
 
+
+
         private void EditDetails(object sender, RoutedEventArgs e)
         {
             if (DataContext is BookmarkVM dc)
             {
-                var bookmarkDetails = new BookmarkDetailsView(dc);
-                bookmarkDetails.Show();
+                var detailsView = new BookmarkDetailsView(dc);
+                detailsView.Owner = Application.Current.MainWindow;
+                detailsView.Show();
             }
         }
     }

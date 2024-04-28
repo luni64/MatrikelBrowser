@@ -15,11 +15,11 @@
         <vm:MainViewModel x:Name="vm"/>
     </Window.DataContext>
 
-    <Window.Resources>
+    <!--<Window.Resources>
         <view:nullToVisibiltiyConverter x:Key="nullToVisibiltiyConverter"/>
         <view:StringToImageConverter x:Key="StringToImageConverter"/>
         <view:StringToImageConverter x:Key="valueconverter"/>
-    </Window.Resources>
+    </Window.Resources>-->
 
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
@@ -43,9 +43,6 @@
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
 
-
-    <!--*************************************************************************-->
-
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl x:Name="flyoutsControl">
             <mah:Flyout 
@@ -55,18 +52,18 @@
                 AreAnimationsEnabled="True"
                 AnimateOpacity="True"                      
                 IsOpen="True"
-                Header="Gemeinden"
+                Header="Kirchenbücher"
                 Position="Right"
                 Theme="Inverse"
              >
                 <Border BorderBrush="Transparent" BorderThickness="3 0 0 0">
-                    <view:Tectonics Margin="3   "/>
+                    <view:Tectonics Margin="3" DataContext="{Binding tectonicsVM}"/>
                 </Border>
             </mah:Flyout>
 
             <mah:Flyout 
                 x:Name="NotesFlyout"
-                DataContext="{Binding selectedBook}"
+                DataContext="{Binding tectonicsVM.selectedBook}"
                 Header="{Binding ParishVM.Title}"
                 Width="350" Margin="0,30,0,0" Position="Left"                     
                 Theme="Inverse"
@@ -77,7 +74,7 @@
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
 
-    <Grid DataContext="{Binding selectedBook}" >
+    <Grid DataContext="{Binding tectonicsVM.selectedBook}" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
@@ -88,35 +85,31 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
           
-
         <view:PageSelector    
             Focusable="True"
             x:Name="pageSelector"
             Grid.Column="1" Grid.Row="0" Width="500" 
             Margin="0,5,0,5" VerticalAlignment="Stretch"  />
-
         <view:PageDisplay 
             Page="{Binding SelectedPage}"  
             Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0">      
         </view:PageDisplay>
-
-        <Button 
+        <Button  ToolTip="Leesezeichen und Notizen"
             Click="Button_Click_1"
             Grid.Column="0" Grid.Row="0" Width="42" Height="42"  Margin="20,30,0,0" VerticalAlignment="Top"                        
-            ToolTip="Leesezeichen und Notizen"
+           
             ToolTipService.InitialShowDelay="200"
             Style="{DynamicResource MahApps.Styles.Button.Circle}">
             <iconPacks:PackIconVaadinIcons Width="20" Height="20" Kind="Edit" />
         </Button>
-
-        <Button 
+        <Button  ToolTip="Matrikel Auswahl"
             Click="Button_Click"
-            Grid.Column="2" Grid.Row="0" Width="42" Height="42" Margin="0,30,20,0" VerticalAlignment="Top"
-            ToolTip="Matrikel Auswahl"
+            Grid.Column="2" Grid.Row="0" Width="42" Height="42" Margin="0,30,20,0" VerticalAlignment="Top"           
             ToolTipService.InitialShowDelay="200"
             Style="{DynamicResource MahApps.Styles.Button.Circle}">
             <iconPacks:PackIconMaterial Width="20" Height="20" Kind="FileTreeOutline"/>
         </Button>
+        
     </Grid>
 </mah:MetroWindow>
 

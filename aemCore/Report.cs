@@ -1,4 +1,5 @@
-﻿using iText.IO.Font.Constants;
+﻿using Interfaces;
+using iText.IO.Font.Constants;
 using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
@@ -29,7 +30,7 @@ namespace AEM
         static Style link = new();
 
 
-        public static FileInfo? Generate(Book book)
+        public static FileInfo? Generate(IBook book)
         {
             PdfFont centaur = PdfFontFactory.CreateFont("Assets/centaur.ttf", PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
             PdfFont courier = PdfFontFactory.CreateFont(StandardFonts.COURIER);
@@ -51,14 +52,14 @@ namespace AEM
                 .SetBold();
 
             heading2
-                .SetFont(centaur)                
+                .SetFont(centaur)
                 .SetFontSize(14)
                 .SetBold();
-                        
+
             link
                 .SetFont(centaur)
                 .SetFontSize(12)
-                .SetFontColor(ColorConstants.BLUE)                
+                .SetFontColor(ColorConstants.BLUE)
                 ;
 
             var outputFile = new FileInfo(Path.Combine(Path.GetTempPath(), "lunOptics", book.Title + ".pdf").Replace(" ", "_"));
@@ -79,10 +80,10 @@ namespace AEM
             return outputFile;
         }
 
-        static void TitlePage(Book book, Document report)
+        static void TitlePage(IBook book, Document report)
         {
             if (book.Pages.Count == 0)
-                book.LoadInfo();
+                book.LoadPageInfo();
 
             var imageFileName = book.Pages[0].loadImage();
             var coverImage = new Image(ImageDataFactory.Create(imageFileName));
@@ -138,7 +139,7 @@ namespace AEM
 
             report.Add(new AreaBreak());
         }
-        static void BookNotes(Book book, Document report)
+        static void BookNotes(IBook book, Document report)
         {
             report.Add(new Paragraph()
                 .AddStyle(heading1)
@@ -150,7 +151,7 @@ namespace AEM
                 );
 
         }
-        static void Bookmarks(Book book, Document report)
+        static void Bookmarks(IBook book, Document report)
         {
             report.Add(new Paragraph()
                 .AddStyle(heading1)
@@ -158,27 +159,17 @@ namespace AEM
                 );
 
 
-            foreach (var bookmark in book.Info.Bookmarks.OrderBy(b => b.Sheet).Take(3))
+            foreach (var bookmark in book.Info.Bookmarks.OrderBy(b => b.SheetNr))//.Take(3))
             {
-                var page = book.Pages[bookmark.Sheet];
-
-                report.Add(new Paragraph()                
-                    .AddStyle(heading2)                    
-                    .Add($"{bookmark.Title}, Blatt Nr.: {bookmark.Sheet}")
-                    //.SetMarginBottom(20)
-                    );
+                var page = book.Pages[bookmark.SheetNr];
 
                 report.Add(new Paragraph()
-                   .AddTabStops(new TabStop(50))
-                   .AddStyle(normal)                   
-                   .Add("Kind:").Add(new Tab()).Add("alsdfj")
-                   .Add("\nVater:").Add(new Tab()).Add("alsdfj")
-                   .Add("\nMutter:").Add(new Tab()).Add("alsdfj")
-                   .SetMarginBottom(20)
-                   );
+                    .AddStyle(heading2)
+                    .Add($"{bookmark.Title}, Blatt Nr.: {bookmark.SheetNr}")
+                    .SetMarginBottom(20)
+                    );
 
                 var sheetImgFile = page.loadImage();
-
                 if (File.Exists(sheetImgFile))
                 {
                     System.Drawing.Image sheetImg = new Bitmap(sheetImgFile);
@@ -195,23 +186,53 @@ namespace AEM
                     ImageData data = ImageDataFactory.Create("testimg.jpg");
                     Image image = new(data);
 
-                    report.Add(image.SetWidth(400).SetHorizontalAlignment(HorizontalAlignment.CENTER));
+                    report.Add(image
+                        .SetWidth(400)
+                        .SetHorizontalAlignment(HorizontalAlignment.CENTER))
+                        .SetBottomMargin(20);
+                }
 
+                if (!string.IsNullOrEmpty(bookmark.Transkript))
+                {
                     report.Add(new Paragraph()
                         .AddStyle(normal)
-                        .SetMarginTop(20)
-                        .SetMarginBottom(30)
-                        .Add("Archiv-Bild (Permalink):\n")
-                        .Add(makeLink(page.URL, page.URL))
-                        .Add("\n\nLokal gespeichertes Bild:\n")
-                        .Add(makeLink(page.localFilename, page.localFilename)
-                        //.SetFontSize(8)
-                        ));
-
-
-
-                    //report.Add(new LineSeparator(new SolidLine()).SetMarginTop(5).SetMarginBottom(15));
+                        .Add(bookmark.Transkript)
+                        .SetWidth(388)
+                        .SetHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .SetBorder(new iText.Layout.Borders.SolidBorder(ColorConstants.LIGHT_GRAY, (float)0.3))
+                        .SetPadding(5)
+                        );
                 }
+
+                switch (bookmark.bookmarkType)
+                {
+                    case BookmarkType.birth:
+
+                        report.Add(new Paragraph()
+                           .AddTabStops(new TabStop(50))
+                           .AddStyle(normal)
+                           .Add("Kind:").Add(new Tab()).Add(bookmark.Person1)
+                           .Add("\nVater:").Add(new Tab()).Add(bookmark.Father)
+                           .Add("\nMutter:").Add(new Tab()).Add(bookmark.Mother)
+                           .Add("\nTranskript/Notizen:\n")
+                           .SetMarginTop(20)
+                           .SetMarginBottom(20)
+                           );
+                        break;
+                }
+
+                report.Add(new Paragraph()
+                      .SetMarginTop(20)
+                      .AddStyle(normal)
+                      .SetMarginBottom(30)
+                      .Add("Archiv-Bild (Permalink):\n")
+                      .Add(makeLink(page.URL, page.URL))
+                      .Add("\n\nLokal gespeichertes Bild:\n")
+                      .Add(makeLink(page.localFilename, page.localFilename)
+                      //.SetFontSize(8)
+                      ));
+
+
             }
         }
 

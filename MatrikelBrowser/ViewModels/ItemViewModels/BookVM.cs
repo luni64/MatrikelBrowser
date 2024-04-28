@@ -1,16 +1,9 @@
-﻿using AEM;
+﻿using Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Security.Permissions;
-using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Media;
 
 namespace ArchiveBrowser.ViewModels
 {
@@ -34,11 +27,11 @@ namespace ArchiveBrowser.ViewModels
 
                 AEM.Bookmark bm = new()
                 {
-                    Sheet = PageVMs.IndexOf(SelectedPage),
+                    SheetNr = PageVMs.IndexOf(SelectedPage),
                     Title = "Neue Fundstelle",
                     X = x,
                     Y = y,
-                   // cutOut = new System.Drawing.Rectangle((System.Drawing.Point) pos!, new System.Drawing.Size(0,0)),
+                    // cutOut = new System.Drawing.Rectangle((System.Drawing.Point) pos!, new System.Drawing.Size(0,0)),
                 };
 
                 bookmarkVMs.Add(
@@ -69,14 +62,13 @@ namespace ArchiveBrowser.ViewModels
             ReportFile = AEM.Report.Generate(model)?.FullName;
         }
 
-
-        private ReportVM _reportVM;
-        public ReportVM reportVM => _reportVM ??= new ReportVM(this.model);
+      //  public ReportVM reportVM => _reportVM ??= new ReportVM(this.model);
 
         #endregion
 
         #region Properties ----------------------------------------
         public string Title { get; }
+        public string ID { get; }
         public string? SubTitle
         {
             get => _subTitle;
@@ -117,137 +109,111 @@ namespace ArchiveBrowser.ViewModels
         public override bool IsSelected
         {
             get => _isSelected;
-            set
-            {
-                SetProperty(ref _isSelected, value);
-                if (value == true)
-                {
-                    if (model.Pages.Count == 0)
-                    {
-                        SubTitle = "Downloading...";
-                        Task.Run(() =>
-                        {
-                            model.LoadInfo();
-                            if (model.Pages.Count > 0)
-                            {
-                                PageVMs.Clear();
-                                foreach (var page in model.Pages)
-                                {
-                                    PageVMs.Add(new PageVM(page, this));
-                                }
-                                SelectedPageNr = 0;
-                                OnPropertyChanged("bookmarkVMs");
-                            }
-                            SubTitle = $"{PageVMs.Count} Blätter";
-
-
-                            foreach (var bm in model.Info.Bookmarks)
-                            {
-                                if (bm.Sheet < PageVMs.Count) // just to be sure...
-                                {
-                                    Application.Current.Dispatcher.Invoke(() =>
-                                    {
-                                        bookmarkVMs.Add(new BookmarkVM(bm)
-                                        {
-                                            ID = Guid.NewGuid().ToString(),
-                                            Page = PageVMs[bm.Sheet],
-                                        });
-                                    });
-                                }
-
-                            }
-                        });
-                    }
-                    else // already loaded, display details
-                    {
-                        SubTitle = $"{PageVMs.Count} Blätter";
-                    }
-                }
-                else  // selection lost, hide details
-                {
-                    SubTitle = null;
-                }
-            }
+            set => SetProperty(ref _isSelected, value);
         }
 
-        private double _zoom = 0.3;
         public double zoom
         {
             get => _zoom;
             set => SetProperty(ref _zoom, value);
         }
-
-        private double _panX = 0;
-
         public double PanX
         {
             get => _panX;
             set => SetProperty(ref _panX, value);
         }
-
-        private double _panY = 0;
         public double PanY
         {
             get => _panY;
             set => SetProperty(ref _panY, value);
         }
 
-
-
-        private BookmarkVM? _selectedBookmark = null;
         public BookmarkVM? SelectedBookmark
         {
             get => _selectedBookmark;
             set
             {
                 SetProperty(ref _selectedBookmark, value);
-                SelectedPageNr = _selectedBookmark?.Sheet ?? 0;
+                SelectedPageNr = _selectedBookmark?.SheetNr ?? 0;
+            }
+        }
+        public string? ReportFile { get; internal set; }
+
+        #endregion
+        public async void Intialize()
+        {
+            if (model.Pages.Count == 0) // we lazy load pages
+            {
+                SubTitle = "Downloading...";
+                await Task.Run(() =>
+                {
+                    model.LoadPageInfo(); // load or read page info from mets.xml
+                    if (model.Pages.Count > 0) // setup page viewmodels
+                    {
+                        PageVMs.Clear();
+                        foreach (var page in model.Pages)
+                        {
+                            PageVMs.Add(new PageVM(page, this));
+                        }
+                        SelectedPageNr = 0;
+                        OnPropertyChanged("bookmarkVMs");
+                    }
+                });
+                SubTitle = $"{PageVMs.Count} Blätter";
+
+                foreach (var bm in model.Info.Bookmarks)
+                {
+                    if (bm.SheetNr < PageVMs.Count) // just to be sure...
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            bookmarkVMs.Add(new BookmarkVM(bm)
+                            {
+                                ID = Guid.NewGuid().ToString(),
+                                Page = PageVMs[bm.SheetNr],
+                            });
+                        });
+                    }
+                }
+            }
+            else
+            {
+                SubTitle = $"{PageVMs.Count} Blätter";
             }
         }
 
-        #endregion
 
-        public string? ReportFile { get; internal set; }
+        public bool IsFavorite
+        {
+            get => _isFavorite;
+            set => SetProperty(ref _isFavorite, value);
+        }
 
-
-        public BookVM(Book model, ParishVM parish)
+        public BookVM(IBook model, ParishVM parish)
         {
             this.model = model;
             this.ParishVM = parish;
-            Title = $"{model.ID} {model.Title}";
-
-            //foreach (var bm in model.Note.Bookmarks)
-            //{
-            //    if (bm.Sheet < PageVMs.Count) // just to be sure...
-            //    {
-            //        bookmarkVMs.Add(new BookmarkVM(bm)
-            //        {
-            //            ID = Guid.NewGuid().ToString(),
-            //            Page = PageVMs[bm.Sheet],
-            //        }
-            //        );
-            //    }
-
-            //}
-
+            Title = $"{model.ID} {model.Title}";         
+            ID = model.ID;
             Indent = 7;
-
-            //bookmarkVMs = new();
-            //bookmarkVMs.Source = _bookmarkVMs;
-
-
         }
 
         private RelayCommand? _cmdDelBookmark;
-        private RelayCommand? _cmdChangePage = null;
-        private RelayCommand? _cmdAddBookmark = null;
-        private RelayCommand? _cmdGenerateReport = null;
-        private int _selectedPageNr = 0;
+        private RelayCommand? _cmdChangePage;
+        private RelayCommand? _cmdAddBookmark;
+        private RelayCommand? _cmdGenerateReport;
         private bool _isSelected;
+        private bool _isFavorite;
         private PageVM? _selectedPage;
+        private int _selectedPageNr;
+        private BookmarkVM? _selectedBookmark = null;
         private NoteVM? _noteVM;
-        private String? _subTitle;
-        private readonly Book model;
+        private string? _subTitle;
+        private ReportVM? _reportVM;
+        private readonly IBook model;
+        private double _panX;
+        private double _panY;
+        private double _zoom = 0.3;
     }
 }
 

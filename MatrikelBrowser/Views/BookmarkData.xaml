@@ -8,12 +8,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArchiveBrowser.Views" 
         xmlns:vm="clr-namespace:ArchiveBrowser.ViewModels"
-        xmlns:viewmodels="clr-namespace:ArchiveBrowser.ViewModels" 
-        xmlns:ArchiveBrowser="clr-namespace:ArchiveBrowser" 
-        d:DataContext="{d:DesignInstance Type={x:Type viewmodels:BookmarkVM}}"
+        xmlns:iface="clr-namespace:Interfaces;assembly=Interfaces"        
+        xmlns:ArchiveBrowser="clr-namespace:ArchiveBrowser"        
+        d:DataContext="{d:DesignInstance Type={x:Type vm:BookmarkVM}}"
         mc:Ignorable="d"
-        Title="BookmarkData" Height="450" Width="800">
-    <mah:MetroWindow.Resources>
+        Title="BookmarkData" Height="650" Width="750">
+    <mah:MetroWindow.Resources> 
         <ArchiveBrowser:ComparisonConverter x:Key="ComparisonConverter"/>
     </mah:MetroWindow.Resources>
     <Grid x:Name="grid" Margin="20,15,10,15">
@@ -27,10 +27,10 @@
         <TextBox 
             Text="{Binding Title}"
             Grid.Row="0" Grid.Column="0"
-            Style="{StaticResource MahApps.Styles.TextBox}"
+            Style="{StaticResource MahApps.Styles.TextBox}" FontWeight="SemiBold" FontSize="14"
             mah:TextBoxHelper.UseFloatingWatermark="True"
             mah:TextBoxHelper.Watermark="Kurzbezeichnung der Fundstelle"       
-            Margin="0,0,5,10"
+            Margin="0,0,5,25"
             />
 
         <Grid Grid.Row="1">
@@ -40,38 +40,44 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel >
-                <Label Content="Art der Fundstelle" Style="{StaticResource MahApps.Styles.Label}"  />
+                <Label Content="Art der Fundstelle" Style="{StaticResource MahApps.Styles.Label}" FontWeight="SemiBold" FontSize="14"  Margin="-8,0,10,0" />
                 <RadioButton 
-                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:BookmarkType.birth}}"                   
+                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static iface:BookmarkType.birth}}"                   
                     Content="Geburt" 
                     GroupName="type" 
                     Style="{StaticResource MahApps.Styles.RadioButton.Win10}" 
                     />
                 <RadioButton 
-                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:BookmarkType.marriage}}"    
+                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static iface:BookmarkType.marriage}}"    
                     Content="Hochzeit" 
                     GroupName="type" 
                     Style="{StaticResource MahApps.Styles.RadioButton.Win10}"/>
                 <RadioButton 
-                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:BookmarkType.death}}"
+                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static iface:BookmarkType.death}}"
                     Content="Todesfall"
                     GroupName="type" 
                     Style="{StaticResource MahApps.Styles.RadioButton.Win10}"/>
                 <RadioButton 
-                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static vm:BookmarkType.misc}}"
+                    IsChecked="{Binding bookmarkType, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static iface:BookmarkType.misc}}"
                     Content="Verschiedenes"
                     GroupName="type" 
                     Style="{StaticResource MahApps.Styles.RadioButton.Win10}"/>
             </StackPanel>
 
-            <ContentControl 
-                Grid.Row="1" Grid.Column="1"
+            <Border Grid.Row="1" Grid.Column="1"
+                BorderBrush="DarkGray"
+                BorderThickness="1,0,0,0">
+                <ContentControl 
+                
                 Content="{Binding SelectedViewModel}"
                 />
+            </Border>
             <Grid.Resources>
                 <DataTemplate DataType="{x:Type vm:BirthBookmarkVM}">
                     <Grid >
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
@@ -83,40 +89,48 @@
 
                         </Grid.RowDefinitions>
                         <TextBox 
-                            Text="{Binding BaptizeDate}" 
-                            mah:TextBoxHelper.Watermark="Taufdatum"
-                            Grid.Row="0" Grid.Column="0" Margin="5"
+                            Text="{Binding Child}" 
+                            mah:TextBoxHelper.Watermark="Name des Kindes"
+                            Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"
+                            
                             mah:TextBoxHelper.UseFloatingWatermark="True"
                             />
                         <TextBox 
-                            Text="{Binding Child}" 
-                            mah:TextBoxHelper.Watermark="Name des Kindes"
-                            Grid.Row="0" Grid.Column="1" Margin="5"
-                            
+                            Text="{Binding BaptizeDate}" 
+                            mah:TextBoxHelper.Watermark="Taufdatum"
+                            Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="1" Margin="5"
                             mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+
+                        <mah:ToggleSwitch 
+                            IsOn="{Binding Legitimate}"
+                            Grid.Row="0" Grid.Column="3" Margin="20,0,0,0"
+                            OnContent="ehelich"
+                            OffContent="ledig"
+                            Focusable="False"
                             />
 
                         <TextBox 
                             Text="{Binding Father}" 
                             mah:TextBoxHelper.Watermark="Name des Vaters"
-                            Grid.Row="1" Grid.Column="0" Margin="5"
+                            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"
                             mah:TextBoxHelper.UseFloatingWatermark="True"
                             />
                         <TextBox 
                             Text="{Binding Mother}" 
                             mah:TextBoxHelper.Watermark="Name der Mutter"
-                            Grid.Row="1" Grid.Column="1" Margin="5"                            
+                            Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Margin="5"                            
                             mah:TextBoxHelper.UseFloatingWatermark="True"
                         />
                         <TextBox 
                             Text="{Binding Witnesses}" 
                             mah:TextBoxHelper.Watermark="Paten"
-                            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"                            
+                            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="5"                            
                             mah:TextBoxHelper.UseFloatingWatermark="True"
                             />
                         <TextBox 
                             Text="{Binding Transcript}"
-                            Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                            Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4"
                             Margin="5"
                             TextWrapping="WrapWithOverflow" AcceptsReturn="True"  AcceptsTab="True"               
                             SpellCheck.IsEnabled="True"
@@ -128,7 +142,137 @@
                     </Grid>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:MarriageBookmarkVM}">
-                    <TextBox Text="Mariage"/>
+                    <Grid Margin="15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                         
+                            <RowDefinition Height="*"/>
+
+                        </Grid.RowDefinitions>
+                        <TextBox 
+                            Text="{Binding MariageDate }" HorizontalContentAlignment="Center"
+                            mah:TextBoxHelper.Watermark="Datum der Hochzeit"
+                            Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,0,0,25"   Width="120"         
+                            mah:TextBoxHelper.UseFloatingWatermark="True" 
+                            mah:TextBoxHelper.WatermarkAlignment="Center"
+                            />
+
+                        <TextBlock Text="Ehemann"  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,10" HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold"/>
+                        <TextBlock Text="Ehefrau"  Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,0,10" HorizontalAlignment="Center" FontSize="14" FontWeight="SemiBold"/>
+                        <Separator Grid.Row="1" Grid.Column="2" Grid.RowSpan="5" HorizontalAlignment="Center"  Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+
+                        <TextBox 
+                            Text="{Binding Groom }" 
+                            mah:TextBoxHelper.Watermark="Name"
+                            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" Margin="0,0,5,5"             
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+
+                        <TextBox 
+                            Text="{Binding GroomBirthday }" 
+                            mah:TextBoxHelper.Watermark="Geburtstag"
+                            Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Margin="5,0,0,5"             
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+
+                        <TextBox 
+                            Text="{Binding GroomStatus}" 
+                            mah:TextBoxHelper.Watermark="Stand / Wohnort"
+                            Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,20"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"/>
+
+                        <TextBox 
+                            Text="{Binding Bride}" 
+                            mah:TextBoxHelper.Watermark="Name"
+                            Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" Margin="0,0,5,5"             
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+
+                        <TextBox 
+                            Text="{Binding BrideBirthday }" 
+                            mah:TextBoxHelper.Watermark="Geburtstag Ehefrau"
+                            Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="1" Margin="5,0,0,5"             
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+
+                        <TextBox 
+                            Text="{Binding BrideStatus}" 
+                            mah:TextBoxHelper.Watermark="Stand / Wohnort"
+                            Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,0,20"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+
+                        <TextBox 
+                            Text="{Binding GroomFather}" 
+                            mah:TextBoxHelper.Watermark="Name des Vaters"
+                            Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" Margin="0,0,5,5"
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+                        <TextBox 
+                            Text="{Binding GroomMother}" 
+                            mah:TextBoxHelper.Watermark="Name der Mutter"
+                            Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="1" Margin="5,0,0,5"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+                        
+                        <TextBox 
+                            Text="{Binding GroomParentsStatus}" 
+                            mah:TextBoxHelper.Watermark="Stand / Wohnort"
+                            Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,15"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"/>
+
+                        <TextBox 
+                            Text="{Binding BrideFather}" 
+                            mah:TextBoxHelper.Watermark="Name des Vaters"
+                            Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="1" Margin="0,0,5,5"
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+                        <TextBox 
+                            Text="{Binding BrideMother}" 
+                            mah:TextBoxHelper.Watermark="Name der Mutter"
+                            Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="1" Margin="5,0,0,5"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+                            />
+
+                        <TextBox 
+                            Text="{Binding BrideParentsStatus}" 
+                            mah:TextBoxHelper.Watermark="Stand / Wohnort"
+                            Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,0,15"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"/>
+
+
+
+                        <TextBox 
+                            Text="{Binding Witnesses}" 
+                            mah:TextBoxHelper.Watermark="Zeugen"
+                            Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="6" Margin="0,10,0,20"                            
+                            mah:TextBoxHelper.UseFloatingWatermark="True"
+             />
+                        <TextBox 
+                            Text="{Binding Transcript}"
+                            Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="5"
+                            Margin="0" VerticalScrollBarVisibility="Visible"
+             TextWrapping="WrapWithOverflow" AcceptsReturn="True"  AcceptsTab="True"               
+             SpellCheck.IsEnabled="True"
+             Style="{StaticResource MahApps.Styles.TextBox}"
+             mah:TextBoxHelper.UseFloatingWatermark="True"
+             mah:TextBoxHelper.Watermark="Transkript / Notizen"
+/>
+
+                    </Grid>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:DeathBookmarkVM}">
                     <TextBox Text="Death"/>

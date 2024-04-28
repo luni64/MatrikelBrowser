@@ -1,11 +1,14 @@
 ﻿using ArchiveBrowser.ViewModels;
+using MahApps.Metro.IconPacks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -27,9 +30,9 @@ namespace ArchiveBrowser
         }
         private void SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (DataContext is MainViewModel dc && e.NewValue is BookVM bookVM)
+            if (DataContext is TectonicsVM vm && e.NewValue is BookVM bookVM)
             {
-                dc.selectedBook = bookVM;
+                vm.selectedBook = bookVM;
             }
         }
 
@@ -37,6 +40,31 @@ namespace ArchiveBrowser
         private void TreeViewItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
         {
             e.Handled = true;
+        }
+        private void ListBoxItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void TreeBookMenu_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is TectonicsVM vm &&
+                e.Source is ToggleButton btn &&
+                btn.DataContext is BookVM bookVM)
+            {
+                vm.cmdToogleFavorite.Execute(bookVM);
+            }
+        }
+
+        private void FavoritesMenu_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is TectonicsVM vm &&
+               e.Source is Button btn &&
+               btn.DataContext is BookVM bookVM)
+            {
+                vm.cmdToogleFavorite.Execute(bookVM);                
+            }
+
         }
 
     }

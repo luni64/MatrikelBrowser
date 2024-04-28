@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\aemCore\aemCore.csproj" />
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,15 +1,13 @@
-﻿using System;
+﻿using AEM;
+using Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media.Media3D;
 
+
 namespace ArchiveBrowser.ViewModels
 {
-    public enum BookmarkType
-    {
-        birth, marriage, death, misc
-    }
-
     public class BookmarkVM : BaseViewModel
     {
         public string Title
@@ -24,24 +22,30 @@ namespace ArchiveBrowser.ViewModels
                 }
             }
         }
-        public string? note
+        public string Transcript
         {
-            get;
-            set;
-        }
-
-
-
-
-
-        private BookmarkType _bookmarkType;
-        public BookmarkType bookmarkType
-        {
-            get => _bookmarkType;
+            get => model.Transkript;
             set
             {
-                SetProperty(ref _bookmarkType, value);
-                SelectedViewModel = detailViewmodels[bookmarkType]!;
+                if (value != model.Transkript)
+                {
+                    model.Transkript = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public BookmarkType bookmarkType
+        {
+            get => model.bookmarkType;
+            set
+            {
+                if (value != model.bookmarkType)
+                {
+                    model.bookmarkType = value;
+                    SelectedViewModel = detailViewmodels[bookmarkType]!;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -52,11 +56,17 @@ namespace ArchiveBrowser.ViewModels
             set => SetProperty(ref _selectedViewModel, value);
         }
 
-
-        public int Sheet
+        private bool _isLocked = true;
+        public bool isLocked
         {
-            get => model.Sheet;
-            set => model.Sheet = value;
+            get => _isLocked;
+            set => SetProperty(ref _isLocked, value);
+        }
+
+        public int SheetNr
+        {
+            get => model.SheetNr;
+            set => model.SheetNr = value;
         }
         public int X
         {
@@ -83,40 +93,312 @@ namespace ArchiveBrowser.ViewModels
         public string ID { get; set; } = Guid.Empty.ToString();
         public PageVM? Page { get; set; }
 
-        public BookmarkVM(AEM.Bookmark model)
+        public BookmarkVM(IBookmark model)
         {
             this.model = model;
             detailViewmodels.Add(BookmarkType.birth, new BirthBookmarkVM(model));
-            detailViewmodels.Add(BookmarkType.marriage,new MarriageBookmarkVM(model));
+            detailViewmodels.Add(BookmarkType.marriage, new MarriageBookmarkVM(model));
             detailViewmodels.Add(BookmarkType.death, new DeathBookmarkVM(model));
             detailViewmodels.Add(BookmarkType.misc, new MiscBookmarkVM(model));
-            SelectedViewModel = detailViewmodels[BookmarkType.birth]!;
+            //_selectedViewModel = detailViewmodels[model.bookmarkType]!;
+            _selectedViewModel = detailViewmodels[BookmarkType.marriage];
         }
 
-        public AEM.Bookmark model { get; }
+        public IBookmark model { get; }
 
         Dictionary<BookmarkType, BaseViewModel?> detailViewmodels = new();
     }
 
-    class BirthBookmarkVM : BaseViewModel 
-    { 
-        public string Child { get; set; }
-        public string Father { get; set; }
-        public string Mother { get; set; }
-        public string BaptizeDate { get; set; }
-        public string Witnesses { get; set; }
-        public string Transcript { get; set; }
+    class BirthBookmarkVM : BaseViewModel
+    {
+        public string Child
+        {
+            get => model.Person1;
+            set
+            {
+                if (model.Person1 != value)
+                {
+                    model.Person1 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public bool Legitimate
+        {
+            get => model.Flag1;
+            set
+            {
+                if (value != model.Flag1)
+                {
+                    model.Flag1 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string Father
+        {
+            get => model.Father;
+            set
+            {
+                if (model.Father != value)
+                {
+                    model.Father = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string Mother
+        {
+            get => model.Mother;
+            set
+            {
+                if (model.Mother != value)
+                {
+                    model.Mother = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string BaptizeDate
+        {
+            get => model.Date1;
+            set
+            {
+                if (model.Date1 != value)
+                {
+                    model.Date1 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string Witnesses
+        {
+            get => model.Others;
+            set
+            {
+                if (model.Others != value)
+                {
+                    model.Others = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string Transcript
+        {
+            get => model.Transkript;
+            set
+            {
+                if (model.Transkript != value)
+                {
+                    model.Transkript = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public BirthBookmarkVM(AEM.Bookmark model)     
+        public BirthBookmarkVM(IBookmark model)
         {
             this.model = model;
         }
 
-        private AEM.Bookmark model;
+        private IBookmark model;
 
     }
-    class MarriageBookmarkVM : BaseViewModel { public MarriageBookmarkVM(AEM.Bookmark model)  { } }
-    class DeathBookmarkVM : BaseViewModel { public DeathBookmarkVM(AEM.Bookmark model)   { } }
-    class MiscBookmarkVM : BaseViewModel { public MiscBookmarkVM(AEM.Bookmark model) { } }
+    class MarriageBookmarkVM : BaseViewModel
+    {
+        public string MariageDate
+        {
+            get => model.EventDate;
+            set
+            {
+                if (model.Date1 != value)
+                {
+                    model.EventDate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string Groom
+        {
+            get => model.Person1;
+            set
+            {
+                if (model.Person1 != value)
+                {
+                    model.Person1 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string GroomBirthday
+        {
+            get => model.Date1;
+            set
+            {
+                if (model.Date1 != value)
+                {
+                    model.Date1 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string GroomStatus
+        {
+            get => model.Status1;
+            set
+            {
+                if (model.Status1 != value)
+                {
+                    model.Status1 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string Bride
+        {
+            get => model.Person2;
+            set
+            {
+                if (model.Person2 != value)
+                {
+                    model.Person2 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string BrideBirthday
+        {
+            get => model.Date2;
+            set
+            {
+                if (model.Date2 != value)
+                {
+                    model.Date2 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string BrideStatus
+        {
+            get => model.Status2;
+            set
+            {
+                if (model.Status2 != value)
+                {
+                    model.Status2 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string GroomFather
+        {
+            get => model.Person3;
+            set
+            {
+                if (model.Person3 != value)
+                {
+                    model.Person3 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string GroomMother
+        {
+            get => model.Person4;
+            set
+            {
+                if (model.Person4 != value)
+                {
+                    model.Person4 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string GroomParentsStatus
+        {
+            get => model.Status3;
+            set
+            {
+                if (model.Status3 != value)
+                {
+                    model.Status3 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string BrideFather
+        {
+            get => model.Person5;
+            set
+            {
+                if (model.Person5 != value)
+                {
+                    model.Person5 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string BrideMother
+        {
+            get => model.Person5;
+            set
+            {
+                if (model.Person5 != value)
+                {
+                    model.Person6 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string BrideParentsStatus
+        {
+            get => model.Status4;
+            set
+            {
+                if (model.Status4 != value)
+                {
+                    model.Status4 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string Witnesses
+        {
+            get => model.Others;
+            set
+            {
+                if (model.Others != value)
+                {
+                    model.Others = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string Transcript
+        {
+            get => model.Transkript;
+            set
+            {
+                if (model.Transkript != value)
+                {
+                    model.Transkript = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public MarriageBookmarkVM(IBookmark model)
+        {
+            this.model = model;
+
+        }
+
+        private IBookmark model;
+    }
+
+
+
+    class DeathBookmarkVM : BaseViewModel { public DeathBookmarkVM(IBookmark model) { } }
+    class MiscBookmarkVM : BaseViewModel { public MiscBookmarkVM(IBookmark model) { } }
 }
 

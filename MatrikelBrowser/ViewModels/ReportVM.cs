@@ -1,11 +1,5 @@
-﻿using AEM;
-using ArchiveBrowser.ViewModels;
-using System;
+﻿using Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArchiveBrowser.ViewModels
 {
@@ -29,16 +23,16 @@ namespace ArchiveBrowser.ViewModels
         
         public string BookTitle => $"{book.ID} {book.Title}";
         public string BookNote => book.Info.note;
-        public List <AEM.Bookmark> Bookmarks => book.Info.Bookmarks;
+        public List <IBookmark> Bookmarks => book.Info.Bookmarks;
         public string BookDescriptionURL => book.BookDescriptionURL;
 
 
-        public ReportVM(Book bvm)
+        public ReportVM(IBook bvm)
         {
           this.book = bvm;
         }
 
-        Book book;
+        IBook book;
     
     }
 }

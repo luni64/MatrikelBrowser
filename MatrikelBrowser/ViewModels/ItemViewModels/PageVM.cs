@@ -1,4 +1,5 @@
 ﻿using AEM;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,9 +15,9 @@ namespace ArchiveBrowser.ViewModels
 
         public BookVM Parent { get; }
 
-        private Page model;
+        private IPage model;
 
-        public PageVM(Page model, BookVM parent)
+        public PageVM(IPage model, BookVM parent)
         {
             this.model = model;
             this.URL = model.URL;

@@ -74,7 +74,7 @@
                                 <ColumnDefinition Width="75"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding Sheet,  StringFormat=Blatt {0}}" HorizontalAlignment="Stretch" />
+                            <TextBlock Grid.Column="0" Text="{Binding SheetNr,  StringFormat=Blatt {0}}" HorizontalAlignment="Stretch" />
                             <TextBlock Grid.Column="1" Text="{Binding Title, Mode=TwoWay}" ToolTip="Doppel-Klick zum Editieren"  />
                         </Grid>
                     </DataTemplate>

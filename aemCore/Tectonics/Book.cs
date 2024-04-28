@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Interfaces;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,17 +11,19 @@ using System.Threading.Tasks;
 
 namespace AEM
 {
-    public class Book
+    public class Book : IBook
     {
-        public Parish? Parish { get; set; } = null;
+        public IParish? Parish { get; set; } = null;
         public string ID { get; set; } = "";
         public string Title { get; set; } = "";
         public string? Details { get; set; } = null;
         public Guid BookInfoID { get; set; }
         public Guid DescriptionID { get; set; }
         public string BookDescriptionURL => $"https://digitales-archiv.erzbistum-muenchen.de/actaproweb/document/Vz_{DescriptionID}";
-        public List<Page> Pages { get; } = [];
-        public BookInfo Info { get; set; } = new();//=> _bookinfo ??= new BookInfo(this);
+        public List<IPage> Pages { get; } = [];
+
+     //   [JsonConverter(typeof(ConcreteConverter<List<IBookInfo>>))]
+        public IBookInfo Info { get; set; } = new BookInfo();//=> _bookinfo ??= new BookInfo(this);
         public bool hasInfo { get; set; } = false;
         public string Type
         {
@@ -38,7 +42,7 @@ namespace AEM
         public DirectoryInfo? pagesFolder { get; internal set; }
         public override string ToString() => $"{ID}-{Title}-{BookInfoID}";
 
-        public void LoadInfo()
+        public void LoadPageInfo()
         {
             if (hasInfo) return;  // did we already load the page info? -> no need to parse again
 
@@ -105,7 +109,7 @@ namespace AEM
             //File.WriteAllText(bookInfoFile.FullName, bookInfoXML);
         }
 
-       // private BookInfo? _bookinfo;
+        // private BookInfo? _bookinfo;
 
         //public Book()
         //{

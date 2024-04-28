@@ -1,4 +1,5 @@
 ﻿
+using Interfaces;
 using iText.IO.Font.Constants;
 using iText.IO.Image;
 using iText.Kernel.Font;
@@ -6,6 +7,7 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,81 +18,36 @@ using System.Linq;
 
 namespace AEM
 {
+    //public class ConcreteConverter<T> : JsonConverter
+    //{
+    //    public override bool CanConvert(Type objectType) => true;
+
+    //    public override object ReadJson(JsonReader reader,
+    //     Type objectType, object existingValue, JsonSerializer serializer)
+    //    {
+    //        return serializer.Deserialize<T>(reader);
+    //    }
+
+    //    public override void WriteJson(JsonWriter writer,
+    //        object value, JsonSerializer serializer)
+    //    {
+    //        serializer.Serialize(writer, value);
+    //    }
+    //}
+
 
     public class aemCore
     {
+        //  [JsonConverter(typeof(ConcreteConverter<List<Parish>>))]
         public List<Parish> Parishes;
-        //  public List<BookInfo> Notes = new();
-
+        public List<String> Favorites;
 
         public aemCore()
         {
-            //string imgFolder = Path.Combine(baseFolder.FullName, "books", "M9972","pages");
-            //string imgFile = Path.Combine(imgFolder, "file_9.jpg");
-
-            //if(File.Exists(imgFile) )
-            //{
-            //    System.Drawing.Image img  = new System.Drawing.Bitmap(imgFile);
-
-            //    Rectangle crop = new Rectangle(444, 1040+50, 1110, 214);
-
-            //    var bmp = new Bitmap(crop.Width, crop.Height);
-            //    using (var gr = Graphics.FromImage(bmp))
-            //    {
-            //        gr.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), crop, GraphicsUnit.Pixel);
-            //    }
-
-            //    bmp.Save("testimg.jpg");
-            //    // Image img = new Image(imgFile);
-            //}
-
-
-
-            //PdfWriter pdfWriter = new PdfWriter("heelo.pdf");
-            //PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-
-            //Document document = new Document(pdfDocument);
-
-            //PdfFont font = PdfFontFactory.CreateFont(StandardFonts.COURIER);
-
-            //document.Add(new Paragraph("iText is:").SetFont(font));
-
-            //List list = new List().SetSymbolIndent(32).SetListSymbol("-").SetFont(font);
-
-            //list
-            //    .Add(new ListItem("Never gonna give you up"))
-            //    .Add(new ListItem("Never gonna let you down"))
-            //    .Add(new ListItem("Never gonna run around and desert you"))
-            //    .Add(new ListItem("Never gonna make you cry"))
-            //    .Add(new ListItem("Never gonna say goodbye"))
-            //    .Add(new ListItem("Never gonna tell a lie and hurt you"));
-
-            //for(int i =0; i<50; i++)
-            //{
-            //    list.Add(new ListItem(i.ToString()));
-            //}
-
-            //document.Add(list);
-
-            //document.Add(new Paragraph("Hello World!"));
-
-            //String imageFile = "testimg.jpg";
-            //ImageData data = ImageDataFactory.Create(imageFile);
-            //iText.Layout.Element.Image image = new(data);
-
-            //document.Add(image);
-
-            //document.Close();
-
-
-
-
-
-            FileInfo tectonicsFile = new("tectonics.json");
-
             baseFolder.Create();
             FileInfo notesFile = new(Path.Combine(baseFolder.FullName, "notesout.json"));
-
+            FileInfo favoritesFile = new(Path.Combine(baseFolder.FullName, "favorites.json"));
+            FileInfo tectonicsFile = new("tectonics.json");
 
             if (tectonicsFile.Exists)
             {
@@ -130,23 +87,16 @@ namespace AEM
                 //Notes = new();
             }
 
-            Book.baseFolder =  baseFolder;
+            if (favoritesFile.Exists)
+            {
+                var json = File.ReadAllText(favoritesFile.FullName);
+                Favorites = JsonConvert.DeserializeObject<List<string>>(json) ?? new List<string>();
+            }
+            else
+                Favorites = [];
 
-            
 
-            //Book bk = Parishes
-            //    .First(p => p.Place == "Ruhpolding").Books
-            //    .First(b => b.ID == "M9972");
-
-            //if (bk.Pages.Count == 0)
-            //    bk.LoadInfo();
-
-            //Report.Generate(bk, new FileInfo("report2.pdf"));
-
-            //bk.Pages.Clear();
-            //bk.hasInfo = false;
-
-            return;
+            Book.baseFolder = baseFolder;
         }
 
         public void saveNotes()
@@ -158,9 +108,12 @@ namespace AEM
                 .ToList();
 
             string json = JsonConvert.SerializeObject(allNotes, Formatting.Indented);
-
             FileInfo notesFile = new(Path.Combine(baseFolder.FullName, "notesout.json"));
             File.WriteAllText(notesFile.FullName, json);
+
+            json = JsonConvert.SerializeObject(Favorites, Formatting.Indented);
+            FileInfo favoritesFile = new(Path.Combine(baseFolder.FullName, "favorites.json"));
+            File.WriteAllText(favoritesFile.FullName, json);
         }
 
         private readonly DirectoryInfo baseFolder = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "aemBrowser"));

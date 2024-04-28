@@ -26,17 +26,16 @@ namespace ArchiveBrowser
     {
         public MainWindow()
         {
-
             InitializeComponent();
         }
 
-        private void MainTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (DataContext is MainViewModel dc && e.NewValue is BookVM bookVM)
-            {
-                dc.selectedBook = bookVM;
-            }
-        }
+        //private void MainTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        //{
+        //    if (DataContext is MainViewModel dc && e.NewValue is BookVM bookVM)
+        //    {
+        //        dc.selectedBook = bookVM;
+        //    }
+        //}
 
         // prevent auto horizontal scrolling for wide entries
         private void TreeViewItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)

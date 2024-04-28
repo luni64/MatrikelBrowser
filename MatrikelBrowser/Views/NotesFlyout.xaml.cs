@@ -27,7 +27,7 @@ namespace ArchiveBrowser
         public NotesFlyout()
         {
             InitializeComponent();
-            lbBookmarks.Items.SortDescriptions.Add(new SortDescription("Sheet", ListSortDirection.Ascending));
+            lbBookmarks.Items.SortDescriptions.Add(new SortDescription("SheetNr", ListSortDirection.Ascending));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

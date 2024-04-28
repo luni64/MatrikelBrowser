@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Interfaces;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.SymbolStore;
 using System.IO;
@@ -8,12 +9,11 @@ using System.Threading.Tasks;
 
 namespace AEM
 {
-
-    public class Page
+    public class Page : IPage
     {
         public string URL { get; }
         public string localFilename { get; }
-        public List<Bookmark> Bookmarks { get; } = new();
+        public List<IBookmark> Bookmarks { get; } = new();
 
         public override string ToString() => localFilename;
 

@@ -39,7 +39,7 @@ namespace ArchiveBrowser
                 pageVM.Parent.bookmarkVMs.CollectionChanged += that.Bookmarks_CollectionChanged;
 
                 that.ClearBookmarks();
-                foreach (var bmVM in pageVM.Parent.bookmarkVMs.Where(b => b.Sheet == pageVM.SheetNr))
+                foreach (var bmVM in pageVM.Parent.bookmarkVMs.Where(b => b.SheetNr == pageVM.SheetNr))
                 {
                     that.AddBookmark(bmVM);
                 }
