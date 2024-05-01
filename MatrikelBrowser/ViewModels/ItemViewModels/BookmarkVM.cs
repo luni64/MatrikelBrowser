@@ -34,7 +34,6 @@ namespace ArchiveBrowser.ViewModels
                 }
             }
         }
-
         public BookmarkType bookmarkType
         {
             get => model.bookmarkType;
@@ -48,7 +47,6 @@ namespace ArchiveBrowser.ViewModels
                 }
             }
         }
-
         private BaseViewModel _selectedViewModel;
         public BaseViewModel SelectedViewModel
         {

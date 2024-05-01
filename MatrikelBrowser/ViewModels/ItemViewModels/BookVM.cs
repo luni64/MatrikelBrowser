@@ -27,6 +27,7 @@ namespace ArchiveBrowser.ViewModels
 
                 AEM.Bookmark bm = new()
                 {
+                    
                     SheetNr = PageVMs.IndexOf(SelectedPage),
                     Title = "Neue Fundstelle",
                     X = x,
@@ -38,7 +39,8 @@ namespace ArchiveBrowser.ViewModels
                     new BookmarkVM(bm)
                     {
                         ID = Guid.NewGuid().ToString(),
-                        Page = SelectedPage
+                        Page = SelectedPage,
+                        isLocked = false                        
                     }
                 );
                 model.Info.Bookmarks.Add(bm);

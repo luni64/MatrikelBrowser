@@ -2,11 +2,13 @@
 using ArchiveBrowser.Views;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace ArchiveBrowser
 {
@@ -62,17 +64,29 @@ namespace ArchiveBrowser
                 bookmarkRect.PreviewMouseDown -= imgArr_PreviewMouseDown;
                 bookmarkRect.PreviewMouseMove -= imgArr_PreviewMouseMove;
                 bookmarkRect.PreviewMouseUp -= imgArr_PreviewMouseUp;
-                bookmarkRect.Stroke = new SolidColorBrush(new Color() { A=0x60,R=0x0,G=0x0,B=0xFF}) ;
+                bookmarkRect.IsMouseDirectlyOverChanged -= MouseOverBookmarkChanged;
+                Scaler.IsMouseDirectlyOverChanged -= MouseOverBookmarkChanged;
+
+                bookmarkRect.Stroke = new SolidColorBrush(new Color() { A = 0x60, R = 0x0, G = 0x0, B = 0xFF });
             }
             else
             {
                 bookmarkRect.PreviewMouseDown += imgArr_PreviewMouseDown;
                 bookmarkRect.PreviewMouseMove += imgArr_PreviewMouseMove;
                 bookmarkRect.PreviewMouseUp += imgArr_PreviewMouseUp;
+                bookmarkRect.IsMouseDirectlyOverChanged += MouseOverBookmarkChanged;
+                Scaler.IsMouseDirectlyOverChanged += MouseOverBookmarkChanged;
                 bookmarkRect.Stroke = new SolidColorBrush(Colors.Red);
             }
         }
 
+        private void MouseOverBookmarkChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is Path)
+                Cursor = (bool)e.NewValue ? Cursors.SizeNWSE : Cursors.Arrow;
+            else if (sender is Rectangle)
+                Cursor = (bool)e.NewValue ? Cursors.SizeAll : Cursors.Arrow;
+        }
 
         private void Dc_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -81,21 +95,6 @@ namespace ArchiveBrowser
                 if (e.PropertyName == "isLocked")
                 {
                     doLock(vm.isLocked);
-
-                    //if (vm.isLocked)
-                    //{
-                    //    bookmarkRect.PreviewMouseDown -= imgArr_PreviewMouseDown;
-                    //    bookmarkRect.PreviewMouseMove -= imgArr_PreviewMouseMove;
-                    //    bookmarkRect.PreviewMouseUp -= imgArr_PreviewMouseUp;
-                    //    bookmarkRect.Stroke = new SolidColorBrush(Colors.DarkBlue);
-                    //}
-                    //else
-                    //{
-                    //    bookmarkRect.PreviewMouseDown += imgArr_PreviewMouseDown;
-                    //    bookmarkRect.PreviewMouseMove += imgArr_PreviewMouseMove;
-                    //    bookmarkRect.PreviewMouseUp += imgArr_PreviewMouseUp;
-                    //    bookmarkRect.Stroke = new SolidColorBrush(Colors.Red);
-                    //}
                 }
             }
         }
@@ -107,6 +106,7 @@ namespace ArchiveBrowser
         private void imgArr_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             oldMousePosition = e.GetPosition(Parent as FrameworkElement);
+            //Cursor = Cursors.Hand;
 
             bookmarkRect.CaptureMouse();
             e.Handled = true;
@@ -145,7 +145,6 @@ namespace ArchiveBrowser
 
         private void imgArr_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-
             oldMousePosition = null;
             bookmarkRect.ReleaseMouseCapture();
             e.Handled = true;
@@ -155,6 +154,7 @@ namespace ArchiveBrowser
 
         #region Scaling ---------------------------------------
         Point? oldScalerPosition;
+        private bool imgArr_SsMouseOver;
 
         private void Scaler_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

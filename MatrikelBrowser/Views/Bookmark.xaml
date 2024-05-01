@@ -87,7 +87,7 @@
             HorizontalAlignment="Left" Height="{Binding H, ElementName=UC}" Width="{Binding W, ElementName=UC}"
             Fill="Transparent"            
             StrokeThickness="7"
-            Cursor="Hand"
+          
             RenderTransformOrigin="0.5,0.5"
             >            
             <Rectangle.RenderTransform>
