@@ -72,10 +72,31 @@
                         <Grid TextBlock.FontSize="{DynamicResource MahApps.Font.Size.Default}" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="75"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" MaxWidth="210"/>
+                                <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="{Binding SheetNr,  StringFormat=Blatt {0}}" HorizontalAlignment="Stretch" />
                             <TextBlock Grid.Column="1" Text="{Binding Title, Mode=TwoWay}" ToolTip="Doppel-Klick zum Editieren"  />
+                            <Button   
+                                x:Name="delButton"
+                                Padding="0"
+                                Margin="5,0,0,0"
+                                Grid.Column="2"                                                  
+                                Focusable="False"                                              
+                                Content="{iconPacks:Modern Kind=Delete}"  
+                                ToolTip="Fundstelle löschen"
+                                >
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.ToolBar}">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}},Path=IsMouseOver}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
