@@ -15,7 +15,7 @@ public partial class rmContext : DbContext
 
     public virtual DbSet<AddressLinkTable> AddressLinkTables { get; set; }
 
-    public virtual DbSet<AddressTable> AddressTables { get; set; }
+    public virtual DbSet<Address> AddressTables { get; set; }
 
     public virtual DbSet<AncestryTable> AncestryTables { get; set; }
 
@@ -47,11 +47,11 @@ public partial class rmContext : DbContext
 
     public virtual DbSet<MultimediaTable> MultimediaTables { get; set; }
 
-    public virtual DbSet<NameTable> NameTables { get; set; }
+    public virtual DbSet<Name> NameTable { get; set; }
 
     public virtual DbSet<PayloadTable> PayloadTables { get; set; }
 
-    public virtual DbSet<PersonTable> PersonTables { get; set; }
+    public virtual DbSet<Person> Persons { get; set; }
 
     public virtual DbSet<PlaceTable> PlaceTables { get; set; }
 
@@ -89,7 +89,7 @@ public partial class rmContext : DbContext
                 .HasColumnName("UTCModDate");
         });
 
-        modelBuilder.Entity<AddressTable>(entity =>
+        modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.AddressId);
 
@@ -100,10 +100,12 @@ public partial class rmContext : DbContext
             entity.Property(e => e.AddressId)
                 .ValueGeneratedNever()
                 .HasColumnName("AddressID");
-            entity.Property(e => e.Url).HasColumnName("URL");
+                        
             entity.Property(e => e.UtcmodDate)
                 .HasColumnType("FLOAT")
                 .HasColumnName("UTCModDate");
+            
+            entity.Property(e => e.Url).HasColumnName("URL");
         });
 
         modelBuilder.Entity<AncestryTable>(entity =>
@@ -406,7 +408,7 @@ public partial class rmContext : DbContext
                 .HasColumnName("UTCModDate");
         });
 
-        modelBuilder.Entity<NameTable>(entity =>
+        modelBuilder.Entity<Name>(entity =>
         {
             entity.HasKey(e => e.NameId);
 
@@ -458,16 +460,32 @@ public partial class rmContext : DbContext
                 .HasColumnName("UTCModDate");
         });
 
-        modelBuilder.Entity<PersonTable>(entity =>
+        modelBuilder.Entity<Person>(entity =>
         {
-            entity.HasKey(e => e.PersonId);
-
             entity.ToTable("PersonTable");
+            entity.HasKey(e => e.PersonId);
+          
+
+            entity.HasMany(p => p.Names)
+                .WithOne()
+                .HasForeignKey(n=>n.OwnerId);
+
+            //entity.HasMany(p => p.Addresses)
+            //    .WithOne()
+            //    .HasForeignKey(a => a.o);
+
+            entity.HasOne(p=>p.Parent)
+                .WithMany()
+                .HasForeignKey("ParentId");
+
 
             entity.Property(e => e.PersonId)
                 .ValueGeneratedNever()
                 .HasColumnName("PersonID");
-            entity.Property(e => e.ParentId).HasColumnName("ParentID");
+
+           // entity.Property(e => e.ParentId).HasColumnName("ParentID");
+
+            entity.Property(e => e.PersonId).HasColumnName("PersonID");
             entity.Property(e => e.SpouseId).HasColumnName("SpouseID");
             entity.Property(e => e.UniqueId).HasColumnName("UniqueID");
             entity.Property(e => e.UtcmodDate)

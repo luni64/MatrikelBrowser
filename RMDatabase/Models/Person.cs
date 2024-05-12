@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace RMDatabase.Models;
 
-public partial class PersonTable
+public partial class Person
 {
     public long PersonId { get; set; }
 
@@ -13,7 +13,8 @@ public partial class PersonTable
 
     public long? Sex { get; set; }
 
-    public long? ParentId { get; set; }
+
+    //public long ParentId { get; set; }
 
     public long? SpouseId { get; set; }
 
@@ -54,4 +55,8 @@ public partial class PersonTable
     public string? Note { get; set; }
 
     public double? UtcmodDate { get; set; }
+
+    public virtual Person? Parent { get; set; }
+    public virtual ICollection<Name>? Names { get; set; }
+    public virtual ICollection<Address>? Addresses { get; set; }
 }

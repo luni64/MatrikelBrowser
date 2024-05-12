@@ -1,11 +1,13 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using RMDatabase;
 
 namespace rmtester
 {
-    
-    
+
+
     internal class Program
     {
         static void Main(string[] args)
@@ -15,11 +17,30 @@ namespace rmtester
 
             using (var db = new DB())
             {
-                foreach(var  address in db.AddressTables)
+                var q = db.Persons.Where(p => p.PersonId == 451)
+                ;
+
+                var s = q.ToQueryString();
+
+                //var x = q.ToList();
+
+
+                foreach (var person in db.Persons.Where(p => p.PersonId == 451))
                 {
-                    Console.WriteLine(address.Name);
-                }                    
-            }            
+
+                    var parent = person.Parent;
+
+                    foreach (var n in person.Names.Where(p => p.NameType <100))
+                    {
+                        Console.WriteLine($"{n.Given} {n.Surname} {n.NameType}");
+                    }
+                    //foreach (var a in person.Addresses.Where(p => p.NameType < 100))
+                    //{
+                    //    Console.WriteLine($"{n.Given} {n.Surname} {n.NameType}");
+                    //}
+                }
+            }
         }
     }
 }
+

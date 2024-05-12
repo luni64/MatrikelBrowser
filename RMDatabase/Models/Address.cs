@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace RMDatabase.Models;
 
-public partial class AddressTable
+public partial class Address
 {
     public long AddressId { get; set; }
 

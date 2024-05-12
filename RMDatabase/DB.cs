@@ -28,8 +28,11 @@ namespace RMDatabase
         static private  DbContextOptions<rmContext> makeOptions()
         {
             var opt = new DbContextOptionsBuilder<rmContext>();
-            opt.AddInterceptors(new SQLiteExtensionInterceptor());
-            opt.UseSqlite($"Data Source={sqLiteFile}");
+            opt
+                .AddInterceptors(new SQLiteExtensionInterceptor())
+                .UseSqlite($"Data Source={sqLiteFile}")
+                .UseLazyLoadingProxies();
+
             return opt.Options;
         }
     }
