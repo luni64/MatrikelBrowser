@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace RMDatabase.Models;
 
-public partial class SourceTable
+public partial class Source
 {
     public long SourceId { get; set; }
 

@@ -5,6 +5,11 @@ using System.Collections.Generic;
 
 namespace RMDatabase.Models;
 
+public enum NameTypes
+{
+    Primary = 0, AKA = 1, Birth =2, Immigrant=3, Maiden =4, Married =5, Nickname=6, OtherSpelling = 7
+};
+
 public partial class Name
 {
     public long NameId { get; set; }
@@ -13,7 +18,7 @@ public partial class Name
 
     public string? Surname { get; set; }
 
-    public string? Given { get; set; }
+    public string Given { get; set; } = "";
 
     public string? Prefix { get; set; }
 
@@ -21,13 +26,13 @@ public partial class Name
 
     public string? Nickname { get; set; }
 
-    public long? NameType { get; set; }
+    public NameTypes NameType { get; set; }
 
     public string? Date { get; set; }
 
     public long? SortDate { get; set; }
 
-    public long? IsPrimary { get; set; }
+    public bool IsPrimary { get; set; }
 
     public long? IsPrivate { get; set; }
 
@@ -52,4 +57,6 @@ public partial class Name
     public string? GivenMp { get; set; }
 
     public string? NicknameMp { get; set; }
+
+    public override string ToString() => $"{Surname} {Given}";
 }

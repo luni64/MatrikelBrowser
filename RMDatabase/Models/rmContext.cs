@@ -15,11 +15,11 @@ public partial class rmContext : DbContext
 
     public virtual DbSet<AddressLinkTable> AddressLinkTables { get; set; }
 
-    public virtual DbSet<Address> AddressTables { get; set; }
+    public virtual DbSet<Address> AddressTable { get; set; }
 
     public virtual DbSet<AncestryTable> AncestryTables { get; set; }
 
-    public virtual DbSet<ChildTable> ChildTables { get; set; }
+    public virtual DbSet<ChildFamilyF> ChildTable { get; set; }
 
     public virtual DbSet<CitationLinkTable> CitationLinkTables { get; set; }
 
@@ -35,7 +35,7 @@ public partial class rmContext : DbContext
 
     public virtual DbSet<FamilySearchTable> FamilySearchTables { get; set; }
 
-    public virtual DbSet<FamilyTable> FamilyTables { get; set; }
+    public virtual DbSet<Family> FamilyTables { get; set; }
 
     public virtual DbSet<Fantable> Fantables { get; set; }
 
@@ -57,7 +57,7 @@ public partial class rmContext : DbContext
 
     public virtual DbSet<RoleTable> RoleTables { get; set; }
 
-    public virtual DbSet<SourceTable> SourceTables { get; set; }
+    public virtual DbSet<Source> SourceTables { get; set; }
 
     public virtual DbSet<SourceTemplateTable> SourceTemplateTables { get; set; }
 
@@ -75,36 +75,46 @@ public partial class rmContext : DbContext
     {
         modelBuilder.Entity<AddressLinkTable>(entity =>
         {
-            entity.HasKey(e => e.LinkId);
-
             entity.ToTable("AddressLinkTable");
+            entity.HasKey(e => e.LinkId);
+            entity.HasDiscriminator<long>(e => e.OwnerType).HasValue(-1);  // dummy value, won't compile without value
 
-            entity.Property(e => e.LinkId)
-                .ValueGeneratedNever()
-                .HasColumnName("LinkID");
+            entity.Property(e => e.LinkId).HasColumnName("LinkID").ValueGeneratedNever();
             entity.Property(e => e.AddressId).HasColumnName("AddressID");
             entity.Property(e => e.OwnerId).HasColumnName("OwnerID");
-            entity.Property(e => e.UtcmodDate)
-                .HasColumnType("FLOAT")
-                .HasColumnName("UTCModDate");
+            entity.Property(e => e.UtcmodDate).HasColumnName("UTCModDate").HasColumnType("FLOAT");
+        });
+
+        // The following enitities are requiered to model a dicriminator based M:N relationship
+        // https://stackoverflow.com/a/77587113/3866165
+
+        modelBuilder.Entity<AddressPersonJoin>(entity =>
+        {
+            entity.ToTable("AddressLinkTable")
+            .HasDiscriminator<long>(e => e.OwnerType).HasValue(0);
+        });
+
+        modelBuilder.Entity<AddressFamilyJoin>(entity =>
+        {
+            entity.ToTable("AddressLinkTable")
+            .HasDiscriminator<long>(e => e.OwnerType).HasValue(1);
+        });
+
+        modelBuilder.Entity<AddressSourceJoin>(entity =>
+        {
+            entity.ToTable("AddressLinkTable")
+            .HasDiscriminator<long>(e => e.OwnerType).HasValue(3);
         });
 
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.HasKey(e => e.AddressId);
-
             entity.ToTable("AddressTable");
+            entity.HasKey(e => e.AddressId);
+            //entity.HasDiscriminator().HasValue(0);
 
             entity.HasIndex(e => e.Name, "idxAddressName");
-
-            entity.Property(e => e.AddressId)
-                .ValueGeneratedNever()
-                .HasColumnName("AddressID");
-                        
-            entity.Property(e => e.UtcmodDate)
-                .HasColumnType("FLOAT")
-                .HasColumnName("UTCModDate");
-            
+            entity.Property(e => e.AddressId).ValueGeneratedNever().HasColumnName("AddressID");
+            entity.Property(e => e.UtcmodDate).HasColumnType("FLOAT").HasColumnName("UTCModDate");
             entity.Property(e => e.Url).HasColumnName("URL");
         });
 
@@ -132,26 +142,24 @@ public partial class rmContext : DbContext
                 .HasColumnName("UTCModDate");
         });
 
-        modelBuilder.Entity<ChildTable>(entity =>
+        modelBuilder.Entity<ChildFamilyF>(entity =>
         {
+            entity.ToTable("ChildTable");
             entity.HasKey(e => e.RecId);
 
-            entity.ToTable("ChildTable");
-
-            entity.HasIndex(e => e.FamilyId, "idxChildFamilyID");
-
-            entity.HasIndex(e => e.ChildId, "idxChildID");
-
-            entity.HasIndex(e => e.ChildOrder, "idxChildOrder");
-
-            entity.Property(e => e.RecId)
-                .ValueGeneratedNever()
-                .HasColumnName("RecID");
+            entity.Property(e => e.RecId).ValueGeneratedNever().HasColumnName("RecID");
             entity.Property(e => e.ChildId).HasColumnName("ChildID");
             entity.Property(e => e.FamilyId).HasColumnName("FamilyID");
-            entity.Property(e => e.UtcmodDate)
-                .HasColumnType("FLOAT")
-                .HasColumnName("UTCModDate");
+            entity.Property(e => e.UtcmodDate).HasColumnType("FLOAT").HasColumnName("UTCModDate");
+            entity.Property(e => e.RelFather).HasConversion<long>();
+            entity.Property(e => e.RelMother).HasConversion<long>();
+            entity.Property(e => e.IsPrivate).HasConversion<long>();
+
+
+            entity.HasIndex(e => e.FamilyId, "idxChildFamilyID");
+            entity.HasIndex(e => e.ChildId, "idxChildID");
+            entity.HasIndex(e => e.ChildOrder, "idxChildOrder");
+
         });
 
         modelBuilder.Entity<CitationLinkTable>(entity =>
@@ -292,25 +300,24 @@ public partial class rmContext : DbContext
                 .HasColumnName("UTCModDate");
         });
 
-        modelBuilder.Entity<FamilyTable>(entity =>
+        modelBuilder.Entity<Family>(entity =>
         {
+            entity.ToTable("FamilyTable");
             entity.HasKey(e => e.FamilyId);
 
-            entity.ToTable("FamilyTable");
-
-            entity.HasIndex(e => e.FatherId, "idxFamilyFatherID");
-
-            entity.HasIndex(e => e.MotherId, "idxFamilyMotherID");
-
-            entity.Property(e => e.FamilyId)
-                .ValueGeneratedNever()
-                .HasColumnName("FamilyID");
+            entity.Property(e => e.IsPrivate).HasConversion<long>();
+            entity.Property(e => e.FamilyId).ValueGeneratedNever().HasColumnName("FamilyID");
             entity.Property(e => e.ChildId).HasColumnName("ChildID");
             entity.Property(e => e.FatherId).HasColumnName("FatherID");
             entity.Property(e => e.MotherId).HasColumnName("MotherID");
-            entity.Property(e => e.UtcmodDate)
-                .HasColumnType("FLOAT")
-                .HasColumnName("UTCModDate");
+            entity.Property(e => e.UtcmodDate).HasColumnType("FLOAT").HasColumnName("UTCModDate");
+
+            entity.HasOne(e => e.Father).WithOne().HasForeignKey<Family>(e => e.FatherId);
+            entity.HasOne(e => e.Mother).WithOne().HasForeignKey<Family>(e => e.MotherId);
+
+            entity.HasIndex(e => e.FatherId, "idxFamilyFatherID");
+            entity.HasIndex(e => e.MotherId, "idxFamilyMotherID");
+
         });
 
         modelBuilder.Entity<Fantable>(entity =>
@@ -410,44 +417,34 @@ public partial class rmContext : DbContext
 
         modelBuilder.Entity<Name>(entity =>
         {
+            entity.ToTable("NameTable");
             entity.HasKey(e => e.NameId);
 
-            entity.ToTable("NameTable");
-
-            entity.HasIndex(e => e.Given, "idxGiven");
-
-            entity.HasIndex(e => e.GivenMp, "idxGivenMP");
-
-            entity.HasIndex(e => e.OwnerId, "idxNameOwnerID");
-
-            entity.HasIndex(e => e.IsPrimary, "idxNamePrimary");
-
-            entity.HasIndex(e => e.Surname, "idxSurname");
-
-            entity.HasIndex(e => new { e.Surname, e.Given, e.BirthYear, e.DeathYear }, "idxSurnameGiven");
-
-            entity.HasIndex(e => new { e.SurnameMp, e.GivenMp, e.BirthYear, e.DeathYear }, "idxSurnameGivenMP");
-
-            entity.HasIndex(e => e.SurnameMp, "idxSurnameMP");
-
-            entity.Property(e => e.NameId)
-                .ValueGeneratedNever()
-                .HasColumnName("NameID");
+            entity.Property(e => e.NameId).HasColumnName("NameID").ValueGeneratedOnAdd();
             entity.Property(e => e.GivenMp).HasColumnName("GivenMP");
             entity.Property(e => e.NicknameMp).HasColumnName("NicknameMP");
             entity.Property(e => e.OwnerId).HasColumnName("OwnerID");
             entity.Property(e => e.SortDate).HasColumnType("BIGINT");
             entity.Property(e => e.SurnameMp).HasColumnName("SurnameMP");
-            entity.Property(e => e.UtcmodDate)
-                .HasColumnType("FLOAT")
-                .HasColumnName("UTCModDate");
+            entity.Property(e => e.UtcmodDate).HasColumnType("FLOAT").HasColumnName("UTCModDate");
+            entity.Property(e => e.NameType).HasConversion<long>();
+            entity.Property(e => e.IsPrimary).HasConversion<long>();
+
+            entity.HasIndex(e => e.Given, "idxGiven");
+            entity.HasIndex(e => e.GivenMp, "idxGivenMP");
+            entity.HasIndex(e => e.OwnerId, "idxNameOwnerID");
+            entity.HasIndex(e => e.IsPrimary, "idxNamePrimary");
+            entity.HasIndex(e => e.Surname, "idxSurname");
+            entity.HasIndex(e => new { e.Surname, e.Given, e.BirthYear, e.DeathYear }, "idxSurnameGiven");
+            entity.HasIndex(e => new { e.SurnameMp, e.GivenMp, e.BirthYear, e.DeathYear }, "idxSurnameGivenMP");
+            entity.HasIndex(e => e.SurnameMp, "idxSurnameMP");
         });
 
         modelBuilder.Entity<PayloadTable>(entity =>
         {
+            entity.ToTable("PayloadTable");
             entity.HasKey(e => e.RecId);
 
-            entity.ToTable("PayloadTable");
 
             entity.HasIndex(e => e.RecType, "idxPayloadType");
 
@@ -464,33 +461,20 @@ public partial class rmContext : DbContext
         {
             entity.ToTable("PersonTable");
             entity.HasKey(e => e.PersonId);
-          
 
-            entity.HasMany(p => p.Names)
-                .WithOne()
-                .HasForeignKey(n=>n.OwnerId);
-
-            //entity.HasMany(p => p.Addresses)
-            //    .WithOne()
-            //    .HasForeignKey(a => a.o);
-
-            entity.HasOne(p=>p.Parent)
-                .WithMany()
-                .HasForeignKey("ParentId");
-
-
-            entity.Property(e => e.PersonId)
-                .ValueGeneratedNever()
-                .HasColumnName("PersonID");
-
-           // entity.Property(e => e.ParentId).HasColumnName("ParentID");
-
-            entity.Property(e => e.PersonId).HasColumnName("PersonID");
+            entity.Property(e => e.PersonId).HasColumnName("PersonID").ValueGeneratedOnAdd();
             entity.Property(e => e.SpouseId).HasColumnName("SpouseID");
             entity.Property(e => e.UniqueId).HasColumnName("UniqueID");
-            entity.Property(e => e.UtcmodDate)
-                .HasColumnType("FLOAT")
-                .HasColumnName("UTCModDate");
+            entity.Property(e => e.UtcmodDate).HasColumnType("FLOAT").HasColumnName("UTCModDate");
+            entity.Property(e => e.IsPrivate).HasConversion<long>();
+
+            entity.HasMany(p => p.Families).WithMany().UsingEntity<ChildFamilyF>(
+                l => l.HasOne(e => e.Family).WithMany().HasForeignKey(e => e.FamilyId),
+                r => r.HasOne<Person>().WithMany().HasForeignKey(e => e.ChildId));
+            entity.HasMany(p => p.Addresses).WithMany().UsingEntity<AddressPersonJoin>(
+                l => l.HasOne(e => e.Address).WithMany().HasForeignKey(e => e.AddressId),
+                r => r.HasOne<Person>().WithMany().HasForeignKey(e => e.OwnerId));
+            entity.HasMany(p => p.Names).WithOne().HasForeignKey(n => n.OwnerId);
         });
 
         modelBuilder.Entity<PlaceTable>(entity =>
@@ -532,7 +516,7 @@ public partial class rmContext : DbContext
                 .HasColumnName("UTCModDate");
         });
 
-        modelBuilder.Entity<SourceTable>(entity =>
+        modelBuilder.Entity<Source>(entity =>
         {
             entity.HasKey(e => e.SourceId);
 

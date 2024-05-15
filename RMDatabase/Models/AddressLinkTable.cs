@@ -9,7 +9,7 @@ public partial class AddressLinkTable
 {
     public long LinkId { get; set; }
 
-    public long? OwnerType { get; set; }
+    public long OwnerType { get; set; }
 
     public long? AddressId { get; set; }
 
@@ -21,3 +21,21 @@ public partial class AddressLinkTable
 
     public double? UtcmodDate { get; set; }
 }
+
+// The following (virtual) Tables are requiered to model a dicriminator based M:N relationship
+// see: https://stackoverflow.com/a/77587113/3866165
+
+public class AddressPersonJoin : AddressLinkTable   
+{    
+    virtual public Address? Address { get; set; }
+}
+
+public class AddressFamilyJoin : AddressLinkTable
+{
+    virtual public Family? Family { get; set; }
+}
+public class AddressSourceJoin : AddressLinkTable
+{
+    virtual public Source? Source { get; set; }
+}
+
