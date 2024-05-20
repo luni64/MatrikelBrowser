@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace RMDatabase.Models;
 
 public partial class rmContext : DbContext
@@ -19,7 +20,7 @@ public partial class rmContext : DbContext
 
     public virtual DbSet<AncestryTable> AncestryTables { get; set; }
 
-    public virtual DbSet<ChildFamilyF> ChildTable { get; set; }
+    public virtual DbSet<ChildTable> ChildTable { get; set; }
 
     public virtual DbSet<CitationLinkTable> CitationLinkTables { get; set; }
 
@@ -35,7 +36,7 @@ public partial class rmContext : DbContext
 
     public virtual DbSet<FamilySearchTable> FamilySearchTables { get; set; }
 
-    public virtual DbSet<Family> FamilyTables { get; set; }
+    public virtual DbSet<Family> FamilyTable { get; set; }
 
     public virtual DbSet<Fantable> Fantables { get; set; }
 
@@ -51,7 +52,7 @@ public partial class rmContext : DbContext
 
     public virtual DbSet<PayloadTable> PayloadTables { get; set; }
 
-    public virtual DbSet<Person> Persons { get; set; }
+    public virtual DbSet<Person> PersonTable { get; set; }
 
     public virtual DbSet<PlaceTable> PlaceTables { get; set; }
 
@@ -142,7 +143,7 @@ public partial class rmContext : DbContext
                 .HasColumnName("UTCModDate");
         });
 
-        modelBuilder.Entity<ChildFamilyF>(entity =>
+        modelBuilder.Entity<ChildTable>(entity =>
         {
             entity.ToTable("ChildTable");
             entity.HasKey(e => e.RecId);
@@ -154,6 +155,9 @@ public partial class rmContext : DbContext
             entity.Property(e => e.RelFather).HasConversion<long>();
             entity.Property(e => e.RelMother).HasConversion<long>();
             entity.Property(e => e.IsPrivate).HasConversion<long>();
+
+
+            entity.HasOne(e => e.Child).WithOne().HasPrincipalKey<ChildTable>(e=>e.ChildId).IsRequired();
 
 
             entity.HasIndex(e => e.FamilyId, "idxChildFamilyID");
@@ -305,15 +309,21 @@ public partial class rmContext : DbContext
             entity.ToTable("FamilyTable");
             entity.HasKey(e => e.FamilyId);
 
-            entity.Property(e => e.IsPrivate).HasConversion<long>();
-            entity.Property(e => e.FamilyId).ValueGeneratedNever().HasColumnName("FamilyID");
+            entity.Property(e => e.FamilyId).HasColumnName("FamilyID").ValueGeneratedOnAdd();
             entity.Property(e => e.ChildId).HasColumnName("ChildID");
             entity.Property(e => e.FatherId).HasColumnName("FatherID");
             entity.Property(e => e.MotherId).HasColumnName("MotherID");
-            entity.Property(e => e.UtcmodDate).HasColumnType("FLOAT").HasColumnName("UTCModDate");
+            entity.Property(e => e.IsPrivate).HasConversion<long>();
+            entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate")
+                .HasColumnType("FLOAT")
+                .HasConversion(v => v.toUTCModDate(), v => v.toDateTime());
 
             entity.HasOne(e => e.Father).WithOne().HasForeignKey<Family>(e => e.FatherId);
             entity.HasOne(e => e.Mother).WithOne().HasForeignKey<Family>(e => e.MotherId);
+
+            entity.HasMany(e=>e.Children).WithMany().UsingEntity<ChildTable>(
+                r => r.HasOne<Person>().WithMany().HasForeignKey(e => e.ChildId),
+                l => l.HasOne<Family>().WithMany().HasForeignKey(e => e.FamilyId));
 
             entity.HasIndex(e => e.FatherId, "idxFamilyFatherID");
             entity.HasIndex(e => e.MotherId, "idxFamilyMotherID");
@@ -427,8 +437,10 @@ public partial class rmContext : DbContext
             entity.Property(e => e.SortDate).HasColumnType("BIGINT");
             entity.Property(e => e.SurnameMp).HasColumnName("SurnameMP");
             entity.Property(e => e.UtcmodDate).HasColumnType("FLOAT").HasColumnName("UTCModDate");
+
             entity.Property(e => e.NameType).HasConversion<long>();
             entity.Property(e => e.IsPrimary).HasConversion<long>();
+            entity.Property(e => e.IsPrivate).HasConversion<long>();
 
             entity.HasIndex(e => e.Given, "idxGiven");
             entity.HasIndex(e => e.GivenMp, "idxGivenMP");
@@ -465,12 +477,19 @@ public partial class rmContext : DbContext
             entity.Property(e => e.PersonId).HasColumnName("PersonID").ValueGeneratedOnAdd();
             entity.Property(e => e.SpouseId).HasColumnName("SpouseID");
             entity.Property(e => e.UniqueId).HasColumnName("UniqueID");
-            entity.Property(e => e.UtcmodDate).HasColumnType("FLOAT").HasColumnName("UTCModDate");
-            entity.Property(e => e.IsPrivate).HasConversion<long>();
+            entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate")
+                .HasColumnType("FLOAT")
+                .HasConversion(v => v.toUTCModDate(), v => v.toDateTime());
 
-            entity.HasMany(p => p.Families).WithMany().UsingEntity<ChildFamilyF>(
+
+            entity.Property(e => e.IsPrivate).HasConversion<long>();
+            entity.Property(e => e.Living).HasConversion<long>();
+            entity.Property(e => e.Sex).HasConversion<long>();
+
+            entity.HasMany(p => p.Families).WithMany().UsingEntity<ChildTable>(
                 l => l.HasOne(e => e.Family).WithMany().HasForeignKey(e => e.FamilyId),
                 r => r.HasOne<Person>().WithMany().HasForeignKey(e => e.ChildId));
+                        
             entity.HasMany(p => p.Addresses).WithMany().UsingEntity<AddressPersonJoin>(
                 l => l.HasOne(e => e.Address).WithMany().HasForeignKey(e => e.AddressId),
                 r => r.HasOne<Person>().WithMany().HasForeignKey(e => e.OwnerId));
@@ -638,8 +657,15 @@ public partial class rmContext : DbContext
                 .HasColumnName("UTCModDate");
         });
 
-        OnModelCreatingPartial(modelBuilder);
+        //OnModelCreatingPartial(modelBuilder);
     }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    //protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    //{
+    //    configurationBuilder
+
+    //        .Properties<DateTime>().HaveConversion<ChangedDateConverter>());
+    //}
+
+    // partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

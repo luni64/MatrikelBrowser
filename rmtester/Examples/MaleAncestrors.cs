@@ -11,7 +11,7 @@ namespace Example
             using (var db = new DB())
             {
                 // query the first person with the passed in surname and given name
-                var rootPerson = db.Persons
+                var rootPerson = db.PersonTable
                     .Where(p => p.PrimaryName.Surname == Surname && p.PrimaryName.Given == Given)
                     .FirstOrDefault();
 

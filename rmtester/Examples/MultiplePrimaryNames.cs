@@ -8,7 +8,7 @@ namespace Example
         {
             using (var db = new DB())
             {
-                foreach (var person in db.Persons)
+                foreach (var person in db.PersonTable)
                 {
                     var primaryNames = person.Names.Where(n => n.IsPrimary).ToList();
 

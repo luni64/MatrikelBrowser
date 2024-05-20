@@ -17,7 +17,7 @@ public enum RelationShip
     Unknown
 }
 
-public partial class ChildFamilyF
+public partial class ChildTable
 {
     public long RecId { get; set; }
 
@@ -31,16 +31,17 @@ public partial class ChildFamilyF
 
     public long ChildOrder { get; set; }
 
-    public bool? IsPrivate { get; set; }
+    public bool IsPrivate { get; set; } = false;
 
-    public long? ProofFather { get; set; }
+    public long ProofFather { get; set; }
 
-    public long? ProofMother { get; set; }
+    public long ProofMother { get; set; }
 
-    public string? Note { get; set; }
+    public string Note { get; set; } = string.Empty;
 
-    public double? UtcmodDate { get; set; }
+    public double UtcmodDate { get; set; } = DateTime.Now.toUTCModDate();
 
-   // virtual public Person? Child { get; set; }
-    virtual public Family? Family { get; set; }
+    virtual public Person Child { get; set; }
+    virtual public Family Family { get; set; } = new Family();
+    
 }

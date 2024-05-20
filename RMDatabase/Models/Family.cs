@@ -37,7 +37,9 @@ public partial class Family
 
     public string Note { get; set; } = string.Empty;
 
-    public double UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; } = DateTime.Now;
+
+    virtual public ICollection<Person> Children { get; set; } = [];
 
     virtual public Person? Father { get; set; }
     virtual public Person? Mother { get; set; }

@@ -10,7 +10,7 @@ namespace Example
             using (var db = new DB())
             {
                 // query the first person with the correct Surname and Given name
-                var rootPerson = db.Persons
+                var rootPerson = db.PersonTable
                     .Where(p => p.Names.Any(n => n.Surname == Surname && n.Given == Given && n.IsPrimary))
                     .FirstOrDefault();
 

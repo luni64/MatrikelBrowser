@@ -19,7 +19,7 @@ public partial class AddressLinkTable
 
     public string? Details { get; set; }
 
-    public double? UtcmodDate { get; set; }
+    public double UtcmodDate { get; set; } = DateTime.Now.toUTCModDate();
 }
 
 // The following (virtual) Tables are requiered to model a dicriminator based M:N relationship

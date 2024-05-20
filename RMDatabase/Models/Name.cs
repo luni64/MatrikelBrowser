@@ -10,47 +10,52 @@ public enum NameTypes
     Primary = 0, AKA = 1, Birth =2, Immigrant=3, Maiden =4, Married =5, Nickname=6, OtherSpelling = 7
 };
 
+public enum Proof
+{
+    unknown = 0, proven = 1, disproven = 2, disputed = 3
+};
+
 public partial class Name
 {
     public long NameId { get; set; }
 
-    public long? OwnerId { get; set; }
+    public long OwnerId { get; set; }
 
-    public string? Surname { get; set; }
+    public string Surname { get; set; } = string.Empty;
 
-    public string Given { get; set; } = "";
+    public string Given { get; set; } =  string.Empty;
 
-    public string? Prefix { get; set; }
+    public string Prefix { get; set; } = string.Empty;
 
-    public string? Suffix { get; set; }
+    public string Suffix { get; set; } = string.Empty;
 
-    public string? Nickname { get; set; }
+    public string Nickname { get; set; } = string.Empty;
 
-    public NameTypes NameType { get; set; }
+    public NameTypes NameType { get; set; } = NameTypes.Primary;
 
-    public string? Date { get; set; }
+    public string Date { get; set; } = ".";
 
-    public long? SortDate { get; set; }
+    public long SortDate { get; set; }
 
-    public bool IsPrimary { get; set; }
+    public bool IsPrimary { get; set; } = true;
 
-    public long? IsPrivate { get; set; }
+    public bool IsPrivate { get; set; } = false;
 
-    public long? Proof { get; set; }
+    public Proof Proof { get; set; } = Proof.unknown;
 
-    public string? Sentence { get; set; }
+    public string Sentence { get; set; } = string.Empty;
 
-    public string? Note { get; set; }
+    public string Note { get; set; } = string.Empty;
 
-    public long? BirthYear { get; set; }
+    public long BirthYear { get; set; }
 
-    public long? DeathYear { get; set; }
+    public long DeathYear { get; set; }
 
-    public long? Display { get; set; }
+    public long Display { get; set; }
 
-    public string? Language { get; set; }
+    public string Language { get; set; } = string.Empty;
 
-    public double? UtcmodDate { get; set; }
+    public double UtcmodDate { get; set; } = DateTime.Now.toUTCModDate();
 
     public string? SurnameMp { get; set; }
 
