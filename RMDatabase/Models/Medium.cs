@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace RMDatabase.Models;
 
-public partial class MultimediaTable
+public partial class Medium
 {
     public long MediaId { get; set; }
 

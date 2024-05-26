@@ -1,91 +1,100 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RMDatabase;
 using RMDatabase.Models;
-using System.Collections.Immutable;
+using rmSharp;
+using System.Diagnostics;
+using System.Net;
+using static System.Diagnostics.Trace;
+//using static System.Console;
 
 namespace rmtester
 {
     internal class Program
     {
-        
-        static (RelationShip father, RelationShip mother) getRelation(DB db, Person child, Family family)
-        {
-            var childTableEntry = db.ChildTable.Single(e => e.ChildId == child.PersonId && e.Family == family);
-            return (childTableEntry.RelFather, childTableEntry.RelMother);
-        }
 
         static void Main(string[] args)
-       {            
-            DB.sqLiteFile = "test.rmtree";
+        {
+            DB.sqLiteFile = "oberhauser-niggl.rmtree";
 
-            
+
             using (var db = new DB())
             {
-                var p = db.PersonTable.First(p => p.PrimaryName.Given.Contains("Günther") && p.PrimaryName.Surname == "Niggl");
+                var p = db.PayloadTables
+                    //.Where(p => p.OwnerType == 8)
+                    //.Select(p => p.Names.Where(n=>n.IsPrimary))
+                   .ToList()
+                    
+                    ;
 
-                var q = p.getFamilies(db);
+               // var en = db.GroupEntries.Where(e => e.GroupId == p.First().OwnerId);
 
-                var fams = p.getFamilies(db).Select(f=>f.FamilyId).ToList();
-                var children = p.getChildren(db).ToList();
-
-
-                Console.WriteLine(p.getFamilies(db).Select(f=>f.FamilyId).ToQueryString());
-                Console.WriteLine("\n-----------------\n");
-                Console.WriteLine(p.getChildren(db).Select(p=>p.PersonId).ToQueryString());
-
-
-
-
-
-
-
-                //var lut = db.ChildTable.ToLookup(c => (c.Family.Father, c.Family.Mother), c=>c.Child);
-
-                //var families = lut.Where(e => e.Key.Father == p || e.Key.Mother == p);
-                //foreach (var family in families)
+                //foreach (var url in p)
                 //{
-                //    Console.WriteLine($"{family.Key.Father} & {family.Key.Mother}");
-                //    foreach(var child in family)
+                //    Trace.Write($"Checking {url}... ");
+                //    var request = WebRequest.Create(url);
+                //    request.Method = "HEAD";
+                //    var response = (HttpWebResponse)request.GetResponse();
+                //    if (response != null && response.StatusCode == HttpStatusCode.OK)
                 //    {
-                //        Console.WriteLine($"  {child}");
+                //        Trace.WriteLine($"OK");
+                //    }
+                //    else Trace.WriteLine("NOK");
+
+                //    response?.Close();
+                    
+
+
+                //}
+
+
+
+                WriteLine(p.Count());
+
+                //var q2 = p.Where(p => p.Events.Count() > 0).Select(p => p.Names.Where(n=>n.IsPrimary));
+
+                //var q3 = q2.Select(x => new { x.First().Surname, x.First().Given });
+
+
+
+
+
+                //    //Trace.WriteLine($"{p.ToQueryString()}");
+
+
+                //    var n = db.NameTable.Where(f=>f.Citations.Count()> 1).ToList();
+
+
+                //    foreach (var person in db.Persons)
+                //    {
+                //        WriteLine($"{person.PrimaryName.Surname} {person.PrimaryName.Given}");
+                //        foreach (var evnt in person.Events)
+                //        {
+                //            WriteLine($"  Event: {evnt.FactType} {evnt.Date} {evnt.Details}");
+                //            foreach (var citation in evnt.Citations)
+                //            {
+                //                WriteLine($"    Source:{citation.Source} ({citation.CitationName})");
+                //                WriteLine($"           {citation.Source.Repositories.FirstOrDefault()}");
+                //            }
+                //        }
                 //    }
                 //}
 
 
 
-
-
-
-                //var families = db.ChildTable
-                //    .Where(c => (p == c.Family.Father && c.RelFather == RelationShip.Birth) || (p == c.Family.Mother && c.RelMother == RelationShip.Birth))
-                //    .SelectMany(x=>x.Child); 
-
-                //var children = db.ChildTable
-                //    .Where(c => families.Contains(c.FamilyId))
-                //    .Select(p => p.Child).ToList();
-
-
-
-                //                Console.WriteLine(children.ToQueryString());
-
-                //children.ForEach(c => Console.WriteLine(c));
-
-
+                //new Example.MaleAncestrors().Execute(Surname: "Niggl", Given: "Günther");
+                //new Example.DecendantTree().Execute("Oberhauser", "Johann");
+                //new Example.AddPerson().Execute();
+                //new Example.Pedigree().Execute(Surname: "Niggl", Given: "Lutz Günther");
+                //new Example.MultiplePrimaryNames().Execute();
+                //new Example.MultipleParents().Execute();
             }
-
-
-
-            //new Example.AddPerson().Execute();
-            //new Example.MaleAncestrors().Execute(Surname: "Niggl", Given: "Lutz Günther");
-            //new Example.Pedigree().Execute(Surname: "Niggl", Given: "Lutz Günther");
-            //new Example.MultiplePrimaryNames().Execute();
-            // new Example.MultipleParents().Execute();
         }
     }
-
-
-
 }
+
+
+
+
 
 
 

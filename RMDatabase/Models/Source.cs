@@ -8,20 +8,19 @@ namespace RMDatabase.Models;
 public partial class Source
 {
     public long SourceId { get; set; }
-
-    public string? Name { get; set; }
-
-    public string? RefNumber { get; set; }
-
-    public string? ActualText { get; set; }
-
-    public string? Comments { get; set; }
-
+    public string Name { get; set; } = string.Empty;
+    public string RefNumber { get; set; }= string.Empty;
+    public string ActualText { get; set; } = string.Empty;
+    public string Comments { get; set; } = string.Empty;
     public long? IsPrivate { get; set; }
-
     public long? TemplateId { get; set; }
+    public byte[] Fields { get; set; } = [];
+    public double UtcmodDate { get; set; }
 
-    public byte[]? Fields { get; set; }
+    public virtual ICollection<Address> Repositories { get; set; } = [];
+    public virtual ICollection<Citation> Citations { get; set; } = [];
+    public virtual ICollection<Medium> Media { get; set; } = [];
+    public virtual ICollection<SourceWebTag> WebTags { get; set; } = [];
 
-    public double? UtcmodDate { get; set; }
+    public override string ToString() => Name;
 }

@@ -2,6 +2,7 @@
 #nullable enable
 using Castle.Core.Resource;
 using DelegateDecompiler;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,82 +14,57 @@ public enum Gender { male = 0, female = 1, unknown = 2 };
 
 public partial class Person
 {
+    #region properties -------------------------------------------------
+
     public long PersonId { get; set; }
-
     public string UniqueId { get; set; } = Guid.NewGuid().toGedUid();
-
     public Gender Sex { get; set; } = Gender.unknown;
-
     public long ParentId { get; set; }
-
     public long SpouseId { get; set; }
-
     public long Color { get; set; }
-
     public long Color1 { get; set; }
-
     public long Color2 { get; set; }
-
     public long Color3 { get; set; }
-
     public long Color4 { get; set; }
-
     public long Color5 { get; set; }
-
     public long Color6 { get; set; }
-
     public long Color7 { get; set; }
-
     public long Color8 { get; set; }
-
     public long Color9 { get; set; }
-
     public long Relate1 { get; set; }
-
     public long Relate2 { get; set; }
-
     public long Flags { get; set; }
-
     public bool Living { get; set; }
-
     public bool IsPrivate { get; set; } = false;
-
     public long Proof { get; set; }
-
     public long Bookmark { get; set; }
-
     public string Note { get; set; } = string.Empty;
-
     public DateTime ChangeDate { get; set; } = DateTime.Now;
+    #endregion
+
+    #region navigation -------------------------------------------------
+
+    public virtual ICollection<ChildTable> ParentRelations { get; set; } = [];
+    public virtual ICollection<Family> _familiesF { get; set; } = [];
+    public virtual ICollection<Family> _familiesM { get; set; } = [];
+    public virtual ICollection<Name> Names { get; set; } = [];
+    public virtual ICollection<Address> Addresses { get; set; } = [];
+    public virtual ICollection<PersonEvent> Events { get; set; } = [];
+    public virtual ICollection<Citation> Citations { get; set; } = [];
+    public virtual ICollection<PersonWebTag> WebTags { get; set; } = [];
+    public virtual ICollection<Medium> Media { get; set; } = [];
+    
 
     [Decompile]
     public Name PrimaryName => Names.First(n => n.NameType == NameTypes.Primary);//?? new Name {Surname= "no primary name" };
 
+    [Decompile]
+    public ICollection<Family> ChildRelations => _familiesF.Union(_familiesM).ToList();
+        
+    [Decompile]
+    public ICollection<Person> Children => ChildRelations.SelectMany(f => f.ChildInfos).Select(cr => cr.person).ToList();
 
-    public virtual ICollection<Family> Families { get; set; } = [];
-    public virtual ICollection<Name> Names { get; set; } = [];
-    public virtual ICollection<Address> Addresses { get; set; } = [];
-
-    public IQueryable<Person> getChildren(rmContext db)
-    {
-        var families = db.ChildTable
-            .Where(c => (c.Family.FatherId == PersonId && c.RelFather == RelationShip.Birth) || (c.Family.MotherId == PersonId && c.RelMother == RelationShip.Birth))
-            .Select(c => c.FamilyId)
-            .Distinct();
-
-
-        return db.FamilyTable.Where(f=> families.Contains(f.FamilyId)).SelectMany(f => f.Children);
-    }
-
-    public IQueryable<Family> getFamilies(rmContext db)
-    {
-        return db.ChildTable
-            .Where(c => (c.Family.FatherId == PersonId && c.RelFather == RelationShip.Birth) || (c.Family.MotherId == PersonId && c.RelMother == RelationShip.Birth))
-            .Select(c => c.Family)
-            .Distinct();       
-    }
-
-    public override string ToString() => $"{PrimaryName.Surname} {PrimaryName.Given}";
+    #endregion
 }
 
 //public static class ext

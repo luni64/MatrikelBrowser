@@ -71,6 +71,7 @@ namespace RMDatabase
                 .AddInterceptors(new SQLiteExtensionInterceptor())
                 .UseSqlite($"Data Source={sqLiteFile}")
                 .UseLazyLoadingProxies();
+               ;
 
             return opt.Options;
         }

@@ -8,11 +8,11 @@ namespace RMDatabase.Models;
 public enum RelationShip
 {
     Birth = 0,
-    Adopted=1,
-    Step=2,
-    Foster=3,
-    Related=4,
-    Guardian=5,
+    Adopted = 1,
+    Step = 2,
+    Foster = 3,
+    Related = 4,
+    Guardian = 5,
     Sealed,
     Unknown
 }
@@ -41,7 +41,6 @@ public partial class ChildTable
 
     public double UtcmodDate { get; set; } = DateTime.Now.toUTCModDate();
 
-    virtual public Person Child { get; set; }
-    virtual public Family Family { get; set; } = new Family();
-    
+    public virtual Person person { get; set; }
+    public virtual Family family { get; set; }     
 }

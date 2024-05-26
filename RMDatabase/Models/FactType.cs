@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace RMDatabase.Models;
 
-public partial class FactTypeTable
+public partial class FactType
 {
     public long FactTypeId { get; set; }
 
@@ -28,4 +28,9 @@ public partial class FactTypeTable
     public long? Flags { get; set; }
 
     public double? UtcmodDate { get; set; }
+    public virtual ICollection<Event> Events { get; set; } = [];
+
+    public override string ToString() => Name ?? "unknown";
+
+
 }

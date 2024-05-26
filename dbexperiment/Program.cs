@@ -1,31 +1,29 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-
-
-using dbexperiment.Models;
+﻿using dbexperiment.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using System.Data.Common;
-using System.Reflection.Metadata;
+using Microsoft.Extensions.FileSystemGlobbing;
+using System.Diagnostics;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
         using (var db = new CTX())
-        {         
-            foreach (var person in db.Persons)
+        {
+            var child = db.Persons.FirstOrDefault(p => p.Name == "Enkel2");
+
+            Trace.WriteLine($"S: {child?.Name ?? "Startperson not found"}");
+            while (child != null)
             {
-                Console.WriteLine(person.Name);
-                foreach (var family in db.Families.Where(f => f.FatherID == person.Id || f.MotherID == person.Id))
-                {
-                    Console.WriteLine($" *{family.Id}");
-                }
-                Console.WriteLine();                
+                var father = child.ParentRelations.FirstOrDefault()?.family.Husband;
+                Trace.WriteLine($"F: {father?.Name ?? "--"}");
+                child = father;
             }
         };
     }
 }
+
+
+
 
 namespace dbexperiment.Models
 {
@@ -37,6 +35,6 @@ namespace dbexperiment.Models
 
     public partial class Family
     {
-        public override string ToString() => $"{Father} / {Mother}";
+        public override string ToString() => $"{Husband} / {Wife}";
     };
 }

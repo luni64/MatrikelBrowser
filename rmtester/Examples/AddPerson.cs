@@ -48,17 +48,17 @@ namespace Example
 
                 var fam = new Family()
                 {
-                    Father = Pete,
-                    Mother = Mary,
+                    Husband = Pete,
+                    Wife = Mary,
                 };
 
-                
 
-                db.PersonTable.Add(Pete);
-                db.PersonTable.Add(Mary);
-                db.PersonTable.Add(child);
+
+                db.Persons.Add(Pete);
+                db.Persons.Add(Mary);
+                db.Persons.Add(child);
                 db.FamilyTable.Add(fam);
-                var n = db.SaveChanges();                
+                var n = db.SaveChanges();
             }
         }
     }

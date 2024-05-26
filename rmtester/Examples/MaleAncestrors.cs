@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RMDatabase;
+﻿using RMDatabase;
 using RMDatabase.Models;
+using static System.Console;
 
 namespace Example
 {
@@ -8,60 +8,23 @@ namespace Example
     {
         public void Execute(string Surname, string Given)
         {
-            using (var db = new DB())
+            using (var db = new DB()) // connect to the database
             {
-                // query the first person with the passed in surname and given name
-                var rootPerson = db.PersonTable
-                    .Where(p => p.PrimaryName.Surname == Surname && p.PrimaryName.Given == Given)
-                    .FirstOrDefault();
+                int g = 0; // tracks generations
+                var person = db.Persons.FirstOrDefault(p => p.PrimaryName.Surname == Surname && p.PrimaryName.Given == Given);
 
-
-                if (rootPerson != null)
+                WriteLine($"({g++}) {person?.PrimaryName.ToString() ?? "Startperson not found"}");
+                while (person != null)
                 {
-                    var maleAncestors = getMaleAncestors(db, rootPerson);
-                    foreach (var ancestor in maleAncestors)
-                    {
-                        var name = ancestor.PrimaryName;
-                        Console.WriteLine($"{name.Surname} {name.Given}");
-                    }
+                    Person? father = person                                     // this query selects the biological father of person
+                      .ParentRelations                                          // relation info from the ChildTable
+                      .SingleOrDefault(cr=>cr.RelFather == RelationShip.Birth)? // returns null if zero or more than one biological father
+                      .family.Husband;                                          // get the male ancestor 
+
+                    WriteLine($"({g++}) {father?.PrimaryName.ToString() ?? "--"}");
+                    person = father;
                 }
             }
-        }
-
-
-        /*********************************************************************** 
-         * Returns the list of all male ancestors to the passed in root person.
-         * Only birth relationships are considered
-         ***********************************************************************/
-        List<Person> getMaleAncestors(DB db, Person root)
-        {
-            List<Person> ancestors = [root];
-
-            while (true)
-            {
-                bool found = false;
-                foreach (var family in root.Families)
-                {
-                    var relation = getRelation(db, root, family);  // query the parents relationship of this family from the childTable
-
-                    if (family.Father != null && relation.father == RelationShip.Birth) // we have found the father with birth relationship
-                    {
-                        ancestors.Add(family.Father);
-                        root = family.Father;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) break; // no further father found
-            }
-            return ancestors;
-        }
-
-
-        private (RelationShip father, RelationShip mother) getRelation(DB db, Person child, Family family)
-        {
-            var childTableEntry = db.ChildTable.Single(e => e.ChildId == child.PersonId && e.Family == family);
-            return (childTableEntry.RelFather, childTableEntry.RelMother);
         }
     }
 }
