@@ -14,7 +14,7 @@ public partial class AddressLinkTable
     public long? OwnerId { get; set; }
     public long? AddressNum { get; set; }
     public string? Details { get; set; }
-    public double UtcmodDate { get; set; } = DateTime.Now.toUTCModDate();
+    public double ChangeDate { get; set; } = DateTime.Now.toUTCModDate();
 }
 
 // The following (virtual) Tables are requiered to model a dicriminator based M:N relationship

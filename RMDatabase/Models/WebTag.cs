@@ -14,12 +14,9 @@ public partial class WebTag
     public string Name { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
     public string Note { get; set; } = string.Empty;
-    public double UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 
-    public override string ToString()
-    {
-        return Url;
-    }
+    public override string ToString() => Url;
 }
 
 public class PersonWebTag: WebTag { }; // ownerType 0

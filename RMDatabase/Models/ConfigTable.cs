@@ -15,5 +15,5 @@ public partial class ConfigTable
 
     public byte[]? DataRec { get; set; }
 
-    public double? UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 }

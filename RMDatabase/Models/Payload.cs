@@ -11,14 +11,10 @@ public partial class Payload
     public long RecType { get; set; }
     public long OwnerType { get; set; }
     public long OwnerId { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public byte[] DataRec { get; set; }
-    public double? UtcmodDate { get; set; }    
+    public string Title { get; set; } = string.Empty; 
+    public DateTime ChangeDate { get; set; }
 
-    public override string ToString()
-    {
-        return Title;
-    }
+    public override string ToString() => Title;
 }
 
 public class PayloadGroup2 : Payload { 

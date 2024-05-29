@@ -8,14 +8,9 @@ namespace RMDatabase.Models;
 public partial class TagTable
 {
     public long TagId { get; set; }
-
-    public long? TagType { get; set; }
-
-    public long? TagValue { get; set; }
-
-    public string? TagName { get; set; }
-
-    public string? Description { get; set; }
-
-    public double? UtcmodDate { get; set; }
+    public long TagType { get; set; }
+    public long TagValue { get; set; }
+    public string TagName { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public DateTime ChangeDate { get; set; }
 }

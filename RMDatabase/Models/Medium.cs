@@ -8,26 +8,15 @@ namespace RMDatabase.Models;
 public partial class Medium
 {
     public long MediaId { get; set; }
-
-    public long? MediaType { get; set; }
-
-    public string? MediaPath { get; set; }
-
-    public string? MediaFile { get; set; }
-
-    public string? Url { get; set; }
-
-    public byte[]? Thumbnail { get; set; }
-
-    public string? Caption { get; set; }
-
-    public string? RefNumber { get; set; }
-
-    public string? Date { get; set; }
-
-    public long? SortDate { get; set; }
-
-    public string? Description { get; set; }
-
-    public double? UtcmodDate { get; set; }
+    public long MediaType { get; set; }
+    public string MediaPath { get; set; } = string.Empty;
+    public string MediaFile { get; set; } = string.Empty;
+    public string Url { get; set; }=string.Empty;
+    public byte[] Thumbnail { get; set; } = [];
+    public string Caption { get; set; } = string.Empty;
+    public string RefNumber { get; set; } = string.Empty;
+    public string Date { get; set; } = string.Empty;
+    public long SortDate { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public DateTime ChangeDate { get; set; }
 }

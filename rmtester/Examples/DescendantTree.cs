@@ -29,7 +29,7 @@ namespace Example
             {
                 foreach (var childRelation in family.ChildInfos)
                 {
-                    printDescendants(childRelation.person, level);
+                    printDescendants(childRelation.Child, level);
                 }
             }
         }

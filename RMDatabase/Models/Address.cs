@@ -8,40 +8,24 @@ namespace RMDatabase.Models;
 public partial class Address
 {
     public long AddressId { get; set; }
-
     public long AddressType { get; set; }
-
     public string Name { get; set; }=string.Empty;
-
     public string Street1 { get; set; } = string.Empty;
-
     public string Street2 { get; set; } = string.Empty;
-
     public string City { get; set; } = string.Empty;
-
     public string State { get; set; } = string.Empty;
-
     public string Zip { get; set; } = string.Empty;
-
     public string Country { get; set; } = string.Empty;
-
     public string Phone1 { get; set; } = string.Empty;
-
     public string Phone2 { get; set; } = string.Empty;
-
     public string Fax { get; set; } = string.Empty;
-
     public string Email { get; set; } = string.Empty;
-
     public string Url { get; set; } = string.Empty;
-
     public long Latitude { get; set; }
-
     public long Longitude { get; set; }
-
     public string Note { get; set; } = string.Empty;
 
-    public double UtcmodDate { get; set; } = DateTime.Now.toUTCModDate();
+    public DateTime ChangeDate { get; set; } = DateTime.Now;
 
     public override string ToString() => Name;
 }

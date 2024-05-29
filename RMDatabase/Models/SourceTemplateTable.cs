@@ -8,22 +8,14 @@ namespace RMDatabase.Models;
 public partial class SourceTemplateTable
 {
     public long TemplateId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public long Favorite { get; set; }
+    public string Category { get; set; } = string.Empty;
+    public string Footnote { get; set; } = string.Empty;
+    public string ShortFootnote { get; set; } = string.Empty;
+    public string Bibliography { get; set; } = string.Empty;
+    public byte[] FieldDefs { get; set; } = [];
 
-    public string? Name { get; set; }
-
-    public string? Description { get; set; }
-
-    public long? Favorite { get; set; }
-
-    public string? Category { get; set; }
-
-    public string? Footnote { get; set; }
-
-    public string? ShortFootnote { get; set; }
-
-    public string? Bibliography { get; set; }
-
-    public byte[]? FieldDefs { get; set; }
-
-    public double? UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 }

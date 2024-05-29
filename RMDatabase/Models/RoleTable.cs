@@ -17,5 +17,5 @@ public partial class RoleTable
 
     public string? Sentence { get; set; }
 
-    public double? UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 }

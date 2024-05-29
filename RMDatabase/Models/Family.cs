@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections.Generic;
 
 namespace RMDatabase.Models;
@@ -27,16 +28,30 @@ public partial class Family
     #region Navigation ----------------------------------------------
     public virtual Person Husband { get; set; } = null!;
     public virtual Person Wife { get; set; } = null!;
-    public virtual ICollection<ChildTable> ChildInfos { get; set; } = [];
+    public virtual ICollection<ChildInfo> ChildInfos { get; set; } = [];
     public virtual ICollection<Citation> Citations { get; set; } = null!;
     public virtual ICollection<FamilyEvent> Events { get; set; } = [];
+    public virtual ICollection<Task> Tasks { get; set; } = [];
     #endregion
-}
 
-public partial class Family
-{
+    #region Helpers
+    public ChildInfo AddChild(Person child, RelationShip relFather = RelationShip.Birth, RelationShip relMother = RelationShip.Birth)
+    {
+        var ci = new ChildInfo
+        {
+            Family = this,
+            Child = child,
+            RelFather = relFather,
+            RelMother = relMother
+        };
+        ChildInfos.Add(ci);
+        return ci;
+    }
+
+    #endregion
     public override string ToString() => $"{Husband?.PrimaryName.Surname} {Husband?.PrimaryName.Given} & {Wife?.PrimaryName.Surname} {Wife?.PrimaryName.Given}";
 }
+
 
 public partial class Person
 {

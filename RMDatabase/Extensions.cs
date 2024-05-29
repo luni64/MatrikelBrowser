@@ -1,5 +1,8 @@
 ﻿using DelegateDecompiler;
+using Microsoft.EntityFrameworkCore;
+using RMDatabase.Models;
 using System;
+using System.Linq;
 using System.Reflection.Metadata;
 
 namespace RMDatabase
@@ -28,6 +31,29 @@ namespace RMDatabase
             return
                 String.Concat(Array.ConvertAll(uidBytes, s => s.ToString("X2"))) +
                 String.Concat(Array.ConvertAll(checksum, s => s.ToString("X2")));
-        }      
+        }
+
+
+        public static Place GetOrMake(this DbSet<Place> places, string name, string abbreviation)
+        {
+            Place? place = places.FirstOrDefault(p => p.Name == name && p.Abbrev == abbreviation);
+            if (place == null)
+            {
+                place = new Place
+                {
+                    PlaceType = 0,
+                    Name = name,
+                    Abbrev = abbreviation
+                };
+                places.Add(place);
+            }
+            return place;
+        }
+
+        public static long eventType(this DbSet<FactType> facts, string EventName)
+        {
+            return facts.Where(f => f.Name == EventName).Select(f => f.FactTypeId).FirstOrDefault();
+        }
+
     }
 }

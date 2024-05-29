@@ -19,8 +19,7 @@ public partial class GroupEntry
     public long GroupId { get; set; }
     public long StartId { get; set; }
     public long EndId { get; set; }
-    public double? UtcmodDate { get; set; } = null;
-
+    public DateTime ChangeDate { get; set; }
     public override string ToString()
     {
         return $"{StartId}-{EndId}";

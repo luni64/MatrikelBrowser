@@ -113,6 +113,10 @@ namespace rmSharp
             //sb.Append(" ");
         }
 
+        public RMDate()
+        {
+            dateType = DateType.NULL;
+        }
 
         public RMDate(DateTime dt, Certainty c = Certainty.Certain)
         {

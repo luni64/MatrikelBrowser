@@ -9,25 +9,25 @@ public partial class FactType
 {
     public long FactTypeId { get; set; }
 
-    public long? OwnerType { get; set; }
+    public long OwnerType { get; set; }
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-    public string? Abbrev { get; set; }
+    public string Abbrev { get; set; } = string.Empty;
 
-    public string? GedcomTag { get; set; }
+    public string GedcomTag { get; set; } = string.Empty;
 
-    public long? UseValue { get; set; }
+    public long UseValue { get; set; }
 
-    public long? UseDate { get; set; }
+    public long UseDate { get; set; }
 
-    public long? UsePlace { get; set; }
+    public long UsePlace { get; set; }
 
-    public string? Sentence { get; set; }
+    public string Sentence { get; set; }
 
-    public long? Flags { get; set; }
+    public long Flags { get; set; }
 
-    public double? UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
     public virtual ICollection<Event> Events { get; set; } = [];
 
     public override string ToString() => Name ?? "unknown";

@@ -4,7 +4,10 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using RMDatabase.Microsoft.EntityFrameworkCore.Query;
 using RMDatabase.Models;
+using System;
 using System.Data.Common;
+using System.Diagnostics;
+using System.Linq;
 
 namespace RMDatabase
 {
@@ -19,8 +22,11 @@ namespace RMDatabase
 
     namespace Microsoft.EntityFrameworkCore.Query
     {
+        using System;
         using System.Linq.Expressions;
         using DelegateDecompiler;
+        using global::Microsoft.EntityFrameworkCore.ChangeTracking;
+
         public class DelegateDecompilerQueryPreprocessor2 : IQueryExpressionInterceptor
         {
             Expression IQueryExpressionInterceptor.QueryCompilationStarting(Expression queryExpression, QueryExpressionEventData eventData)
@@ -36,6 +42,7 @@ namespace RMDatabase
         {
             public Expression Process(Expression query) => DecompileExpressionVisitor.Decompile(query);
         }
+
 
 
     }
@@ -64,16 +71,33 @@ namespace RMDatabase
         {
             var opt = new DbContextOptionsBuilder<rmContext>();
 
-
-
             opt
                 .AddDelegateDecompiler()
                 .AddInterceptors(new SQLiteExtensionInterceptor())
                 .UseSqlite($"Data Source={sqLiteFile}")
                 .UseLazyLoadingProxies();
-               ;
+            ;
 
             return opt.Options;
         }
+
+        public override int SaveChanges()
+        {
+            var changedEntriesCopy = ChangeTracker.Entries()
+                        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted)
+                        .ToList();
+            var saveTime = DateTime.Now;
+
+            foreach (var entityEntry in changedEntriesCopy)
+            {
+                if (entityEntry.Metadata.FindProperty("ChangeDate") != null)
+                {
+                    entityEntry.Property("ChangeDate").CurrentValue = saveTime;
+                }
+                else Trace.WriteLine("change date error");
+            }
+            return base.SaveChanges();
+        }
+
     }
 }

@@ -23,5 +23,5 @@ public partial class AncestryTable
 
     public long? Status { get; set; }
 
-    public double? UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 }

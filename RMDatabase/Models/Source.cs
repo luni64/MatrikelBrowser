@@ -15,8 +15,7 @@ public partial class Source
     public long? IsPrivate { get; set; }
     public long? TemplateId { get; set; }
     public byte[] Fields { get; set; } = [];
-    public double UtcmodDate { get; set; }
-
+    public DateTime ChangeDate { get; set; }
     public virtual ICollection<Address> Repositories { get; set; } = [];
     public virtual ICollection<Citation> Citations { get; set; } = [];
     public virtual ICollection<Medium> Media { get; set; } = [];

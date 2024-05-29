@@ -11,20 +11,27 @@ namespace Example
             using (var db = new DB()) // connect to the database
             {
                 int g = 0; // tracks generations
-                var person = db.Persons.FirstOrDefault(p => p.PrimaryName.Surname == Surname && p.PrimaryName.Given == Given);
+                var person = db.Persons.FirstOrDefault(p => p.PrimaryName.Surname == Surname && p.PrimaryName.Given == Given); // startperson
 
-                WriteLine($"({g++}) {person?.PrimaryName.ToString() ?? "Startperson not found"}");
                 while (person != null)
                 {
-                    Person? father = person                                     // this query selects the biological father of person
-                      .ParentRelations                                          // relation info from the ChildTable
-                      .SingleOrDefault(cr=>cr.RelFather == RelationShip.Birth)? // returns null if zero or more than one biological father
-                      .family.Husband;                                          // get the male ancestor 
+                    printPerson(person, g++);
 
-                    WriteLine($"({g++}) {father?.PrimaryName.ToString() ?? "--"}");
-                    person = father;
+                    Person? father = person                                              // find biological father of person:
+                      .ParentRelations.Where(cr => cr.RelFather == RelationShip.Birth)   // filter for parent relations with a biological father (should be only one of course)
+                      .FirstOrDefault()?.Father;                                         // take the first relation (or null if none found)                                                                                           
+
+                    person = father;                                                     // use the found father for the next iteration
                 }
             }
+        }
+
+        void printPerson(Person p, int generation)
+        {
+            var birthDate = p.Events.FirstOrDefault(e => e.FactType.Name == "Birth")?.Date;  // find birth and death dates from the corresponding events
+            var deathDate = p.Events.FirstOrDefault(e => e.FactType.Name == "Death")?.Date;
+
+            WriteLine($"({generation})\t{p.PrimaryName} ({birthDate?.year} - {deathDate?.year})");
         }
     }
 }

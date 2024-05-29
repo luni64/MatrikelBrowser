@@ -27,5 +27,5 @@ public partial class Fantable
 
     public string? Note { get; set; }
 
-    public double? UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 }

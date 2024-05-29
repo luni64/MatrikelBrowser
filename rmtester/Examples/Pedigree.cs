@@ -70,7 +70,7 @@ namespace Example
         private int Generation { get; }
         private (RelationShip father, RelationShip mother) getRelation(DB db, Person child, Family family)
         {
-            var childTableEntry = db.ChildTable.Single(e => e.ChildId == child.PersonId && e.family == family);
+            var childTableEntry = db.ChildTable.Single(e => e.ChildId == child.PersonId && e.Family == family);
             return (childTableEntry.RelFather, childTableEntry.RelMother);
         }
     }

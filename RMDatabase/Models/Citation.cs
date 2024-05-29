@@ -22,7 +22,7 @@ public partial class Citation
     public byte[] ShortFootnote { get; set; } = [];
     public string Bibliography { get; set; } = string.Empty;
     public byte[] Fields { get; set; } = [];
-    public double UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; } = DateTime.Now;
 
     public virtual ICollection<Medium> Media { get; set; } = [];
     public virtual ICollection<CitationWebTag> WebTags { get; set; } = [];

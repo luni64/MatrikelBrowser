@@ -25,7 +25,7 @@ public partial class CitationLinkTable
     public string Quality { get; set; } = string.Empty;
     public long IsPrivate { get; set; }
     public long Flags { get; set; }
-    public double UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; } = DateTime.Now;
 }
 
 public class PersonCitationLink : CitationLinkTable { } // OwnerID = 0

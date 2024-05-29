@@ -17,7 +17,7 @@ public enum RelationShip
     Unknown
 }
 
-public partial class ChildTable
+public partial class ChildInfo
 {
     public long RecId { get; set; }
 
@@ -39,8 +39,12 @@ public partial class ChildTable
 
     public string Note { get; set; } = string.Empty;
 
-    public double UtcmodDate { get; set; } = DateTime.Now.toUTCModDate();
+    public DateTime ChangeDate { get; set; } = DateTime.Now;
 
-    public virtual Person person { get; set; }
-    public virtual Family family { get; set; }     
+    public virtual Family Family { get; set; } = null!;
+    public virtual Person Child { get; set; } = null!;
+    //public virtual Person Child { get; set; } = null!;
+    public Person? Father => Family.Husband;  // for the sake of convenience
+    public Person? Mother => Family.Wife;     // for the sake of convenience
+
 }

@@ -30,12 +30,12 @@ public partial class Name
     public long DeathYear { get; set; }
     public long Display { get; set; }
     public string Language { get; set; } = string.Empty;
-    public double UtcmodDate { get; set; } = DateTime.Now.toUTCModDate();
     public string SurnameMp { get; set; } = string.Empty;
     public string GivenMp { get; set; } = string.Empty;
     public string NicknameMp { get; set; } = string.Empty;
-
+    public DateTime ChangeDate { get; set; }
     public virtual ICollection<Citation> Citations { get; set; } = [];
+    public virtual ICollection<Task> Tasks { get; set; } = [];
 
     public override string ToString() => $"{Surname} {Given}";
 }

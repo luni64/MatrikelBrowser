@@ -24,7 +24,7 @@ public partial class MediaLinkTable
     public long RectRight { get; set; }
     public long RectBottom { get; set; }
     public string Comments { get; set; } = string.Empty;
-    public double UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 }
 
 //Link to owner based on OwnerType:

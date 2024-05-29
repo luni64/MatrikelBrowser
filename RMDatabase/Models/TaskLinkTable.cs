@@ -9,11 +9,19 @@ public partial class TaskLinkTable
 {
     public long LinkId { get; set; }
 
-    public long? TaskId { get; set; }
+    public long TaskId { get; set; }
 
-    public long? OwnerType { get; set; }
+    public long OwnerType { get; set; }
 
-    public long? OwnerId { get; set; }
+    public long OwnerId { get; set; }
 
-    public double? UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 }
+
+public class TaskPerson : TaskLinkTable { }       // OwnerID = 0
+public class TaskFamily : TaskLinkTable { }       // OwnerID = 1
+public class TaskEvent : TaskLinkTable { }        // OwnerID = 2
+public class TaskPlace : TaskLinkTable { }        // OwnerID = 5
+public class TaskName : TaskLinkTable { }         // OwnerID = 7
+public class TaskFolder : TaskLinkTable { }       // OwnerID = 18
+public class TaskAssociation : TaskLinkTable { }  // OwnerID = 19

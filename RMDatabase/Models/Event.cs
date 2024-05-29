@@ -18,7 +18,7 @@ public partial class Event
     public long FamilyId { get; set; }
     public long PlaceId { get; set; }
     public long SiteId { get; set; }
-    public RMDate Date { get; set; } = null! ;
+    public RMDate Date { get; set; } = new RMDate();
     public long SortDate { get; set; }
     public long IsPrimary { get; set; }
     public long IsPrivate { get; set; }
@@ -27,10 +27,13 @@ public partial class Event
     public string Sentence { get; set; } = string.Empty;
     public string Details { get; set; } = string.Empty;
     public string Note { get; set; } = string.Empty;
-    public double UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
     public virtual FactType FactType { get; set; } = null!;
-    public virtual ICollection<Citation> Citations { get; set; } = null!;
-    public virtual ICollection<Medium> Media { get; set; } = null!;
+
+    public virtual Place? Place { get; set; }
+    public virtual ICollection<Citation> Citations { get; set; } = [];
+    public virtual ICollection<Medium> Media { get; set; } = [];
+    public virtual ICollection<Task> Tasks { get; set; } = [];
    
 
     public override string ToString() => FactType.ToString();

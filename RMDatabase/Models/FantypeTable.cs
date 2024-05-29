@@ -19,5 +19,5 @@ public partial class FantypeTable
 
     public string? Sentence2 { get; set; }
 
-    public double? UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 }

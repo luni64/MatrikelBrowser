@@ -20,9 +20,10 @@ public partial class Place
     public string Reverse { get; set; } = string.Empty; 
     public long FsId { get; set; }
     public long AnId { get; set; }
-    public double UtcmodDate { get; set; }
+    public DateTime ChangeDate { get; set; }
 
     public virtual ICollection<PlaceWebTag> WebTags { get; set; } = [];
+    public virtual ICollection<Task> Tasks { get; set; } = [];
 
     public override string ToString() => Name;
 }
