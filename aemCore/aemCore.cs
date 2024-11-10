@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,6 +31,9 @@ namespace AEM
         //  [JsonConverter(typeof(ConcreteConverter<List<Parish>>))]
         public List<Parish> Parishes;
         public List<String> Favorites;
+
+
+        List<BookmarkBase> allNotes2 = new List<BookmarkBase>();
 
         public aemCore()
         {
@@ -64,10 +68,65 @@ namespace AEM
 
                 var allBooks = Parishes.SelectMany(p => p.Books).ToDictionary(b => b.ID);
 
+
+                
+
                 foreach (var note in infoRecords)
                 {
                     allBooks[note.BookID].Info = note;
+
+                    if (note.Bookmarks.Count > 0)
+                    {
+
+                        foreach (var bm in note.Bookmarks)
+                        {
+                            switch (bm.bookmarkType)
+                            {
+                                case BookmarkType.birth:
+                                    var bbm = new BirthBookmark
+                                    {
+                                        Title = bm.Title,
+                                        X = bm.X,
+                                        Y = bm.Y,
+                                        W = bm.W,
+                                        H = bm.H,
+                                        Transkript = bm.Transkript,
+                                        SheetNr = bm.SheetNr,
+                                        Child = new Person
+                                        {
+                                            Name = bm.Person1,
+                                            BirthDate = bm.EventDate,
+                                        },
+                                        Father = new Person
+                                        {
+                                            Name = bm.Father,
+                                            //Occupation = bm.
+                                        },
+                                        Mother = new Person
+                                        {
+                                            Name = bm.Mother
+                                            //Occupation = bm.
+                                        }
+                                    };
+                                    allNotes2.Add(bbm);
+                                    break;
+
+                                default:
+                                    var mbm = new MarriageBookmark
+                                    {
+                                        Title = bm.Title
+                                    };
+                                    allNotes2.Add(mbm);
+                                    break;
+                            }
+                        }
+                    }
                 }
+
+
+
+
+
 
             }
             else
@@ -80,6 +139,7 @@ namespace AEM
             {
                 var json = File.ReadAllText(favoritesFile.FullName);
                 Favorites = JsonConvert.DeserializeObject<List<string>>(json) ?? new List<string>();
+
             }
             else
                 Favorites = [];
@@ -96,13 +156,30 @@ namespace AEM
                 .Where(info => !string.IsNullOrEmpty(info?.note) || info?.Bookmarks.Count > 0)
                 .ToList();
 
+            //var allNotes2 = Parishes
+            //    .SelectMany(p => p.Books)
+            //    .Select(book => book.Info2)
+            //    .Where(info => !string.IsNullOrEmpty(info?.note) || info?.Bookmarks.Count > 0)
+            //    .ToList();
+
             string json = JsonConvert.SerializeObject(allNotes, Formatting.Indented);
             FileInfo notesFile = new(Path.Combine(baseFolder.FullName, "notesout.json"));
             File.WriteAllText(notesFile.FullName, json);
 
-            json = JsonConvert.SerializeObject(Favorites, Formatting.Indented);
+
+            json = JsonConvert.SerializeObject(Favorites);
             FileInfo favoritesFile = new(Path.Combine(baseFolder.FullName, "favorites.json"));
             File.WriteAllText(favoritesFile.FullName, json);
+
+            var xx = allNotes2.Where(n => n is MarriageBookmark);
+
+            var settings = new JsonSerializerSettings();
+            settings.TypeNameHandling = TypeNameHandling.Auto;
+            json = JsonConvert.SerializeObject(allNotes2, Formatting.Indented,settings);
+            FileInfo testFile = new(Path.Combine(baseFolder.FullName, "test.json"));
+
+            File.WriteAllText(testFile.FullName, json);
+
         }
 
         private readonly DirectoryInfo baseFolder = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "aemBrowser"));

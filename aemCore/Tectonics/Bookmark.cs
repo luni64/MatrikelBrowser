@@ -1,9 +1,74 @@
 ﻿using Interfaces;
+using iText.Layout.Element;
+using JsonSubTypes;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Text.Json.Serialization;
 
 namespace AEM
-{ 
+{
+    ////[JsonConverter(typeof(BookmarkBase), "base")]
+    //[JsonDerivedType(typeof(BookmarkBase), typeDiscriminator: "base")]
+    //[JsonDerivedType(typeof(BirthBookmark), typeDiscriminator: "birth")]
+    //[JsonDerivedType(typeof(MarriageBookmark), typeDiscriminator: "marriage")]
+    public class BookmarkBase
+    {
+        public string Title { get; set; } = String.Empty;
+        public string EventDate { get; set; } = string.Empty;
+
+        public string Transkript { get; set; } = String.Empty;
+        public int SheetNr { get; set; } = 0;
+        public int X { get; set; } = 0;
+        public int Y { get; set; } = 0;
+        public double W { get; set; } = 400;
+        public double H { get; set; } = 200;
+
+        public override string ToString()
+        {
+            return Title;
+        }
+    }
+
+
+    public class Person
+    {
+        public string Name { get; set; } = String.Empty;
+        public string Occupation { get; set; } = String.Empty;
+        public string BirthDate { get; set; } = String.Empty;
+        public string DeathDate { get; set; } = String.Empty;
+        public bool living { get; set; } = true;
+
+        public override string ToString()
+        {
+            return Name + (!string.IsNullOrEmpty(Occupation) ? $"({Occupation})" : "");
+        }
+    }
+
+   
+    public class BirthBookmark : BookmarkBase
+    {
+        public Person? Child { get; set; }
+        public Person? Father { get; set; }
+        public Person? Mother { get; set; }
+        public Person? GodParent { get; set; }
+    }
+
+    public class MarriageBookmark : BookmarkBase
+    {
+        public Person? Groom { get; set; }
+        public Person? GroomFather { get; set; }
+        public Person? GroomMother { get; set; }
+        public Person? Bride { get; set; }
+        public Person? BrideFather { get; set; }
+        public Person? BrideMother { get; set; }
+        public List<Person> Witnesses { get; set; } = new();
+
+        
+    }
+
+
+
     public class Bookmark : IBookmark
     {
         public string Title { get; set; } = String.Empty;
@@ -36,6 +101,6 @@ namespace AEM
         public int Y { get; set; }
         public double W { get; set; } = 400;
         public double H { get; set; } = 200;
-      
+
     }
 }

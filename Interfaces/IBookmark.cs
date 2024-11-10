@@ -3,6 +3,11 @@ using System.Drawing;
 
 namespace Interfaces
 {
+    public interface IBookmark2
+    {
+
+    }
+
     public interface IBookmark
     {
         string Title { get; set; }

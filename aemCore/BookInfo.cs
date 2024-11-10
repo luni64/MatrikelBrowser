@@ -20,4 +20,19 @@ namespace AEM
             this.note = note;                
         }   
     }
+
+    public class BookInfo2 
+    {
+        public List<BookmarkBase> Bookmarks { get; set; } = [];
+        public string BookID { get; set; } = string.Empty;
+        public string note { get; set; } = string.Empty;
+
+        //public BookInfo2(List<BookmarkBase> Bookmarks, string BookID, string note)
+        //{
+        //    if(Bookmarks != null) this.Bookmarks = Bookmarks;
+        //    this.BookID = BookID;
+        //    this.note = note;
+        //}
+    }
 }
+

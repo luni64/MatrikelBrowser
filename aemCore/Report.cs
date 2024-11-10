@@ -3,18 +3,17 @@ using iText.IO.Font.Constants;
 using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
-using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Action;
-using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using System;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
-using static System.Net.Mime.MediaTypeNames;
 using Image = iText.Layout.Element.Image;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
@@ -32,33 +31,34 @@ namespace AEM
 
         public static FileInfo? Generate(IBook book)
         {
-            PdfFont centaur = PdfFontFactory.CreateFont("Assets/centaur.ttf", PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
-            PdfFont courier = PdfFontFactory.CreateFont(StandardFonts.COURIER);
+            PdfFont headingFont = PdfFontFactory.CreateFont(StandardFonts.COURIER);
+            PdfFont textFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+            //PdfFont textFont = PdfFontFactory.CreateFont(StandardFonts.COURIER);
 
             Title
-                .SetFont(centaur)
+                .SetFont(headingFont)
                 .SetFontSize(34)
                 .SetBold()
                 .SetTextAlignment(TextAlignment.CENTER);
 
 
             normal
-                .SetFont(centaur)
+                .SetFont(textFont)
                 .SetFontSize(12);
 
             heading1
-                .SetFont(centaur)
+                .SetFont(headingFont)
                 .SetFontSize(18)
                 .SetBold();
 
             heading2
-                .SetFont(centaur)
+                .SetFont(textFont)
                 .SetFontSize(14)
                 .SetBold();
 
             link
-                .SetFont(centaur)
-                .SetFontSize(12)
+                .SetFont(textFont)
+                .SetFontSize(10)
                 .SetFontColor(ColorConstants.BLUE)
                 ;
 
@@ -122,7 +122,7 @@ namespace AEM
 
             report.Add(new Paragraph()
                 .AddTabStops(new TabStop(36))
-                .SetMarginTop(150)
+                .SetMarginTop(80)
                 //.SetWidth(450)
                 //.SetHorizontalAlignment(HorizontalAlignment.RIGHT)
                 //.SetTextAlignment (TextAlignment.RIGHT)
@@ -145,10 +145,18 @@ namespace AEM
                 .AddStyle(heading1)
                 .Add("Allgemeine Notizen")
                 );
-            report.Add(new Paragraph()
+
+            report.Add(makeTabbedText(book.Info.note)
                 .AddStyle(normal)
-                .Add(book.Info.note)
                 );
+
+            report.Add(new AreaBreak());
+
+            //report.Add(new Paragraph()
+            //    .AddTabStops(new TabStop(100))
+            //    .AddStyle(normal)
+            //    .Add(book.Info.note)
+            //    );
 
         }
         static void Bookmarks(IBook book, Document report)
@@ -209,12 +217,30 @@ namespace AEM
                     case BookmarkType.birth:
 
                         report.Add(new Paragraph()
-                           .AddTabStops(new TabStop(50))
+                           .AddTabStops(new TabStop(65))
                            .AddStyle(normal)
-                           .Add("Kind:").Add(new Tab()).Add(bookmark.Person1)
+                           .Add("Taufdatum:").Add(new Tab()).Add(bookmark.Date1)
+                           .Add("\nKind:").Add(new Tab()).Add(bookmark.Person1)
                            .Add("\nVater:").Add(new Tab()).Add(bookmark.Father)
-                           .Add("\nMutter:").Add(new Tab()).Add(bookmark.Mother)
-                           .Add("\nTranskript/Notizen:\n")
+                           .Add("\nMutter:").Add(new Tab()).Add(bookmark.Mother)   
+                           .Add("\nTaufpate:").Add(new Tab()).Add(bookmark.Others)
+                           .SetMarginTop(20)
+                           .SetMarginBottom(20)
+                           );
+                        break;
+
+                    case BookmarkType.marriage:
+                        report.Add(new Paragraph()
+                           .AddTabStops(new TabStop(10))
+                           .AddTabStops(new TabStop(65))
+                           .AddStyle(normal)
+                           .Add("Datum:").Add(new Tab()).Add(bookmark.EventDate)
+                           .Add("\nBräutigam:").Add(new Tab()).Add(bookmark.Person1).Add("\n")
+                           .Add(new Tab()).Add("Vater:").Add(new Tab()).Add(bookmark.Person3)
+                           .Add("\nMutter:").Add(new Tab()).Add(new Tab()).Add(bookmark.Person4)
+                           .Add("\nBraut:").Add(new Tab()).Add(bookmark.Person2)
+                           .Add("\n  Vater:").Add(new Tab()).Add(bookmark.Person5)
+                           .Add("\n  Mutter:").Add(new Tab()).Add(bookmark.Person6)
                            .SetMarginTop(20)
                            .SetMarginBottom(20)
                            );
@@ -232,7 +258,7 @@ namespace AEM
                       //.SetFontSize(8)
                       ));
 
-
+                report.Add(new AreaBreak(areaBreakType: AreaBreakType.NEXT_PAGE));
             }
         }
 
@@ -242,6 +268,39 @@ namespace AEM
             lnk.GetLinkAnnotation().SetBorder(new PdfAnnotationBorder(0, 0, 0));
             lnk.AddStyle(link);
             return lnk;
+        }
+
+        static Paragraph makeTabbedText(string tabbedText)
+        {
+            Paragraph p = new Paragraph();
+            //p.AddTabStops(new TabStop(50, TabAlignment.LEFT));
+            //p.AddTabStops(new TabStop(100, TabAlignment.LEFT));
+            //p.AddTabStops(new TabStop(150, TabAlignment.LEFT));
+            //p.AddTabStops(new TabStop(200, TabAlignment.LEFT));
+
+
+            int nrOfTabs = 0;
+
+            // Text aufteilen und in Paragraph einfügen
+            var lines = tabbedText.Split("\n");
+            foreach (var line in lines)
+            {
+                var parts = line.Split("\t");
+                foreach (var part in parts.Take(parts.Length - 1))
+                {
+                    p.Add(part);
+                    p.Add(new Tab());
+                }
+                p.Add(parts.Last());                
+                nrOfTabs = Math.Max(nrOfTabs, parts.Length - 1);
+            }
+
+            int tabDistance = 50;
+            for (int i = tabDistance; i <= tabDistance * nrOfTabs; i += tabDistance)
+            {
+                p.AddTabStops(new TabStop(i));
+            }
+            return p;
         }
 
 

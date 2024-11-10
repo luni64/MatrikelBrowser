@@ -1,13 +1,10 @@
 ﻿using Interfaces;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace AEM
 {
@@ -22,8 +19,12 @@ namespace AEM
         public string BookDescriptionURL => $"https://digitales-archiv.erzbistum-muenchen.de/actaproweb/document/Vz_{DescriptionID}";
         public List<IPage> Pages { get; } = [];
 
-     //   [JsonConverter(typeof(ConcreteConverter<List<IBookInfo>>))]
-        public IBookInfo Info { get; set; } = new BookInfo();//=> _bookinfo ??= new BookInfo(this);
+        //   [JsonConverter(typeof(ConcreteConverter<List<IBookInfo>>))]
+        public IBookInfo Info { get; set; } = new BookInfo();//=> _bookinfo ??= new BookInfo(this);  
+
+       // public IBookInfo2 Info2 { get; set; } = new BookInfo2();
+
+       
         public bool hasInfo { get; set; } = false;
         public string Type
         {

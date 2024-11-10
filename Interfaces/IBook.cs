@@ -14,6 +14,9 @@ namespace Interfaces
         bool hasInfo { get; set; }
         string ID { get; set; }
         IBookInfo Info { get; set; }
+
+     
+
         List<IPage> Pages { get; }
         DirectoryInfo? pagesFolder { get; }
         IParish? Parish { get; set; }
