@@ -1,18 +1,14 @@
 ﻿using Interfaces;
-using iText.Layout.Element;
-using JsonSubTypes;
+using iText.Commons.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text.Json.Serialization;
+using static iText.Layout.Borders.Border;
+using System.Text.RegularExpressions;
 
 namespace AEM
 {
-    ////[JsonConverter(typeof(BookmarkBase), "base")]
-    //[JsonDerivedType(typeof(BookmarkBase), typeDiscriminator: "base")]
-    //[JsonDerivedType(typeof(BirthBookmark), typeDiscriminator: "birth")]
-    //[JsonDerivedType(typeof(MarriageBookmark), typeDiscriminator: "marriage")]
-    public class BookmarkBase
+    public class BookmarkBase : IBookmarkBase
     {
         public string Title { get; set; } = String.Empty;
         public string EventDate { get; set; } = string.Empty;
@@ -38,21 +34,23 @@ namespace AEM
         public string BirthDate { get; set; } = String.Empty;
         public string DeathDate { get; set; } = String.Empty;
         public bool living { get; set; } = true;
+        public birthState state { get; set; } = birthState.unknown;
 
-        public override string ToString()
-        {
-            return Name + (!string.IsNullOrEmpty(Occupation) ? $"({Occupation})" : "");
-        }
+        public override string ToString() => Name;
     }
 
-   
+
+
     public class BirthBookmark : BookmarkBase
     {
         public Person? Child { get; set; }
         public Person? Father { get; set; }
         public Person? Mother { get; set; }
         public Person? GodParent { get; set; }
+
+        public override string ToString() => Title + " F:" + Father?.Name;
     }
+
 
     public class MarriageBookmark : BookmarkBase
     {
@@ -62,12 +60,15 @@ namespace AEM
         public Person? Bride { get; set; }
         public Person? BrideFather { get; set; }
         public Person? BrideMother { get; set; }
-        public List<Person> Witnesses { get; set; } = new();
+        public Person? Witnesses { get; set; }
 
-        
+        public override string ToString() => Groom?.Name + " + " + Bride?.Name;
     }
 
-
+    public class MiscBookmark : BookmarkBase
+    {
+        public override string ToString() => Transkript;
+    };
 
     public class Bookmark : IBookmark
     {

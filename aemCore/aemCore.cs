@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace AEM
 {
@@ -38,7 +39,7 @@ namespace AEM
         public aemCore()
         {
             baseFolder.Create();
-            FileInfo notesFile = new(Path.Combine(baseFolder.FullName, "notesout.json"));
+            FileInfo notesFile = new(Path.Combine(baseFolder.FullName, "test.json"));
             FileInfo favoritesFile = new(Path.Combine(baseFolder.FullName, "favorites.json"));
             FileInfo tectonicsFile = new("tectonics.json");
 
@@ -63,71 +64,12 @@ namespace AEM
 
             if (notesFile.Exists)
             {
-                var json = File.ReadAllText(notesFile.FullName);
-                var infoRecords = JsonConvert.DeserializeObject<List<BookInfo>>(json) ?? new List<BookInfo>();
-
                 var allBooks = Parishes.SelectMany(p => p.Books).ToDictionary(b => b.ID);
 
-
-                
-
-                foreach (var note in infoRecords)
-                {
-                    allBooks[note.BookID].Info = note;
-
-                    if (note.Bookmarks.Count > 0)
-                    {
-
-                        foreach (var bm in note.Bookmarks)
-                        {
-                            switch (bm.bookmarkType)
-                            {
-                                case BookmarkType.birth:
-                                    var bbm = new BirthBookmark
-                                    {
-                                        Title = bm.Title,
-                                        X = bm.X,
-                                        Y = bm.Y,
-                                        W = bm.W,
-                                        H = bm.H,
-                                        Transkript = bm.Transkript,
-                                        SheetNr = bm.SheetNr,
-                                        Child = new Person
-                                        {
-                                            Name = bm.Person1,
-                                            BirthDate = bm.EventDate,
-                                        },
-                                        Father = new Person
-                                        {
-                                            Name = bm.Father,
-                                            //Occupation = bm.
-                                        },
-                                        Mother = new Person
-                                        {
-                                            Name = bm.Mother
-                                            //Occupation = bm.
-                                        }
-                                    };
-                                    allNotes2.Add(bbm);
-                                    break;
-
-                                default:
-                                    var mbm = new MarriageBookmark
-                                    {
-                                        Title = bm.Title
-                                    };
-                                    allNotes2.Add(mbm);
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-
-
-
-
-
+                var json = File.ReadAllText(notesFile.FullName);                
+                var infoRecords = JsonConvert.DeserializeObject<List<BookInfo>>(json, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });                
+                infoRecords?.ForEach(r => allBooks[r.BookID].Info = r);
+                Trace.WriteLine($"{allBooks.Count} Matriken gefunden davon {infoRecords?.Count ?? 0} Matriken mit Notizen oder Fundstellen");                
             }
             else
             {
@@ -143,7 +85,6 @@ namespace AEM
             }
             else
                 Favorites = [];
-
 
             Book.baseFolder = baseFolder;
         }

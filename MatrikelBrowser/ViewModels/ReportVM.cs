@@ -23,7 +23,7 @@ namespace ArchiveBrowser.ViewModels
         
         public string BookTitle => $"{book.ID} {book.Title}";
         public string BookNote => book.Info.note;
-        public List <IBookmark> Bookmarks => book.Info.Bookmarks;
+       ///// public List <IBookmark> Bookmarks => book.Info.Bookmarks;
         public string BookDescriptionURL => book.BookDescriptionURL;
 
 

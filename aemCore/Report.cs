@@ -212,40 +212,41 @@ namespace AEM
                         );
                 }
 
-                switch (bookmark.bookmarkType)
-                {
-                    case BookmarkType.birth:
+                /////
+                //switch (bookmark.bookmarkType)
+                //{
+                //    case BookmarkType.birth:
 
-                        report.Add(new Paragraph()
-                           .AddTabStops(new TabStop(65))
-                           .AddStyle(normal)
-                           .Add("Taufdatum:").Add(new Tab()).Add(bookmark.Date1)
-                           .Add("\nKind:").Add(new Tab()).Add(bookmark.Person1)
-                           .Add("\nVater:").Add(new Tab()).Add(bookmark.Father)
-                           .Add("\nMutter:").Add(new Tab()).Add(bookmark.Mother)   
-                           .Add("\nTaufpate:").Add(new Tab()).Add(bookmark.Others)
-                           .SetMarginTop(20)
-                           .SetMarginBottom(20)
-                           );
-                        break;
+                //        report.Add(new Paragraph()
+                //           .AddTabStops(new TabStop(65))
+                //           .AddStyle(normal)
+                //           .Add("Taufdatum:").Add(new Tab()).Add(bookmark.Date1)
+                //           .Add("\nKind:").Add(new Tab()).Add(bookmark.Person1)
+                //           .Add("\nVater:").Add(new Tab()).Add(bookmark.Father)
+                //           .Add("\nMutter:").Add(new Tab()).Add(bookmark.Mother)   
+                //           .Add("\nTaufpate:").Add(new Tab()).Add(bookmark.Others)
+                //           .SetMarginTop(20)
+                //           .SetMarginBottom(20)
+                //           );
+                //        break;
 
-                    case BookmarkType.marriage:
-                        report.Add(new Paragraph()
-                           .AddTabStops(new TabStop(10))
-                           .AddTabStops(new TabStop(65))
-                           .AddStyle(normal)
-                           .Add("Datum:").Add(new Tab()).Add(bookmark.EventDate)
-                           .Add("\nBräutigam:").Add(new Tab()).Add(bookmark.Person1).Add("\n")
-                           .Add(new Tab()).Add("Vater:").Add(new Tab()).Add(bookmark.Person3)
-                           .Add("\nMutter:").Add(new Tab()).Add(new Tab()).Add(bookmark.Person4)
-                           .Add("\nBraut:").Add(new Tab()).Add(bookmark.Person2)
-                           .Add("\n  Vater:").Add(new Tab()).Add(bookmark.Person5)
-                           .Add("\n  Mutter:").Add(new Tab()).Add(bookmark.Person6)
-                           .SetMarginTop(20)
-                           .SetMarginBottom(20)
-                           );
-                        break;
-                }
+                //    case BookmarkType.marriage:
+                //        report.Add(new Paragraph()
+                //           .AddTabStops(new TabStop(10))
+                //           .AddTabStops(new TabStop(65))
+                //           .AddStyle(normal)
+                //           .Add("Datum:").Add(new Tab()).Add(bookmark.EventDate)
+                //           .Add("\nBräutigam:").Add(new Tab()).Add(bookmark.Person1).Add("\n")
+                //           .Add(new Tab()).Add("Vater:").Add(new Tab()).Add(bookmark.Person3)
+                //           .Add("\nMutter:").Add(new Tab()).Add(new Tab()).Add(bookmark.Person4)
+                //           .Add("\nBraut:").Add(new Tab()).Add(bookmark.Person2)
+                //           .Add("\n  Vater:").Add(new Tab()).Add(bookmark.Person5)
+                //           .Add("\n  Mutter:").Add(new Tab()).Add(bookmark.Person6)
+                //           .SetMarginTop(20)
+                //           .SetMarginBottom(20)
+                //           );
+                //        break;
+                //}
 
                 report.Add(new Paragraph()
                       .SetMarginTop(20)

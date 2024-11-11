@@ -4,5 +4,10 @@
     {
         birth, marriage, death, misc
     }
-   
+
+    public enum birthState
+    {
+        unknown, legitmate, illegitmate
+    };
+
 }

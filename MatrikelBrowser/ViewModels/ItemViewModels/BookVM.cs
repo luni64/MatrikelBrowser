@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using AEM;
+using Interfaces;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,15 +26,24 @@ namespace ArchiveBrowser.ViewModels
             {
                 var (x, y) = pos != null ? ((int X, int Y))pos! : (0, 0);
 
-                AEM.Bookmark bm = new()
+                BookmarkBase bm = new()
                 {
-                    
                     SheetNr = PageVMs.IndexOf(SelectedPage),
                     Title = "Neue Fundstelle",
                     X = x,
                     Y = y,
                     // cutOut = new System.Drawing.Rectangle((System.Drawing.Point) pos!, new System.Drawing.Size(0,0)),
                 };
+
+                //AEM.Bookmark bm = new()
+                //{
+
+                //    SheetNr = PageVMs.IndexOf(SelectedPage),
+                //    Title = "Neue Fundstelle",
+                //    X = x,
+                //    Y = y,
+                //    // cutOut = new System.Drawing.Rectangle((System.Drawing.Point) pos!, new System.Drawing.Size(0,0)),
+                //};
 
                 bookmarkVMs.Add(
                     new BookmarkVM(bm)
@@ -43,19 +53,20 @@ namespace ArchiveBrowser.ViewModels
                         isLocked = false                        
                     }
                 );
-                model.Info.Bookmarks.Add(bm);
+               ///// model.Info.Bookmarks.Add(bm);
             }
         }
 
         public RelayCommand cmdDelBookmark => _cmdDelBookmark ??= new RelayCommand(doDelBookmark);
         void doDelBookmark(object? s)
         {
-            var bm = SelectedBookmark;
-            if (SelectedBookmark != null)
-            {
-                model.Info.Bookmarks.Remove(SelectedBookmark.model);
-                bookmarkVMs.Remove(SelectedBookmark);
-            }
+            /////
+            //var bm = SelectedBookmark;
+            //if (SelectedBookmark != null)
+            //{
+            //    model.Info.Bookmarks.Remove(SelectedBookmark.model);
+            //    bookmarkVMs.Remove(SelectedBookmark);
+            //}
         }
 
         public RelayCommand cmdGenerateReport => _cmdGenerateReport ??= new RelayCommand(doGenerateReport);
@@ -166,7 +177,7 @@ namespace ArchiveBrowser.ViewModels
                 foreach (var bm in model.Info.Bookmarks)
                 {
                     if (bm.SheetNr < PageVMs.Count) // just to be sure...
-                    {
+                    {                       
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             bookmarkVMs.Add(new BookmarkVM(bm)

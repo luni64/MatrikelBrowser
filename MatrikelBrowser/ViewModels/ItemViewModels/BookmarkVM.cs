@@ -34,19 +34,19 @@ namespace ArchiveBrowser.ViewModels
                 }
             }
         }
-        public BookmarkType bookmarkType
-        {
-            get => model.bookmarkType;
-            set
-            {
-                if (value != model.bookmarkType)
-                {
-                    model.bookmarkType = value;
-                    SelectedViewModel = detailViewmodels[bookmarkType]!;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        //public BookmarkType bookmarkType
+        //{
+        //    get => model.bookmarkType;
+        //    set
+        //    {
+        //        if (value != model.bookmarkType)
+        //        {
+        //            model.bookmarkType = value;
+        //            SelectedViewModel = detailViewmodels[bookmarkType]!;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
         private BaseViewModel _selectedViewModel;
         public BaseViewModel SelectedViewModel
         {
@@ -91,18 +91,18 @@ namespace ArchiveBrowser.ViewModels
         public string ID { get; set; } = Guid.Empty.ToString();
         public PageVM? Page { get; set; }
 
-        public BookmarkVM(IBookmark model)
+        public BookmarkVM(IBookmarkBase model)
         {
             this.model = model;
             detailViewmodels.Add(BookmarkType.birth, new BirthBookmarkVM(model));
-            detailViewmodels.Add(BookmarkType.marriage, new MarriageBookmarkVM(model));
-            detailViewmodels.Add(BookmarkType.death, new DeathBookmarkVM(model));
-            detailViewmodels.Add(BookmarkType.misc, new MiscBookmarkVM(model));
-            //_selectedViewModel = detailViewmodels[model.bookmarkType]!;
-            _selectedViewModel = detailViewmodels[BookmarkType.marriage];
+            //detailViewmodels.Add(BookmarkType.marriage, new MarriageBookmarkVM(model));
+            //detailViewmodels.Add(BookmarkType.death, new DeathBookmarkVM(model));
+            //detailViewmodels.Add(BookmarkType.misc, new MiscBookmarkVM(model));
+            ////_selectedViewModel = detailViewmodels[model.bookmarkType]!;
+            //_selectedViewModel = detailViewmodels[BookmarkType.marriage];
         }
 
-        public IBookmark model { get; }
+        public IBookmarkBase model { get; }
 
         Dictionary<BookmarkType, BaseViewModel?> detailViewmodels = new();
     }
@@ -171,7 +171,8 @@ namespace ArchiveBrowser.ViewModels
         }
         public string Witnesses
         {
-            get => model.Others;
+            get => model.
+               ;
             set
             {
                 if (model.Others != value)
@@ -194,12 +195,12 @@ namespace ArchiveBrowser.ViewModels
             }
         }
 
-        public BirthBookmarkVM(IBookmark model)
+        public BirthBookmarkVM(IBookmarkBase model)
         {
             this.model = model;
         }
 
-        private IBookmark model;
+        private IBookmarkBase model;
 
     }
     class MarriageBookmarkVM : BaseViewModel
