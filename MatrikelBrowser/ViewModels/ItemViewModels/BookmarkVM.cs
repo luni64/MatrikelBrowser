@@ -8,6 +8,11 @@ using System.Windows.Media.Media3D;
 
 namespace ArchiveBrowser.ViewModels
 {
+    //public enum BookmarkTypes
+    //{
+    //    Birth, Marriage, Death, Misc
+    //};
+
     public class BookmarkVM : BaseViewModel
     {
         public string Title
@@ -34,6 +39,19 @@ namespace ArchiveBrowser.ViewModels
                 }
             }
         }
+
+        private BookmarkType _bookmarkType;
+        public BookmarkType bookmarkType
+        {
+            get => _bookmarkType;
+            set 
+            {
+                SetProperty(ref  _bookmarkType, value);
+
+            }
+        }
+
+
         //public BookmarkType bookmarkType
         //{
         //    get => model.bookmarkType;
@@ -100,6 +118,8 @@ namespace ArchiveBrowser.ViewModels
             //detailViewmodels.Add(BookmarkType.misc, new MiscBookmarkVM(model));
             ////_selectedViewModel = detailViewmodels[model.bookmarkType]!;
             //_selectedViewModel = detailViewmodels[BookmarkType.marriage];
+
+            bookmarkType = BookmarkType.marriage;
         }
 
         public IBookmarkBase model { get; }
@@ -123,17 +143,17 @@ namespace ArchiveBrowser.ViewModels
         }
         public bool Legitimate
         {
-            get => model.Flag1;
+            get => model.Child?.state == birthState.legitmate;
             set
             {
-                if (value != model.Flag1)
+                if (value != (model.Child?.state == birthState.legitmate))
                 {
-                    model.Flag1 = value;
+                    model.Child?.state = value;
                     OnPropertyChanged();
                 }
             }
         }
-        public string Father
+        public Person? Father
         {
             get => model.Father;
             set
@@ -145,39 +165,38 @@ namespace ArchiveBrowser.ViewModels
                 }
             }
         }
-        public string Mother
+        public string? Mother
         {
-            get => model.Mother;
+            get => model.Mother?.Name;
             set
             {
-                if (model.Mother != value)
+                if (model.Mother?.Name != value)
                 {
-                    model.Mother = value;
+                    model.Mother.Name = value;
                     OnPropertyChanged();
                 }
             }
         }
         public string BaptizeDate
         {
-            get => model.Date1;
+            get => model.EventDate;
             set
             {
-                if (model.Date1 != value)
+                if (model.EventDate != value)
                 {
-                    model.Date1 = value;
+                    model.EventDate = value;
                     OnPropertyChanged();
                 }
             }
         }
-        public string Witnesses
+        public string? Witnesses
         {
-            get => model.
-               ;
+            get => model.GodParent?.Name;
             set
             {
-                if (model.Others != value)
+                if (model.GodParent?.Name != value)
                 {
-                    model.Others = value;
+                    model.GodParent!.Name = value;
                     OnPropertyChanged();
                 }
             }
@@ -195,12 +214,12 @@ namespace ArchiveBrowser.ViewModels
             }
         }
 
-        public BirthBookmarkVM(IBookmarkBase model)
+        public BirthBookmarkVM(BirthBookmark model)
         {
             this.model = model;
         }
 
-        private IBookmarkBase model;
+        private BirthBookmark model;
 
     }
     class MarriageBookmarkVM : BaseViewModel
