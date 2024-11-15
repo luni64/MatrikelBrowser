@@ -133,7 +133,7 @@
                             Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4"
                             Margin="5"
                             TextWrapping="WrapWithOverflow" AcceptsReturn="True"  AcceptsTab="True"               
-                            SpellCheck.IsEnabled="True"
+                            SpellCheck.IsEnabled="False"
                             Style="{StaticResource MahApps.Styles.TextBox}"
                             mah:TextBoxHelper.UseFloatingWatermark="True"
                             mah:TextBoxHelper.Watermark="Transkript / Notizen"
@@ -292,6 +292,7 @@
                 DockPanel.Dock="Right" Width="100" Margin="10,0,0,0"
                 Style="{StaticResource MahApps.Styles.Button.Accent.Win10}"
                 IsDefault="True"
+                Command="{Binding cmdSaveDetails}"
                 >
                 Speichern
             </Button>

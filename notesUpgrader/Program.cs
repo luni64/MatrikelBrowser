@@ -45,6 +45,7 @@ namespace notesUpgrader
                                     Y = bm.Y,
                                     W = bm.W,
                                     H = bm.H,
+                                    EventDate = bm.Date1,
                                     Transkript = bm.Transkript,
                                     SheetNr = bm.SheetNr,
                                     Child = new Person

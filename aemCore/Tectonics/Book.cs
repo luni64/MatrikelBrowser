@@ -26,6 +26,8 @@ namespace AEM
 
        
         public bool hasInfo { get; set; } = false;
+        
+                
         public string Type
         {
             get

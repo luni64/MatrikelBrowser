@@ -196,7 +196,7 @@ namespace ArchiveBrowser
             {
                 var detailsView = new BookmarkDetailsView(dc);
                 detailsView.Owner = Application.Current.MainWindow;
-                detailsView.Show();
+                detailsView.ShowDialog();
             }
         }
     }
