@@ -13,8 +13,7 @@ namespace AEM
     {
         public string URL { get; }
         public string localFilename { get; }
-        public List<IBookmark> Bookmarks { get; } = new();
-
+               
         public override string ToString() => localFilename;
 
         public Page(string downloadUrl, string localFilename)

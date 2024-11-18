@@ -46,19 +46,21 @@
             <Button 
                 Content="Report" 
                 Click="ReportClick"  
-                DockPanel.Dock="Bottom" Margin="10,0,10,0"
+                DockPanel.Dock="Bottom" Margin="10,5,10,35"
                 />
 
             <Button 
                 Content="Lesezeichen Löschen" 
+                ToolTip="Löscht das ausgewählte Lesezeichen"
                 Command="{Binding cmdDelBookmark}"                
-                DockPanel.Dock="Bottom" Margin="10,0,10,0"
+                DockPanel.Dock="Bottom" Margin="10,5,10,5"
                 />
 
             <Button 
                 Content="Neues Lesezeichen" 
+                ToolTip="Erstellt eine neues Lesezeichen auf der geöffneten Seite"
                 Command="{Binding cmdAddBookmark, Mode=OneWay}"                              
-                DockPanel.Dock="Bottom" Margin="10"
+                DockPanel.Dock="Bottom" Margin="10,5,10,5"
                 />
 
             <ListBox       
@@ -77,7 +79,9 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="{Binding SheetNr,  StringFormat=Blatt {0}}" HorizontalAlignment="Stretch" />
                             <TextBlock Grid.Column="1" Text="{Binding Title, Mode=TwoWay}" ToolTip="Doppel-Klick zum Editieren"  />
-                            <Button   
+                            <Button                                   
+                                Command="{Binding cmdDelSelf}"
+                                
                                 x:Name="delButton"
                                 Padding="0"
                                 Margin="5,0,0,0"

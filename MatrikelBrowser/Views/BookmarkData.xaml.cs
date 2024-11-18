@@ -15,21 +15,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace ArchiveBrowser.Views
-{
-    /// <summary>
-    /// Interaction logic for BookmarkData.xaml
-    /// </summary>
+{   
     public partial class BookmarkDetailsView : MetroWindow
     {
         public BookmarkDetailsView(BookmarkVM DataContext)
         {
             InitializeComponent();
             this.DataContext = DataContext;
-        }
-
-        private void StackPanel_TextInput(object sender, TextCompositionEventArgs e)
-        {
-
-        }
+        }        
     }
 }

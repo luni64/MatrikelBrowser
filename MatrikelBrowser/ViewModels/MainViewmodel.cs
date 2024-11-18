@@ -1,8 +1,5 @@
 ﻿using AEM;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Threading;
+using Interfaces;
 
 namespace ArchiveBrowser.ViewModels
 {
@@ -22,12 +19,13 @@ namespace ArchiveBrowser.ViewModels
 
         public MainViewModel()
         {
+            model = new aemCore();
             tectonicsVM = new(model);
         }
 
         #region private methods and fields       
         private RelayCommand? _cmdSave;
-        private readonly aemCore model = new();
+        private readonly ICore model;
         #endregion
     }
 }

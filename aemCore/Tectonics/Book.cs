@@ -10,63 +10,44 @@ namespace AEM
 {
     public class Book : IBook
     {
-        public IParish? Parish { get; set; } = null;
         public string ID { get; set; } = "";
-        public string Title { get; set; } = "";
-        public string? Details { get; set; } = null;
-        public Guid BookInfoID { get; set; }
-        public Guid DescriptionID { get; set; }
-        public string BookDescriptionURL => $"https://digitales-archiv.erzbistum-muenchen.de/actaproweb/document/Vz_{DescriptionID}";
-        public List<IPage> Pages { get; } = [];
-
-        //   [JsonConverter(typeof(ConcreteConverter<List<IBookInfo>>))]
-        public IBookInfo Info { get; set; } = new BookInfo();//=> _bookinfo ??= new BookInfo(this);  
-
-       // public IBookInfo2 Info2 { get; set; } = new BookInfo2();
-
-       
-        public bool hasInfo { get; set; } = false;
-        
-                
-        public string Type
+        public BookType Type
         {
             get
             {
                 string t = Title.ToLower();
-                if (t.Contains("tauf")) return "Taufen";
-                if (t.Contains("trau")) return "Trauungen";
-                if (t.Contains("misch")) return "Mischbände";
-                if (t.Contains("sterb")) return "Sterbefälle";
-                return "Verschiedenes";
+                if (t.Contains("tauf")) return BookType.Taufen;
+                if (t.Contains("trau")) return BookType.Trauungen;
+                if (t.Contains("misch")) return BookType.Mischbände;
+                if (t.Contains("sterb")) return BookType.Sterbefälle;
+                return BookType.Verschiedenes;// "Verschiedenes";
             }
         }
-        public static DirectoryInfo? baseFolder { get; set; }
-        public DirectoryInfo? bookFolder { get; internal set; }
-        public DirectoryInfo? pagesFolder { get; internal set; }
-        public override string ToString() => $"{ID}-{Title}-{BookInfoID}";
-
+        public string Title { get; set; } = "";
+        public List<IPage> Pages { get; } = [];
+        public IBookInfo Info { get; set; } = new BookInfo();
+        public IParish? Parish { get; set; } = null;
+        public Guid BookInfoID { get; set; } // needs to be public, filled by json deserializer
+        public override string ToString() => $"{Parish?.ToString()} {ID}-{Title}";
+        
         public void LoadPageInfo()
         {
             if (hasInfo) return;  // did we already load the page info? -> no need to parse again
-
-            bookFolder = new(Path.Combine(baseFolder!.FullName, "books", ID));
+            var bookFolder = new DirectoryInfo(Path.Combine(baseFolder!.FullName, "books", ID));
             pagesFolder = new(Path.Combine(bookFolder.FullName, "pages"));
-
             loadBookInfo(bookFolder);
-            //loadBookDetails(bookFolder);
-
-
-            hasInfo = true;
-            //Task.Delay(5000).Wait();
+            hasInfo = true;            
         }
-
-        static HttpClient httpClient = new();
+       
+        internal static DirectoryInfo? baseFolder { get; set; }
 
         private void loadBookInfo(DirectoryInfo bookFolder)
         {
             FileInfo bookInfoFile = new(Path.Combine(bookFolder.FullName, "bookInfo.xml"));
             DirectoryInfo pagesFolder = new(Path.Combine(bookFolder.FullName, "pages"));
-
+                        
+            string bookInfoURL = $"https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?id=Rep_{BookInfoID}_mets_actapro.xml";
+            Info.METS_URL = $"https://dfg-viewer.de/show/?tx_dlf[id]={bookInfoURL}";
             string bookInfoXML;
             if (bookInfoFile.Exists && bookInfoFile.Length > 0) // did we already download the info file from the aem webpage? 
             {
@@ -77,8 +58,6 @@ namespace AEM
             {
                 Trace.WriteLine("download bookInfoFile");
                 pagesFolder.Create();
-                string bookInfoURL = $"https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?id=Rep_{BookInfoID}_mets_actapro.xml";
-
                 bookInfoXML = httpClient.GetStringAsync(bookInfoURL).GetAwaiter().GetResult();
                 File.WriteAllText(bookInfoFile.FullName, bookInfoXML);
             }
@@ -94,29 +73,11 @@ namespace AEM
                     Pages.Add(new Page(url, localName));
                 }
             }
-        }
-        private void loadBookDetails(DirectoryInfo bookFolder)
-        {
-            // client.DownloadFile("https://digitales-archiv.erzbistum-muenchen.de/actaproweb/archive.jsf?id=Vz++++++DB0061AF-127D-4903-9045-9D91A4536B64", "test.html");
-            string url = $"https://digitales-archiv.erzbistum-muenchen.de/actaproweb/document/Vz_{DescriptionID}";
-            var description = httpClient.GetStringAsync(url).GetAwaiter().GetResult();
+        }        
 
-            var matches = Regex.Matches(description, @"(?<=data-label=)[^<]*");
-            foreach (Match match in matches)
-            {
-
-                Trace.WriteLine(match.Value);
-            }
-            //match = Regex.Match(description, @"(?<=Verweis:)[^<]*");
-
-            //File.WriteAllText(bookInfoFile.FullName, bookInfoXML);
-        }
-
-        // private BookInfo? _bookinfo;
-
-        //public Book()
-        //{
-        //    Note = new(this);
-        //}
+        private static HttpClient httpClient = new();
+        private DirectoryInfo? pagesFolder;
+        //private Guid DescriptionID;
+        private bool hasInfo;
     }
 }

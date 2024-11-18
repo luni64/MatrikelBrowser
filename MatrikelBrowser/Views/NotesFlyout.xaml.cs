@@ -1,21 +1,12 @@
 ﻿using ArchiveBrowser.ViewModels;
-using System.ComponentModel;
 using ArchiveBrowser.Views;
-using SimpleWPFReporting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
+//using System.Windows.Forms;
+//using System.Windows.Input;
 
 namespace ArchiveBrowser
 {
@@ -30,32 +21,30 @@ namespace ArchiveBrowser
             lbBookmarks.Items.SortDescriptions.Add(new SortDescription("SheetNr", ListSortDirection.Ascending));
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is BookVM vm)
-            {
-                ////vm.cmdGenerateReport.Execute(null);
-
-                //ReportView report = new ReportView();
-                //report.DataContext = vm.reportVM;
-                //report.ShowDialog();
-
-                //   Report.PrintReport(report.mainGrid,vm.reportVM,ReportOrientation.Portrait);
-            }
-        }
 
         private void ReportClick(object sender, RoutedEventArgs e)
         {
             if (DataContext is BookVM dc)
             {
-                Cursor = Cursors.Wait;
+                Cursor = System.Windows.Input.Cursors.Wait;
                 dc.cmdGenerateReport.Execute(null);
                 if (dc.ReportFile != null)
                 {
-                    var view = new ReportView(dc.ReportFile);
-                    view.Show();
+                    Process.Start(new ProcessStartInfo("cmd", $"/c start {dc.ReportFile}")
+                    {
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Minimized
+                    });                   
                 }
-                Cursor = Cursors.Arrow;
+                else
+                {
+                    System.Windows.MessageBox.Show(
+                        "Der Report kann nicht erzeugt werden!\nFalls der Report bereits geöffnet ist, schließen Sie bitte die Datei und versuchen Sie es nochmal.",
+                        "Datei-Zugriffsfehler",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+                Cursor = System.Windows.Input.Cursors.Arrow;
 
             }
 

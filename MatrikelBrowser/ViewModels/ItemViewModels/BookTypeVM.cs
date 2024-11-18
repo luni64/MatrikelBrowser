@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace ArchiveBrowser.ViewModels
 {
@@ -7,9 +9,9 @@ namespace ArchiveBrowser.ViewModels
         public string Name { get; }
         public List<BookVM> BookVMs { get; } = new();
 
-        public BookTypeVM(string Name)
+        public BookTypeVM(BookType Name)
         {
-            this.Name = Name;
+            this.Name = Enum.GetName(typeof(BookType), Name) ?? "?";            
             Indent = 10;
         }
     }

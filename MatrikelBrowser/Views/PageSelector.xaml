@@ -49,6 +49,7 @@
             x:Name="BookSlider"             
             Value="{Binding SelectedPageNr, Delay=100}" 
             Maximum ="{Binding PageVMs.Count, Mode=OneWay}" 
+            Minimum="1"
             IsSnapToTickEnabled="True"
             IsSelectionRangeEnabled="False"
              

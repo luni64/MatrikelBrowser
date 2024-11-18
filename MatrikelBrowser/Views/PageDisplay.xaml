@@ -28,8 +28,7 @@
         <Canvas x:Name="PageCanvas" >
         <Canvas.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Add Bookmark here" Click="AddBookmarkClick"/>
-                <MenuItem Header="Edit"/>
+                <MenuItem Header="Neue Fundstelle anlegen" Click="AddBookmarkClick"/>               
             </ContextMenu>
         </Canvas.ContextMenu>
             <Image 

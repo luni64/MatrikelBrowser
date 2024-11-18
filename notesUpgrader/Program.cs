@@ -1,10 +1,63 @@
 ﻿using AEM;
 using Interfaces;
 using Newtonsoft.Json;
-using Windows.Networking.Connectivity;
 
 namespace notesUpgrader
 {
+    public class Bookmark// : IBookmark
+    {
+        public string Title { get; set; } = String.Empty;
+        public string Person1 { get; set; } = String.Empty;
+        public string Person2 { get; set; } = String.Empty;
+        public string Person3 { get; set; } = String.Empty;
+        public string Person4 { get; set; } = String.Empty;
+        public string Person5 { get; set; } = String.Empty;
+        public string Person6 { get; set; } = String.Empty;
+        public string Father { get; set; } = String.Empty;
+        public string Mother { get; set; } = String.Empty;
+        public string Others { get; set; } = String.Empty;
+        public string EventDate { get; set; } = String.Empty;
+        public string Date1 { get; set; } = String.Empty;
+        public string Date2 { get; set; } = String.Empty;
+        public string Status1 { get; set; } = String.Empty;
+        public string Status2 { get; set; } = String.Empty;
+        public string Status3 { get; set; } = String.Empty;
+        public string Status4 { get; set; } = String.Empty;
+        public bool Flag1 { get; set; } = true;
+        public bool Flag2 { get; set; }
+
+        public string Transkript { get; set; } = String.Empty;
+        public BookmarkType bookmarkType { get; set; }
+        public int SheetNr { get; set; }
+
+       // public Rectangle cutOut { get; set; }
+
+        public int X { get; set; }
+        public int Y { get; set; }
+        public double W { get; set; } = 400;
+        public double H { get; set; } = 200;
+
+    }
+
+    public class oldBookInfo// : IOldBookInfo
+    {
+        public List<Bookmark> Bookmarks { get; set; } = [];
+        public string BookID { get; set; } = string.Empty;
+        public string note { get; set; } = string.Empty;
+
+        public oldBookInfo(List<Bookmark>? Bookmarks = null, string BookID = "", string note = "")
+        {
+            this.Bookmarks = Bookmarks/*?.ToList<IBookmark>()*/ ?? [];
+            this.BookID = BookID;
+            this.note = note;
+        }
+
+        public override string ToString()
+        {
+            return BookID;
+        }
+    }
+
     internal class Program
     {
         static void Main(string[] args)
@@ -32,128 +85,112 @@ namespace notesUpgrader
                         BookID = oldInfo.BookID,
                         note = oldInfo.note,
                     };
-                    foreach (var bm in oldInfo.Bookmarks)
+                    foreach (var obm in oldInfo.Bookmarks)
                     {
-                        Console.WriteLine(bm.Title);
-                        switch (bm.bookmarkType)
+                        Console.WriteLine(obm.Title);
+
+                        var nbm = new BookmarkBase
+                        {
+                            Title = obm.Title,
+                            X = obm.X,
+                            Y = obm.Y,
+                            W = obm.W,
+                            H = obm.H,
+                            EventDate = obm.Date1,
+                            Transcript = obm.Transkript,
+                            SheetNr = obm.SheetNr
+                        };
+
+                        //IBookmarkDetails details;
+
+                        switch (obm.bookmarkType)
                         {
                             case BookmarkType.birth:
-                                var bbm = new BirthBookmark
+                                nbm.Details = new BirthDetails
                                 {
-                                    Title = bm.Title,
-                                    X = bm.X,
-                                    Y = bm.Y,
-                                    W = bm.W,
-                                    H = bm.H,
-                                    EventDate = bm.Date1,
-                                    Transkript = bm.Transkript,
-                                    SheetNr = bm.SheetNr,
                                     Child = new Person
                                     {
-                                        Name = bm.Person1,
-                                        BirthDate = bm.EventDate,
-                                        state = bm.Flag1 ? birthState.legitmate : birthState.illegitmate
+                                        Name = obm.Person1,
+                                        BirthDate = obm.EventDate,
+                                        state = obm.Flag1 ? birthState.legitmate : birthState.illegitmate
                                     },
                                     Father = new Person
                                     {
-                                        Name = bm.Father,
+                                        Name = obm.Father,
                                         //Occupation = bm.
                                     },
                                     Mother = new Person
                                     {
-                                        Name = bm.Mother
+                                        Name = obm.Mother
                                         //Occupation = bm.
                                     }
-                                };
-                                newInfo.Bookmarks.Add(bbm);
-
+                                }; 
                                 break;
 
                             case BookmarkType.marriage:
-                                var mbm = new MarriageBookmark
+                                nbm.Details = new MarriageDetails
                                 {
-                                    Title = bm.Title,
-                                    X = bm.X,
-                                    Y = bm.Y,
-                                    W = bm.W,
-                                    H = bm.H,
-                                    Transkript = bm.Transkript,
-                                    SheetNr = bm.SheetNr,
-                                    EventDate = bm.EventDate,
-
                                     Groom = new Person
                                     {
-                                        Name = bm.Person1,
-                                        BirthDate = bm.Date1,
-                                        Occupation = bm.Status1,
+                                        Name = obm.Person1,
+                                        BirthDate = obm.Date1,
+                                        Occupation = obm.Status1,
                                     },
 
                                     Bride = new Person
                                     {
-                                        Name = bm.Person2,
-                                        BirthDate = bm.Date2,
-                                        Occupation = bm.Status2,
+                                        Name = obm.Person2,
+                                        BirthDate = obm.Date2,
+                                        Occupation = obm.Status2,
                                     },
                                     GroomFather = new Person
                                     {
-                                        Name = bm.Person3,
-                                        Occupation = bm.Status3,
+                                        Name = obm.Person3,
+                                        Occupation = obm.Status3,
                                     },
                                     GroomMother = new Person
                                     {
-                                        Name = bm.Person4,
-                                        Occupation = bm.Status3,
+                                        Name = obm.Person4,
+                                        Occupation = obm.Status3,
                                     },
                                     BrideFather = new Person
                                     {
-                                        Name = bm.Person5,
-                                        Occupation = bm.Status4,
+                                        Name = obm.Person5,
+                                        Occupation = obm.Status4,
                                     },
                                     BrideMother = new Person
                                     {
-                                        Name = bm.Person6,
+                                        Name = obm.Person6,
                                     },
                                     Witnesses = new Person
                                     {
-                                        Name = bm.Others,
+                                        Name = obm.Others,
                                     }
-                                };
-                                newInfo.Bookmarks.Add(mbm);
-                                break;
-
-                            case BookmarkType.misc:
-                                var miscBM = new MiscBookmark
-                                {
-                                    Title = bm.Title,
-                                    X = bm.X,
-                                    Y = bm.Y,
-                                    W = bm.W,
-                                    H = bm.H,
-                                    Transkript = bm.Transkript,
-                                    SheetNr = bm.SheetNr,
-                                    EventDate = bm.EventDate,
-                                };
-                                newInfo.Bookmarks.Add(miscBM);
+                                };                                
                                 break;
 
                             default:
-                                var defBM = new BookmarkBase
-                                {
-                                    Title = bm.Title,
-                                    X = bm.X,
-                                    Y = bm.Y,
-                                    W = bm.W,
-                                    H = bm.H,
-                                    Transkript = bm.Transkript,
-                                    SheetNr = bm.SheetNr,
-                                };
-                                newInfo.Bookmarks.Add(defBM);
+                            //case BookmarkType.misc:
+                                nbm.Details = new MiscDetails();                                
                                 break;
-                        }
+
+                                //var defBM = new BookmarkBase
+                                //{
+                                //    Title = obm.Title,
+                                //    X = obm.X,
+                                //    Y = obm.Y,
+                                //    W = obm.W,
+                                //    H = obm.H,
+                                //    Transkript = obm.Transkript,
+                                //    SheetNr = obm.SheetNr,
+                                //};
+                                //newInfo.Bookmarks.Add(defBM);
+                               // break;
+                        }                                                                 
+                        newInfo.Bookmarks.Add(nbm);
                     }
                     newInfos.Add(newInfo);
                 }
-
 
 
                 json = JsonConvert.SerializeObject(newInfos, Formatting.Indented, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });

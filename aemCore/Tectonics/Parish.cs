@@ -21,11 +21,13 @@ namespace AEM
             Church = church;
             this.startYear = startYear;
             this.endYear = endYear;
-            Books = books.ToList<IBook>();
+            this.Books = books?.ToList<IBook>()??[];
+            //Books = books?.ToList<IBook>();
         }
 
        // [JsonConverter(typeof(ConcreteConverter<List<Book>>))]
         public List<IBook> Books { get; set; } = new();
+        
 
         public override string ToString() => $"{ID}-{Place}-{Church}";
     }

@@ -6,13 +6,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:ArchiveBrowser.Views"
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-    xmlns:ViewModels="clr-namespace:ArchiveBrowser.ViewModels" 
-    d:DataContext="{d:DesignInstance Type=ViewModels:ReportVM}" 
+    xmlns:ViewModels="clr-namespace:ArchiveBrowser.ViewModels"    
     mc:Ignorable="d"
     Title="ReportView" Height="450" Width="800">
 
     <Grid>
-        <wv2:WebView2 x:Name="webView"/>
+        <!--<wv2:WebView2 x:Name="webView"/>-->
     </Grid>
 
 </Window>

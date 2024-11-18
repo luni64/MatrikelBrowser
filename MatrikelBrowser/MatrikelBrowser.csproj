@@ -6,19 +6,23 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>icons8-books-64.ico</ApplicationIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="arrow.png" />
-    <None Remove="Views\arrow.png" />
+    <Compile Remove="Views\ReportView.xaml.cs" />
   </ItemGroup>
 
+ 
   <ItemGroup>
     <Page Remove="Mainndow.xaml" />
+    <Page Remove="Views\ReportView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="icons8-books-64.ico" />
+    <Content Include="icons8-books-64.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -36,15 +40,7 @@
     <PackageReference Include="itext" Version="8.0.5" />
     <PackageReference Include="MahApps.Metro" Version="3.0.0-alpha0492" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="5.1.0" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2470-prerelease" />
-    <PackageReference Include="SimpleWPFReportingNETCore" Version="1.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0-preview.3.24172.9" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="arrow.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-
+ 
 </Project>

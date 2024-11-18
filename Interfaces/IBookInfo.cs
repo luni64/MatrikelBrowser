@@ -1,21 +1,10 @@
-﻿using System.Collections.Generic;
-
-
-namespace Interfaces
+﻿namespace Interfaces
 {
     public interface IBookInfo
     {
+        string BookID { get; set; }
+        string METS_URL { get; set; }
+        string note { get; set; }
         List<IBookmarkBase> Bookmarks { get; set; }
-
-        string BookID { get; set; }
-        string note { get; set; }
-    }
-
-    public interface IOldBookInfo
-    {
-        List<IBookmark> Bookmarks { get; set; }
-
-        string BookID { get; set; }
-        string note { get; set; }
-    }
+    }    
 }

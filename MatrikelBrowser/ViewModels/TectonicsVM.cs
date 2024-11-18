@@ -1,10 +1,7 @@
-﻿using AEM;
-using System;
+﻿using Interfaces;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArchiveBrowser.ViewModels
 {
@@ -59,7 +56,7 @@ namespace ArchiveBrowser.ViewModels
         }
         #endregion
 
-        public TectonicsVM(aemCore model)
+        public TectonicsVM(ICore model)  // aem core should get an interface
         {
             this.model = model;
             // setup all item viewmodels
@@ -71,10 +68,10 @@ namespace ArchiveBrowser.ViewModels
                 {
                     ParishVM parishVM = new(Parish);
                     var BookGroups = Parish.Books.GroupBy(b => b.Type);
-                    foreach (var bookGroup in BookGroups)
+                    foreach (var bookGroup in BookGroups.OrderBy(g => g.Key))
                     {
                         BookTypeVM typeVM = new(bookGroup.Key);
-                        foreach (var book in bookGroup)
+                        foreach (var book in bookGroup.OrderBy(b=>b.ID))
                         {
                             typeVM.BookVMs.Add(new BookVM(book, parishVM));
                         }
@@ -98,7 +95,7 @@ namespace ArchiveBrowser.ViewModels
             }
         }
 
-        aemCore model;
+        ICore model;
 
         private BookVM? _selectedBook;
         RelayCommand? _cmdToogleFavorite;

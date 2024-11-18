@@ -16,7 +16,7 @@ namespace ArchiveBrowser.ViewModels
         void doChangePage(object? delta)
         {
             int pageNr = SelectedPageNr + (int)(delta ?? 0);
-            SelectedPageNr = Math.Min(Math.Max(0, pageNr), PageVMs.Count - 1); // clamp
+            SelectedPageNr = Math.Min(Math.Max(1, pageNr), PageVMs.Count); // clamp
         }
 
         public RelayCommand cmdAddBookmark => _cmdAddBookmark ??= new RelayCommand(doAddBookmark);
@@ -26,56 +26,49 @@ namespace ArchiveBrowser.ViewModels
             {
                 var (x, y) = pos != null ? ((int X, int Y))pos! : (0, 0);
 
-                BookmarkBase bm = new()
+                IBookmarkBase bm = new BookmarkBase()
                 {
-                    SheetNr = PageVMs.IndexOf(SelectedPage),
+                    SheetNr = PageVMs.IndexOf(SelectedPage)+1,
                     Title = "Neue Fundstelle",
                     X = x,
-                    Y = y,
-                    // cutOut = new System.Drawing.Rectangle((System.Drawing.Point) pos!, new System.Drawing.Size(0,0)),
+                    Y = y,                               
                 };
 
-                //AEM.Bookmark bm = new()
-                //{
-
-                //    SheetNr = PageVMs.IndexOf(SelectedPage),
-                //    Title = "Neue Fundstelle",
-                //    X = x,
-                //    Y = y,
-                //    // cutOut = new System.Drawing.Rectangle((System.Drawing.Point) pos!, new System.Drawing.Size(0,0)),
-                //};
-
                 bookmarkVMs.Add(
-                    new BookmarkVM(bm)
+                    new BookmarkVM(bm, this)
                     {
                         ID = Guid.NewGuid().ToString(),
                         Page = SelectedPage,
-                        isLocked = false                        
+                        isLocked = false,
+                        bookmarkType = this.model.Type switch
+                        {
+                            BookType.Taufen => BookmarkType.birth,
+                            BookType.Trauungen => BookmarkType.marriage,
+                            BookType.Sterbefälle => BookmarkType.death,
+                            _ => BookmarkType.misc,                            
+                        }
                     }
-                );
-               ///// model.Info.Bookmarks.Add(bm);
+                ); 
+                model.Info.Bookmarks.Add(bm);
             }
         }
 
         public RelayCommand cmdDelBookmark => _cmdDelBookmark ??= new RelayCommand(doDelBookmark);
         void doDelBookmark(object? s)
-        {
-            /////
-            //var bm = SelectedBookmark;
-            //if (SelectedBookmark != null)
-            //{
-            //    model.Info.Bookmarks.Remove(SelectedBookmark.model);
-            //    bookmarkVMs.Remove(SelectedBookmark);
-            //}
+        {            
+            var bm = SelectedBookmark;
+            if (SelectedBookmark != null)
+            {
+                model.Info.Bookmarks.Remove(SelectedBookmark.model);
+                bookmarkVMs.Remove(SelectedBookmark);
+            }
         }
 
         public RelayCommand cmdGenerateReport => _cmdGenerateReport ??= new RelayCommand(doGenerateReport);
         void doGenerateReport(object? s)
         {
-            ReportFile = AEM.Report.Generate(model)?.FullName;
-        }
-
-      //  public ReportVM reportVM => _reportVM ??= new ReportVM(this.model);
+            ReportFile = Report.Generate(model)?.FullName;
+        }   
 
         #endregion
 
@@ -116,7 +109,7 @@ namespace ArchiveBrowser.ViewModels
             set
             {
                 SetProperty(ref _selectedPageNr, value);
-                SelectedPage = PageVMs?.ElementAtOrDefault(SelectedPageNr);
+                SelectedPage = PageVMs?.ElementAtOrDefault(SelectedPageNr-1);
             }
         }
         public override bool IsSelected
@@ -147,7 +140,7 @@ namespace ArchiveBrowser.ViewModels
             set
             {
                 SetProperty(ref _selectedBookmark, value);
-                SelectedPageNr = _selectedBookmark?.SheetNr ?? 0;
+                SelectedPageNr = _selectedBookmark?.SheetNr ?? 1;
             }
         }
         public string? ReportFile { get; internal set; }
@@ -168,7 +161,7 @@ namespace ArchiveBrowser.ViewModels
                         {
                             PageVMs.Add(new PageVM(page, this));
                         }
-                        SelectedPageNr = 0;
+                        SelectedPageNr = 1;
                         OnPropertyChanged("bookmarkVMs");
                     }
                 });
@@ -176,11 +169,11 @@ namespace ArchiveBrowser.ViewModels
 
                 foreach (var bm in model.Info.Bookmarks)
                 {
-                    if (bm.SheetNr < PageVMs.Count) // just to be sure...
+                    if (bm.SheetNr <= PageVMs.Count) // just to be sure...
                     {                       
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            bookmarkVMs.Add(new BookmarkVM(bm)
+                            bookmarkVMs.Add(new BookmarkVM(bm,this)
                             {
                                 ID = Guid.NewGuid().ToString(),
                                 Page = PageVMs[bm.SheetNr],
@@ -222,7 +215,7 @@ namespace ArchiveBrowser.ViewModels
         private BookmarkVM? _selectedBookmark = null;
         private NoteVM? _noteVM;
         private string? _subTitle;
-        private ReportVM? _reportVM;
+        //private ReportVM? _reportVM;
         private readonly IBook model;
         private double _panX;
         private double _panY;
