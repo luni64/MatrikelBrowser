@@ -10,11 +10,9 @@ using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.WindowsAPICodePack.Shell;
 using System;
-using System.Diagnostics.SymbolStore;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using static System.Net.Mime.MediaTypeNames;
 using Image = iText.Layout.Element.Image;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
@@ -258,7 +256,7 @@ namespace AEM
                        .Add(new Tab()).Add("Mutter:").Add(new Tab()).Add(md.GroomMother.Name).Add("\n")
 
                        .Add("\nBraut:").Add(new Tab()).Add(md.Bride.Name).Add(String.IsNullOrEmpty(md.Bride.BirthDate) ? " " : $" (*{md.Bride.BirthDate}) ").Add(md.Bride.Occupation).Add("\n")
-                       .Add(new Tab()).Add("Vater:").Add(new Tab()).Add(md.BrideFather.Name).Add(md.BrideFather.Occupation).Add("\n")
+                       .Add(new Tab()).Add("Vater:").Add(new Tab()).Add(md.BrideFather.Name).Add(" ").Add(md.BrideFather.Occupation).Add("\n")
                        .Add(new Tab()).Add("Mutter:").Add(new Tab()).Add(md.BrideMother.Name).Add("\n")
 
                        .Add("\nZeugen:").Add(new Tab()).Add(md.Witnesses.Name)
