@@ -54,13 +54,13 @@ namespace ArchiveBrowser.ViewModels
         }
 
         public RelayCommand cmdDelBookmark => _cmdDelBookmark ??= new RelayCommand(doDelBookmark);
-        void doDelBookmark(object? s)
+        void doDelBookmark(object? o)
         {            
-            var bm = SelectedBookmark;
-            if (SelectedBookmark != null)
+            //var bm = SelectedBookmark;
+            if (o is BookmarkVM bookmarkVM)
             {
-                model.Info.Bookmarks.Remove(SelectedBookmark.model);
-                bookmarkVMs.Remove(SelectedBookmark);
+                model.Info.Bookmarks.Remove(bookmarkVM.model);
+                bookmarkVMs.Remove(bookmarkVM);
             }
         }
 

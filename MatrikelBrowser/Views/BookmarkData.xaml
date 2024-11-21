@@ -105,13 +105,13 @@
                             mah:TextBoxHelper.UseFloatingWatermark="True" 
                             />
                         <TextBox 
-                            Text="{Binding BirthDate}" FontSize="15"
+                            Text="{Binding BaptismDate}" FontSize="15"
                             mah:TextBoxHelper.Watermark="Taufdatum"
                             Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Margin="10,10,0,0"
                             mah:TextBoxHelper.UseFloatingWatermark="True"
                             />
                         <TextBox 
-                            Text="{Binding BaptismDate}" FontSize="15"
+                            Text="{Binding BirthDate}" FontSize="15"
                             mah:TextBoxHelper.Watermark="Geburtsdatum"
                             Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="1" Margin="10,10,0,0"
                             mah:TextBoxHelper.UseFloatingWatermark="True"
@@ -310,7 +310,6 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
-
                         </Grid.RowDefinitions>
 
                         <TextBox    
@@ -388,15 +387,9 @@
             <Button 
                 DockPanel.Dock="Right" Width="100" Margin="10,0,0,0"
                 Style="{StaticResource MahApps.Styles.Button.Accent.Win10}"
-                IsDefault="True"
-                Command="{Binding cmdSaveDetails}"
+                IsDefault="True" Click="Close_Click"                
                 >
-                Speichern
-            </Button>
-            <Button 
-                DockPanel.Dock="Right" Width="100" 
-                Style="{StaticResource MahApps.Styles.Button.Accent.Win10}">
-                Abbruch
+                Schließen
             </Button>
 
         </DockPanel>

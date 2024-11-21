@@ -8,7 +8,7 @@ namespace AEM
         public string Name { get; set; }
         public string Occupation { get; set; }
         public string BirthDate { get; set; }
-        public string BaptismDate { get; set; }
+       // public string BaptismDate { get; set; }
         public string DeathDate { get; set; }
         public bool living { get; set; }
         public birthState state { get; set; }
@@ -20,7 +20,7 @@ namespace AEM
                 Name = p.Name;
                 Occupation = p.Occupation;
                 BirthDate = p.BirthDate;
-                BaptismDate = p.BaptismDate;
+               // BaptismDate = p.BaptismDate;
                 DeathDate = p.DeathDate;
                 living = p.living;
                 state = p.state;
@@ -30,7 +30,7 @@ namespace AEM
                 Name = string.Empty;
                 Occupation = string.Empty;
                 BirthDate = string.Empty;
-                BaptismDate = string.Empty;
+                //BaptismDate = string.Empty;
                 DeathDate = string.Empty;
                 living = false;
                 state = birthState.unknown;
