@@ -52,14 +52,14 @@
             <Button 
                 Content="Lesezeichen Löschen" 
                 ToolTip="Löscht das ausgewählte Lesezeichen"
-                Command="{Binding cmdDelBookmark}"                
+                Command="{Binding cmdDelBookmark}"  CommandParameter="{Binding SelectedBookmark}"                
                 DockPanel.Dock="Bottom" Margin="10,5,10,5"
                 />
 
             <Button 
                 Content="Neues Lesezeichen" 
                 ToolTip="Erstellt eine neues Lesezeichen auf der geöffneten Seite"
-                Command="{Binding cmdAddBookmark, Mode=OneWay}"                              
+                Command="{Binding cmdAddBookmark, Mode=OneWay}"  
                 DockPanel.Dock="Bottom" Margin="10,5,10,5"
                 />
 

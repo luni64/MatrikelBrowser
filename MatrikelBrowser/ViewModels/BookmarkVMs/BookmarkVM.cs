@@ -21,7 +21,10 @@ namespace ArchiveBrowser.ViewModels
         public RelayCommand cmdDelSelf { get; }
         private void doDelSelf(object? o)
         {
-            parent.bookmarkVMs.Remove(this);
+                        
+            parent.cmdDelBookmark.Execute(this);
+            //model.Info.Bookmarks.Remove(SelectedBookmark.model);
+            //parent.bookmarkVMs.Remove(this);
         }
 
         public RelayCommand cmdSaveDetails { get; }

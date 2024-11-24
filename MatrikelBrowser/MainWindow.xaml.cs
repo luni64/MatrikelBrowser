@@ -54,5 +54,13 @@ namespace ArchiveBrowser
                 dc.cmdSave.Execute(null);
             }
         }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (DataContext is MainViewModel dc)
+            {
+                dc.cmdSave.Execute(null);
+            }
+        }
     }
 }

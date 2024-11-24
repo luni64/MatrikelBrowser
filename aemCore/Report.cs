@@ -25,12 +25,12 @@ namespace AEM
 {
     public static class Report
     {
-        static Style Title = new();
-        static Style normal = new();
-        static Style heading1 = new();
-        static Style heading2 = new();
-        static Style blueHeading = new();
-        static Style link = new();
+        public static Style Title = new();
+        public static Style normal = new();
+        public static Style heading1 = new();
+        public static Style heading2 = new();
+        public static Style blueHeading = new();
+        public static Style link = new();
 
         public static FileInfo? Generate(IBook book)
         {
@@ -46,7 +46,8 @@ namespace AEM
 
             normal
                 .SetFont(textFont)
-                .SetFontSize(12);
+                .SetFontSize(10).SetFontColor(ColorConstants.DARK_GRAY);
+
 
             heading1
                 .SetFont(headingFont)
@@ -90,8 +91,8 @@ namespace AEM
 
             report.SetProperty(Property.LEADING, new Leading(Leading.MULTIPLIED, 1));
 
-            //TitlePage(book, report);
-            //BookNotes(book, report);
+            TitlePage(book, report);
+            BookNotes(book, report);
             Bookmarks(book, report);
 
             report.Close();
@@ -189,7 +190,7 @@ namespace AEM
 
             foreach (var bookmark in bookmarks)
             {
-                // report.Add(new AreaBreak());
+                report.Add(new AreaBreak());
                 if (bookmark == bookmarks.First())
                 {
                     report.Add(new Paragraph()
@@ -199,18 +200,85 @@ namespace AEM
 
                 report.Add(new Paragraph().AddStyle(heading2).Add($"Blatt {bookmark.SheetNr}: {bookmark.Title}").SetMarginBottom(20));
 
-                var page = book.Pages[bookmark.SheetNr - 1];  // SheetNr starts at 1
+                Table table = new Table(UnitValue.CreatePercentArray([2.5F, 50])).UseAllAvailableWidth().AddStyle(normal);
 
+                var page = book.Pages[bookmark.SheetNr - 1];  // SheetNr starts at 1                        
 
-                Table table = new Table([1, 50, 50]).UseAllAvailableWidth();
-                table.AddCell(new Cell().SetVerticalAlignment(VerticalAlignment.MIDDLE).Add(new Paragraph("Ausschnitt").AddStyle(blueHeading).SetRotationAngle(Math.PI / 2)));
+                table.AddCell(new Cell(1, 2).Add(new Paragraph(bookmark.EventDate).SetTextAlignment(TextAlignment.CENTER)).AddStyle(blueHeading));
 
-                var cutout = getCutout(bookmark, page);
+                table.AddBlueHeader("Ausschnitt");
+                table.AddCell(new Cell(1, 1).Add(getCutout(bookmark, page)?.SetAutoScale(true)));
 
-                //report.Add(cutout?.SetWidth(400).SetHorizontalAlignment(HorizontalAlignment.CENTER))
-                //    .SetBottomMargin(20);
+                if (!string.IsNullOrEmpty(bookmark.Transcript))
+                {
+                    table.AddBlueHeader("Transkript");
+                    table.AddCell(new Paragraph(bookmark.Transcript).SetTextAlignment(TextAlignment.JUSTIFIED).SetMargin(1));
+                }
 
+                if (bookmark.Details is MarriageDetails md)
+                {
+                    table.AddBlueHeader("Brautpaar", 1);
+                    table.AddCell(
+                       new Table([1, 1])
+                        .AddCell(new Paragraph("Bräutigam:")).AddCell(new Paragraph($"{md.Groom.Name} {(string.IsNullOrEmpty(md.Groom.BirthDate) ? "" : $" ({md.Groom.BirthDate}) ")} {md.Groom.Occupation}"))
+                        .AddCell(new Paragraph("-Vater:")).AddCell($"{md.GroomFather.Name} {md.GroomFather.Occupation}")
+                        .AddCell(new Paragraph("-Mutter:")).AddCell($"{md.GroomMother.Name} {md.GroomMother.Occupation}")
+                        .AddCell(new Paragraph("Braut:").SetMarginTop(5)).AddCell(new Paragraph($"{md.Bride.Name} {(string.IsNullOrEmpty(md.Bride.BirthDate) ? "" : $" ({md.Bride.BirthDate}) ")} {md.Bride.Occupation}").SetMarginTop(5))
+                        .AddCell(new Paragraph("-Vater:")).AddCell($"{md.BrideFather.Name} {md.BrideFather.Occupation}")
+                        .AddCell(new Paragraph("-Mutter:")).AddCell($"{md.BrideMother.Name} {md.BrideMother.Occupation}")
+                        .RemoveBorders()
+                    );
+                    if (!string.IsNullOrEmpty(md.Witnesses.Name))
+                    {
+                        table.AddBlueHeader("Zeugen");
+                        table.AddCell(new Paragraph(md.Witnesses.Name).SetMargin(1));
+                    }
+                }
 
+                if (bookmark.Details is BirthDetails bd)
+                {
+                    table.AddBlueHeader("Kind", 1);
+                    table.AddCell(
+                       new Table([60, 1])
+                        .AddCell(new Paragraph("Name:")).AddCell($"{bd.Child.Name}")
+                        .AddCell(new Paragraph("Geburtstag:")).AddCell($"{bd.Child.BirthDate}")
+                        .AddCell(new Paragraph("Taufe am:")).AddCell($"{bookmark.EventDate}")
+                        .RemoveBorders()
+                        );
+
+                    table.AddBlueHeader("Eltern", 1);
+                    table.AddCell(
+                         new Table([60, 1])
+                        .AddCell(new Paragraph("  Vater:")).AddCell($"{bd.Father.Name} {bd.Father.Occupation}")
+                        .AddCell(new Paragraph("  Mutter:")).AddCell($"{bd.Mother.Name} {bd.Mother.Occupation}")                       
+                        .RemoveBorders()
+                    );
+                    if (!string.IsNullOrEmpty(bd.GodParent.Name))
+                    {
+                        table.AddBlueHeader("Pate");
+                        table.AddCell(new Paragraph(bd.GodParent.Name).SetMargin(1));
+                    }
+                }
+
+                if (bookmark.Details is DeathDetails dd)
+                {
+                    table.AddBlueHeader("Verstorbener", 1);
+                    table.AddCell(
+                       new Table([50, 1])
+                        .AddCell(new Paragraph("Name:")).AddCell($"{dd.Deceased.Name}")
+                        .AddCell(new Paragraph("Todestag:")).AddCell($"{bookmark.EventDate}")
+                        .AddCell(new Paragraph("Begräbnis:")).AddCell($"{dd.FuneralDate}")
+                        .RemoveBorders()
+                        );
+
+                    table.AddBlueHeader("Eltern", 1);
+                    table.AddCell(
+                         new Table([50, 1])
+                        .AddCell(new Paragraph("  Vater:")).AddCell($"{dd.Father.Name} {dd.Father.Occupation}")
+                        .AddCell(new Paragraph("  Mutter:")).AddCell($"{dd.Mother.Name} {dd.Mother.Occupation}")
+                        .RemoveBorders()
+                    );                  
+                }                
                 #region old
 
 
@@ -322,8 +390,8 @@ namespace AEM
                 //     );
                 //}
 
-                //report.Add(table);
                 #endregion
+                report.Add(table);
 
                 var metsPageUrl = $"{book.Info.METS_URL}&tx_dlf[page]={bookmark.SheetNr}";
 
@@ -341,6 +409,8 @@ namespace AEM
                       );
             }
         }
+
+
 
         static Image? getCutout(IBookmarkBase bookmark, IPage page)
         {
@@ -366,7 +436,6 @@ namespace AEM
             //    .SetBottomMargin(20);
 
         }
-
         static Link makeLink(string txt, string uri)
         {
             Link lnk = new Link(txt, PdfAction.CreateURI(uri));
@@ -374,7 +443,6 @@ namespace AEM
             lnk.AddStyle(link);
             return lnk;
         }
-
         static Cell makePersonEntry(string title, Person p)
         {
             var table = new Table(UnitValue.CreatePointArray(new float[] { 25, 350 })).SetBorder(Border.NO_BORDER).SetFixedLayout().UseAllAvailableWidth()
@@ -388,8 +456,6 @@ namespace AEM
 
 
         }
-
-
         static Paragraph makeTabbedText(string tabbedText)
         {
             Paragraph p = new Paragraph();
@@ -419,7 +485,6 @@ namespace AEM
             }
             return p;
         }
-
         static FileInfo makeCleanFile(IBook book)
         {
             return new FileInfo(Path.Combine(KnownFolders.Downloads.Path, book.ToString() + ".pdf")
@@ -442,5 +507,24 @@ namespace AEM
             }
             return table;
         }
+
+        public static Table AddBlueHeader(this Table table, string title, int rows = 1)
+        {
+            return table.AddCell(new Cell(rows, 1)
+                .AddStyle(Report.blueHeading)
+                .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                //.SetHorizontalAlignment(HorizontalAlignment.CENTER)
+                .Add(new Paragraph(title).SetRotationAngle(Math.PI / 2).SetMargin(5)/*Left(10).SetMarginRight(10)*/));
+        }
+
+        public static Link ToLink(this string txt, string uri)
+        {
+            Link lnk = new Link(txt, PdfAction.CreateURI(uri));
+            lnk.GetLinkAnnotation().SetBorder(new PdfAnnotationBorder(0, 0, 0));
+            // lnk.AddStyle(link);
+            return lnk;
+        }
+
+
     }
 }

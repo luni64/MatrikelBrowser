@@ -56,12 +56,12 @@ namespace ArchiveBrowser.ViewModels
         }
         public string BaptismDate
         {
-            get => model.Child.BaptismDate;
+            get => parent.model.EventDate;
             set
             {
-                if (model.Child.BaptismDate != value)
+                if (parent.model.EventDate != value)
                 {
-                    model.Child.BaptismDate = value;
+                    parent.model.EventDate = value;
                     OnPropertyChanged();
                 }
             }
