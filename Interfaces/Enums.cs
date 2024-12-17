@@ -5,9 +5,10 @@
         birth, marriage, death, misc
     }
 
+    [Flags]
     public enum BookType
     {
-        Mischbände, Taufen, Trauungen, Sterbefälle, Verschiedenes
+        None = 0, Mischbände=1, Taufen=2, Trauungen=4, Sterbefälle=8, Verschiedenes=16
     }
 
     public enum birthState

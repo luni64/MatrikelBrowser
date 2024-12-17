@@ -40,7 +40,7 @@ namespace ArchiveBrowser.ViewModels
                         ID = Guid.NewGuid().ToString(),
                         Page = SelectedPage,
                         isLocked = false,
-                        bookmarkType = this.model.Type switch
+                        bookmarkType = this.model.BookType switch
                         {
                             BookType.Taufen => BookmarkType.birth,
                             BookType.Trauungen => BookmarkType.marriage,
@@ -49,7 +49,7 @@ namespace ArchiveBrowser.ViewModels
                         }
                     }
                 ); 
-                model.Info.Bookmarks.Add(bm);
+                //model.Info.Bookmarks.Add(bm);
             }
         }
 
@@ -59,7 +59,7 @@ namespace ArchiveBrowser.ViewModels
             //var bm = SelectedBookmark;
             if (o is BookmarkVM bookmarkVM)
             {
-                model.Info.Bookmarks.Remove(bookmarkVM.model);
+               // model.Info.Bookmarks.Remove(bookmarkVM.model);
                 bookmarkVMs.Remove(bookmarkVM);
             }
         }
@@ -94,11 +94,11 @@ namespace ArchiveBrowser.ViewModels
         {
             get
             {
-                if (_noteVM == null)
-                {
-                    model.Info.BookID = model.ID;
-                    _noteVM = new NoteVM(model.Info);
-                }
+                //if (_noteVM == null)
+                //{
+                //    model.Info.BookID = model.RefId;
+                //    _noteVM = new NoteVM(model.Info);
+                //}
                 return _noteVM;
             }
         }
@@ -167,20 +167,20 @@ namespace ArchiveBrowser.ViewModels
                 });
                 SubTitle = $"{PageVMs.Count} Blätter";
 
-                foreach (var bm in model.Info.Bookmarks)
-                {
-                    if (bm.SheetNr <= PageVMs.Count) // just to be sure...
-                    {                       
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            bookmarkVMs.Add(new BookmarkVM(bm,this)
-                            {
-                                ID = Guid.NewGuid().ToString(),
-                                Page = PageVMs[bm.SheetNr],
-                            });
-                        });
-                    }
-                }
+                //foreach (var bm in model.Info.Bookmarks)
+                //{
+                //    if (bm.SheetNr <= PageVMs.Count) // just to be sure...
+                //    {                       
+                //        Application.Current.Dispatcher.Invoke(() =>
+                //        {
+                //            bookmarkVMs.Add(new BookmarkVM(bm,this)
+                //            {
+                //                ID = Guid.NewGuid().ToString(),
+                //                Page = PageVMs[bm.SheetNr],
+                //            });
+                //        });
+                //    }
+                //}
             }
             else
             {
@@ -195,15 +195,18 @@ namespace ArchiveBrowser.ViewModels
             set => SetProperty(ref _isFavorite, value);
         }
 
-        public BookVM(IBook model, ParishVM parish)
+
+
+        public BookVM(Book model, ParishVM parish)
         {
             this.model = model;
             this.ParishVM = parish;
-            Title = $"{model.ID} {model.Title}";         
-            ID = model.ID;
-            Indent = 7;
+            Title = $"{model.Title}";         
+            ID = model.RefId;
+            Indent = -10;
         }
 
+        
         private RelayCommand? _cmdDelBookmark;
         private RelayCommand? _cmdChangePage;
         private RelayCommand? _cmdAddBookmark;
@@ -216,7 +219,7 @@ namespace ArchiveBrowser.ViewModels
         private NoteVM? _noteVM;
         private string? _subTitle;
         //private ReportVM? _reportVM;
-        private readonly IBook model;
+        private readonly Book model;
         private double _panX;
         private double _panY;
         private double _zoom = 0.3;

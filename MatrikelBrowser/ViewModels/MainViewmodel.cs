@@ -25,7 +25,7 @@ namespace ArchiveBrowser.ViewModels
 
         #region private methods and fields       
         private RelayCommand? _cmdSave;
-        private readonly ICore model;
+        private readonly aemCore model;
         #endregion
     }
 }
