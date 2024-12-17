@@ -1,41 +1,17 @@
-﻿using Interfaces;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.SymbolStore;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace AEM
+﻿namespace AEM
 {
-    public class Page : IPage
+    public class Page 
     {
-        public string URL { get; }
-        public string localFilename { get; }
-               
-        public override string ToString() => localFilename;
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int Folio { get; set; }
+        public required string ImageLink { get; set; }
+        public required Book Book { get; set; }
 
-        public Page(string downloadUrl, string localFilename)
-        {
-            this.URL = downloadUrl;
-            this.localFilename = localFilename;
-        }
+        public override string ToString() => Name;
 
-        public string loadImage()
-        {
-            if (!File.Exists(localFilename))
-            {
-                Trace.WriteLine("download image");
-                var url = new System.Uri(URL);
-                using (WebClient client = new())
-                {
-                    client.DownloadFile(url, localFilename);
-                }
-            }
-            else
-                Trace.WriteLine("cached image");
-            return localFilename;
-        }
+        public string loadImage() { return string.Empty; }
     }
+
+
 }

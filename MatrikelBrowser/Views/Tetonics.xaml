@@ -17,12 +17,12 @@
         <view:BoolToObjectConverter x:Key="BoolToObjectConverter"/>
         <view:intToMarginConverter x:Key="marginConverter"/>
         <view:nullToVisibiltiyConverter x:Key="nullToVisibiltiyConverter"/>
-        
+
         <CollectionViewSource x:Key="FavoriteItems" Source="{Binding Favorites, Mode=OneWay}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="ParishVM" />
             </CollectionViewSource.GroupDescriptions>
-            <CollectionViewSource.SortDescriptions>                
+            <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Title" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
@@ -32,7 +32,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"  />
             <RowDefinition Height="10"/>
-            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="2.5*"/>
         </Grid.RowDefinitions>
 
         <Grid Margin="10">
@@ -65,7 +65,7 @@
                 </ListBox.GroupStyle>
 
                 <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}" >                        
+                    <Style TargetType="{x:Type ListBoxItem}" >
                         <Setter Property="Margin" Value="20,0,0,0"/>
                         <EventSetter Event="RequestBringIntoView" Handler="ListBoxItem_RequestBringIntoView"/>
                     </Style>
@@ -92,8 +92,8 @@
 
         <GridSplitter Grid.Row="1" Focusable="False" />
 
-        <TreeView x:Name="MainTreeView"  ItemsSource="{Binding LetterVMs}" 
-                  Grid.Row="2"
+        <TreeView x:Name="MainTreeView"  ItemsSource="{Binding CountryVMs}" 
+                  Grid.Row="2" ScrollViewer.HorizontalScrollBarVisibility="Visible"
                   HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" 
                   Background="Transparent"                   
                   SelectedItemChanged="SelectedItemChanged"                
@@ -102,22 +102,44 @@
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
                     <Setter Property="Margin" Value="{Binding Indent, Converter={StaticResource marginConverter}}"/>
-                    <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>                    
+                    <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
                 </Style>
 
             </TreeView.ItemContainerStyle>
             <TreeView.Resources>
-                <HierarchicalDataTemplate ItemsSource="{Binding ParishVMs}" DataType="{x:Type vm:LetterVM}" >
-                    <TextBlock  Text="{Binding Letter}" 
-                                Style="{DynamicResource MahApps.Styles.TextBlock}" 
-                                FontSize="{DynamicResource MahApps.Font.Size.Flyout.Header}" />
+                <HierarchicalDataTemplate ItemsSource="{Binding DioceseVMs }" DataType="{x:Type vm:CountryVM}" >
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                        <iconPacks:PackIconPhosphorIcons Width="20" Height="20" Kind="GlobeLight" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock  
+                            Text="{Binding Name}" 
+                            Style="{DynamicResource MahApps.Styles.TextBlock}" 
+                            FontSize="20"/>
+                    </StackPanel>
                 </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate ItemsSource="{Binding LetterVMs }" DataType="{x:Type vm:DioceseVM}" >
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                        <iconPacks:PackIconGameIcons Kind="ChessBishop"  Width="20" Height="20"  VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <TextBlock  
+                            Text="{Binding Name}" 
+                            Style="{DynamicResource MahApps.Styles.TextBlock}" 
+                            FontSize="18" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+
+                <HierarchicalDataTemplate ItemsSource="{Binding ParishVMs}" DataType="{x:Type vm:LetterVM}" >
+                    <TextBlock  
+                        Text="{Binding Letter}" 
+                        Style="{DynamicResource MahApps.Styles.TextBlock}" 
+                        FontSize="18" />
+                </HierarchicalDataTemplate>
+
                 <HierarchicalDataTemplate ItemsSource="{Binding BookTypeVMs}"  DataType="{x:Type vm:ParishVM}" >
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
                         <iconPacks:PackIconBoxIcons Width="20" Height="20" Kind="SolidChurch" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <StackPanel >
                             <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="Normal"   VerticalAlignment="Center"  Style="{DynamicResource MahApps.Styles.TextBlock}"  />
-                            <TextBlock Text="{Binding SubTitle}" FontSize="{DynamicResource MahApps.Font.Size.Content}" FontWeight="Normal"  VerticalAlignment="Center"  Style="{DynamicResource MahApps.Styles.TextBlock}" />
+                            <TextBlock Text="{Binding SubTitle}" FontSize="12" FontWeight="Light"  VerticalAlignment="Center"  Style="{DynamicResource MahApps.Styles.TextBlock}" />
                         </StackPanel>
                     </StackPanel>
                 </HierarchicalDataTemplate>
@@ -135,23 +157,15 @@
                             Focusable="False" 
                             ToolTip="Aus Favoriten entfernen"
                             Click="FavoritesMenu_Click"
-                            
-                         
-                            VerticalAlignment="Center"                            >
-
-                          
-                          
-                                <iconPacks:PackIconMaterial Kind="{Binding IsFavorite, Converter={StaticResource BoolToObjectConverter2}}" />
-                                
-                          
-
-
+                            VerticalAlignment="Center" >
+                            <iconPacks:PackIconMaterial Kind="{Binding IsFavorite, Converter={StaticResource BoolToObjectConverter2}}" />
                         </Button>
-                        <!--<iconPacks:PackIconMaterial Width="16" Height="16" Kind="Star" Margin="0,0,5,0"/>-->
+                        
 
                         <StackPanel>
+                            <TextBlock Text="{Binding ID}" FontSize="12" FontWeight="Light"  VerticalAlignment="Center"  Style="{DynamicResource MahApps.Styles.TextBlock}" />
                             <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Normal"  />
-                            <TextBlock Text="{Binding SubTitle}" Visibility="{Binding SubTitle, Converter={StaticResource nullToVisibiltiyConverter}}" FontSize="12" FontWeight="Normal" />
+                            <TextBlock Text="{Binding SubTitle}" Visibility="{Binding SubTitle, Converter={StaticResource nullToVisibiltiyConverter}}" FontSize="12" FontWeight="Light" />
                         </StackPanel>
                     </StackPanel>
 

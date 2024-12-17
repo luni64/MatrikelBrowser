@@ -16,7 +16,7 @@ namespace AEM
         public string note { get; set; } = string.Empty;
         public override string ToString() => BookID;
         public string METS_URL { get; set; }
-        public List<IBookmarkBase> Bookmarks { get; set; }
+        public List<IBookmarkBase> Bookmarks { get;  }
 
     }    
 }

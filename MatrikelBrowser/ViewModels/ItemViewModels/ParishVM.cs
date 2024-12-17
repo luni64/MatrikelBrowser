@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using AEM;
+using Interfaces;
 using System.Collections.Generic;
 
 namespace ArchiveBrowser.ViewModels
@@ -10,12 +11,12 @@ namespace ArchiveBrowser.ViewModels
         public string SubTitle { get; }
         public string RefNr { get; }
         public List<BookTypeVM> BookTypeVMs { get; } = new();
-        public ParishVM(IParish model)
+        public ParishVM(ParishDTO model)
         {
             Title = $"{model.Place} ";
             Church = model.Church;
-            SubTitle = $"{model.ID} {model.Church} (#{model.Books.Count}, {model.startYear}-{model.endYear})";
-            RefNr = model.ID;
+            SubTitle = $"{model.RefId} {model.Church} (#{model.Books.Count}";//, {model.startYear}-{model.endYear})";
+            RefNr = model.RefId;
 
             Indent = -10;
         }

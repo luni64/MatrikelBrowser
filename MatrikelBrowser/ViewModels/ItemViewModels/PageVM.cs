@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using AEM;
 
 namespace ArchiveBrowser.ViewModels
 {
@@ -11,12 +12,12 @@ namespace ArchiveBrowser.ViewModels
 
         public BookVM Parent { get; }
 
-        private IPage model;
+        private Page model;
 
-        public PageVM(IPage model, BookVM parent)
+        public PageVM(Page model, BookVM parent)
         {
             this.model = model;
-            this.URL = model.URL;
+            //this.URL = model.URL;
             this.Parent = parent;                     
         }        
     }
