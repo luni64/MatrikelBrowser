@@ -95,7 +95,7 @@ namespace OtherRepoTest
             var country = ctx.Countries.FirstOrDefault(c => c.Name == Country);
             if (country == null)
             {
-                country = new CountryDTO
+                country = new Country
                 {
                     Name = Country
                 };
@@ -120,7 +120,7 @@ namespace OtherRepoTest
             var parish = ctx.Parishes.FirstOrDefault(parish => parish.Archive == archive && parish.Name == Parish);
             if (parish == null)
             {
-                parish = new ParishDTO
+                parish = new Parish
                 {
                     Name = Parish,
                     Place = Parish,

@@ -17,48 +17,18 @@ namespace AEM
         {
             baseFolder.Create();
             FileInfo notesFile = new(Path.Combine(baseFolder.FullName, "test.json"));
-            FileInfo favoritesFile = new(Path.Combine(baseFolder.FullName, "favorites.json"));
-            
+            FileInfo favoritesFile = new(Path.Combine(baseFolder.FullName, "favorites.json"));            
             FileInfo tectonicsFile = new("MatrikelBrowser.db");
 
             using var ctx = new MatrikelBrowserCTX();
-
             var hasMigrations = ctx.Database.GetPendingMigrations().Any();
-
             if (hasMigrations)
             {
                 Trace.TraceInformation("Database Migration...");                
                 ctx.Database.Migrate();
             }
                         
-            var countriesDTO = ctx.Countries.Include(c => c.Archives).ThenInclude(d => d.Parishes).ThenInclude(p => p.Books).ToList();
-            foreach (var countryDTO in countriesDTO.OrderBy(c => c.Name))
-            {
-                var country = new Country(countryDTO.Name, []);
-                foreach (var Archive in countryDTO.Archives)
-                {                    
-                    foreach (var parishDTO in Archive.Parishes)
-                    {
-                        var parish = new Parish(parishDTO);// parishDTO.RefId, parishDTO.Name, parishDTO.Church, 1900, 2000, []);
-                        foreach (var b in parishDTO.Books)
-                        {
-                            //var book = new Book(b);
-
-
-                            //if (b.Parish.Diocese.ArchiveType == ArchiveType.AEM)
-                            //    book.loadPages = () => book.GetAEMPages();
-                            //else
-                            //    book.loadPages = () => Trace.WriteLine("MAT");
-
-                            //parish.Books.Add(b);
-                        }
-                        //diocese.Parishes.Add(parish);
-                    }
-                    country.Archives.Add(Archive);
-                }
-                _countries.Add(country);
-            }
-
+            _countries = ctx.Countries.Include(c => c.Archives).ThenInclude(d => d.Parishes).ThenInclude(p => p.Books).ToList();
 
             if (notesFile.Exists)
             {
@@ -81,15 +51,7 @@ namespace AEM
                 Favorites = JsonConvert.DeserializeObject<List<string>>(json) ?? [];
             }
             else
-                Favorites = [];
-
-            //   Book.baseFolder = baseFolder;
-
-            ///--------------------
-            ///
-
-
-
+                Favorites = [];            
         }
 
         public void saveNotes()
@@ -111,8 +73,7 @@ namespace AEM
             //File.WriteAllText(testFile.FullName, json);
         }
 
-        private readonly DirectoryInfo baseFolder = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "aemBrowser"));
-       // private readonly List<Parish> _parishes;
+        private readonly DirectoryInfo baseFolder = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "aemBrowser")); 
         private readonly List<Country> _countries = [];
     }
 }

@@ -38,7 +38,7 @@ namespace OtherRepoTest
                 var country = ctx.Countries.FirstOrDefault(c => c.Name == "Deutschland");
                 if (country == null)
                 {
-                    country = new CountryDTO { Name = "Deutschland" };
+                    country = new Country { Name = "Deutschland" };
                     ctx.Add(country);
                 }
 
@@ -70,7 +70,7 @@ namespace OtherRepoTest
 
 
 
-                    var parish = new ParishDTO
+                    var parish = new Parish
                     {
                         RefId = id,
                         BookBaseUrl = "abc",

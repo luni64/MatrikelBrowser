@@ -14,7 +14,7 @@ namespace AEM
         public string BookInfoLink { get; set; } = string.Empty;
         public BookType BookType { get; set; } = BookType.None;
         public string PageLinkPrefix { get; set; } = string.Empty;
-        required public ParishDTO Parish { get; set; }
+        required public Parish Parish { get; set; }
         required public ICollection<Page> Pages { get; set; } = [];
 
         public override string ToString() => Title;

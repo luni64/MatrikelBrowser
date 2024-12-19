@@ -11,7 +11,7 @@ namespace ArchiveBrowser.ViewModels
         public string SubTitle { get; }
         public string RefNr { get; }
         public List<BookTypeVM> BookTypeVMs { get; } = new();
-        public ParishVM(ParishDTO model)
+        public ParishVM(Parish model)
         {
             Title = $"{model.Place} ";
             Church = model.Church;
