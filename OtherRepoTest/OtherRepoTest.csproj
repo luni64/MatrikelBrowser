@@ -19,4 +19,10 @@
     <ProjectReference Include="..\aemCore\aemCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="tectonics.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -105,7 +105,7 @@ namespace OtherRepoTest
             var archive = ctx.Archives.FirstOrDefault(d => d.Country == country && d.Name == Diocese);
             if (archive == null)
             {
-                archive = new ArchiveDTO
+                archive = new Archive
                 {
                     Country = country,
                     Name = Diocese,

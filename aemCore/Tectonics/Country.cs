@@ -9,11 +9,11 @@ namespace AEM
     public class Country //: ICountry
     {
         public string Name { get; set; }
-        public List<ArchiveDTO> Archives { get; }
+        public List<Archive> Archives { get; }
 
         public override string ToString() => $"{Name}";
 
-        public Country(string Name, List<ArchiveDTO> Dioceses)
+        public Country(string Name, List<Archive> Dioceses)
         {
             this.Name = Name;
             this.Archives = Dioceses;//?.ToList<IDiocese>() ?? [];

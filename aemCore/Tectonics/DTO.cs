@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.IO;
 
 namespace AEM
 {
@@ -15,13 +18,13 @@ namespace AEM
     {
         public int Id { get; set; }
         required public string Name { get; set; }
-        public ICollection<ArchiveDTO> Archives { get; set; } = [];
+        public ICollection<Archive> Archives { get; set; } = [];
         public override string ToString() => Name;
     }
 
     public enum ArchiveType { AEM, MAT }
 
-    public class ArchiveDTO
+    public class Archive
     {
         public int Id { get; set; }
         public string REFID { get; set; } = string.Empty;
@@ -32,8 +35,7 @@ namespace AEM
         required public CountryDTO Country { get; set; }
         required public ArchiveType ArchiveType { get; set; }
 
-
-        public override string ToString() => Name;        
+        public override string ToString() => Name;
     }
 
     public class ParishDTO
@@ -45,7 +47,7 @@ namespace AEM
 
 
         public string Name { get; set; } = string.Empty;
-        required public ArchiveDTO Archive { get; set; }
+        required public Archive Archive { get; set; }
         required public string BookBaseUrl { get; set; }
         public List<Book> Books { get; set; } = [];
         public override string ToString() => Name;
@@ -58,15 +60,16 @@ namespace AEM
         public DbSet<Page> Pages { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<ParishDTO> Parishes { get; set; }
-        public DbSet<ArchiveDTO> Archives { get; set; }
+        public DbSet<Archive> Archives{ get; set; }
         public DbSet<CountryDTO> Countries { get; set; }
         //public DbSet<PlaceDTO> Place { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=MatrikelBrowser.db");
+            optionsBuilder.UseSqlite(
+                "Data Source= c:/Users/lutz/Documents/MatrikelBrowser.db");//, b=>b.MigrationsAssembly("../MatrikelBrowser")); C:\Users\lutz\Documents
         }
-    }
-
+    }   
 
 }
+ 

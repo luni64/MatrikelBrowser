@@ -1,5 +1,6 @@
 ﻿using AEM;
 using Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices;
 using static System.Net.WebRequestMethods;
@@ -44,7 +45,7 @@ namespace OtherRepoTest
                 var archive = ctx.Archives.FirstOrDefault(d => d.Country == country && d.Name == "München Freising");
                 if (archive == null)
                 {
-                    archive = new ArchiveDTO
+                    archive = new Archive
                     {
                         Name = "München Freising",
                         Country = country,
@@ -111,8 +112,10 @@ namespace OtherRepoTest
         {
             using var ctx = new MatrikelBrowserCTX();
 
-            ctx.Database.EnsureDeleted();
-            ctx.Database.EnsureCreated();
+            //ctx.Database.EnsureDeleted();
+            //ctx.Database.EnsureCreated();
+            var y = ctx.Database.GetPendingMigrations();
+            ctx.Database.Migrate();
 
             var largeparishes = ctx.Parishes.Where(p => p.Books.Count > 10).ToList();
         }

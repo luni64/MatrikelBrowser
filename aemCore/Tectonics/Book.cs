@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AEM
 {
-    public class Book  
+    public class Book  // efCore entity
     {
         public int Id { get; set; }
         public string RefId { get; set; } = string.Empty;
@@ -15,7 +15,7 @@ namespace AEM
         public BookType BookType { get; set; } = BookType.None;
         public string PageLinkPrefix { get; set; } = string.Empty;
         required public ParishDTO Parish { get; set; }
-        required public ICollection<Page> Pages { get; set; }
+        required public ICollection<Page> Pages { get; set; } = [];
 
         public override string ToString() => Title;
         

@@ -1,20 +1,15 @@
-﻿using AEM.InfoProviders;
-using Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 
 namespace AEM
 {
     public class aemCore //: ICore
-    {
-        public IEnumerable<Parish> Parishes => _parishes;
+    {        
         public IEnumerable<Country> Countries => _countries;
         public List<String> Favorites { get; }
 
@@ -23,40 +18,32 @@ namespace AEM
             baseFolder.Create();
             FileInfo notesFile = new(Path.Combine(baseFolder.FullName, "test.json"));
             FileInfo favoritesFile = new(Path.Combine(baseFolder.FullName, "favorites.json"));
-            //FileInfo tectonicsFile = new("tectonics.json");
+            
             FileInfo tectonicsFile = new("MatrikelBrowser.db");
 
             using var ctx = new MatrikelBrowserCTX();
-            //ctx.Database.EnsureDeleted();
-            ctx.Database.EnsureCreated();
 
-            // var largeParishes = ctx.Parishes.Where(p => p.Diocese.Name.Contains("Reg") && p.Books.Count > 45).AsSplitQuery().FirstOrDefault();
+            var hasMigrations = ctx.Database.GetPendingMigrations().Any();
 
-            // ctx.Entry(largeParishes).Reference(p => p.Diocese).Load();
-            // ctx.Entry(largeParishes).Collection(p => p.Books).Load();
-
-            //// var p = ctx.Parishes.ToList();
-
-            _parishes = new();
-
-            // _countries = new List<Country>();
-
-            var cc = ctx.Archives.ToList();
+            if (hasMigrations)
+            {
+                Trace.TraceInformation("Database Migration...");                
+                ctx.Database.Migrate();
+            }
                         
             var countriesDTO = ctx.Countries.Include(c => c.Archives).ThenInclude(d => d.Parishes).ThenInclude(p => p.Books).ToList();
             foreach (var countryDTO in countriesDTO.OrderBy(c => c.Name))
             {
                 var country = new Country(countryDTO.Name, []);
                 foreach (var Archive in countryDTO.Archives)
-                {
-                    //var diocese = new Archive(dioceseDTO.Name, []);
+                {                    
                     foreach (var parishDTO in Archive.Parishes)
                     {
                         var parish = new Parish(parishDTO);// parishDTO.RefId, parishDTO.Name, parishDTO.Church, 1900, 2000, []);
                         foreach (var b in parishDTO.Books)
                         {
                             //var book = new Book(b);
-                          
+
 
                             //if (b.Parish.Diocese.ArchiveType == ArchiveType.AEM)
                             //    book.loadPages = () => book.GetAEMPages();
@@ -96,7 +83,7 @@ namespace AEM
             else
                 Favorites = [];
 
-         //   Book.baseFolder = baseFolder;
+            //   Book.baseFolder = baseFolder;
 
             ///--------------------
             ///
@@ -125,7 +112,7 @@ namespace AEM
         }
 
         private readonly DirectoryInfo baseFolder = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "aemBrowser"));
-        private readonly List<Parish> _parishes;
+       // private readonly List<Parish> _parishes;
         private readonly List<Country> _countries = [];
     }
 }

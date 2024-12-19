@@ -17,8 +17,6 @@ using System.Linq;
 using Image = iText.Layout.Element.Image;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
-using Color = iText.Kernel.Colors.Color;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Tab = iText.Layout.Element.Tab;
 
 namespace AEM

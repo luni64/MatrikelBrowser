@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interfaces", "Interfaces\In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "notesUpgrader", "notesUpgrader\notesUpgrader.csproj", "{CC634891-0CA0-4A83-BCDF-C44E6D83089A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OtherRepoTest", "OtherRepoTest\OtherRepoTest.csproj", "{3A4F46F6-57BE-4EA3-8369-C08B1E2D32D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtherRepoTest", "OtherRepoTest\OtherRepoTest.csproj", "{3A4F46F6-57BE-4EA3-8369-C08B1E2D32D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
