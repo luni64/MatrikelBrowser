@@ -1,4 +1,5 @@
-﻿using AEM;
+﻿using MbCore;
+using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace OtherRepoTest
     public interface IBookInfo
     {
         public string REFID { get; set; }
-        public string Type { get; set; }
+        public BookType Type { get; set; }
         public string Title { get; set; }
         public string InfoUrl { get; set; }
     }

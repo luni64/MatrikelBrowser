@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using Interfaces;
+using MahApps.Metro.IconPacks;
+using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
-using MahApps.Metro.IconPacks;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     public class BoolToObjectConverter : MarkupExtension, IValueConverter
     {
         //public PackIconBase checkedIcon { get; set; } = new PackIconModern() {Kind = PackIconModernKind.Creditcard };
         //public PackIconBase uncheckedIcon { get; set; } = new PackIconModern() { Kind = PackIconModernKind.Coupon };
-        public object? checkedIcon { get; set; } 
+        public object? checkedIcon { get; set; }
         public object? uncheckedIcon { get; set; }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
@@ -29,10 +23,10 @@ namespace ArchiveBrowser
         }
 
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {            
+        {
             if (value is bool isOn)
             {
-                return isOn ? checkedIcon : uncheckedIcon;               
+                return isOn ? checkedIcon : uncheckedIcon;
             }
             throw new NotSupportedException();
         }
@@ -45,12 +39,12 @@ namespace ArchiveBrowser
 
     public class BoolToObjectConverter2 : IValueConverter
     {
-        PackIconMaterialKind checkedIconKind = PackIconMaterialKind.Star;
-        PackIconBase uncheckedIcon = new PackIconMaterial() { Kind = PackIconMaterialKind.Star,Width = 10, Height = 10 };
+        //PackIconMaterialKind checkedIconKind = PackIconMaterialKind.Star;
+        //PackIconBase uncheckedIcon = new PackIconMaterial() { Kind = PackIconMaterialKind.Star,Width = 10, Height = 10 };
 
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-             return (bool)value ? PackIconMaterialKind.Star : PackIconMaterialKind.StarOutline;          
+            return (bool)value ? PackIconMaterialKind.Star : PackIconMaterialKind.StarOutline;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -79,6 +73,31 @@ namespace ArchiveBrowser
                 }
             }
             return result;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class BookTypeToIconConverter : IValueConverter
+    {
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is BookType bookType && parameter is string size)
+            {
+                int sz = int.Parse(size);
+                return bookType switch
+                {
+                    BookType.Sterbebücher => new PackIconPhosphorIcons() { Kind = PackIconPhosphorIconsKind.CrossBold, Width = sz, Height = sz },
+                    BookType.Hochzeitsbücher => new PackIconMaterial() { Kind = PackIconMaterialKind.HumanMaleFemale, Width = sz, Height = sz },
+                    //BookType.Taufbücher => new PackIconModern() { Kind = PackIconModernKind.Baby, Width = sz, Height = sz },
+                    BookType.Taufbücher => new PackIconMaterial() { Kind = PackIconMaterialKind.BabyCarriage, Width = sz, Height = sz },
+                    _ => null
+                };
+            }
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -129,7 +148,7 @@ namespace ArchiveBrowser
     {
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool) value == false ? Visibility.Visible : Visibility.Collapsed;
+            return (bool)value == false ? Visibility.Visible : Visibility.Collapsed;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

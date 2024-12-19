@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     public class ZoomBorder : Border
     {
@@ -90,7 +90,7 @@ namespace ArchiveBrowser
                 //Trace.WriteLine($"onZoom {e.NewValue}");
                 var st = zb.GetScaleTransform(zb.child);
                 st.ScaleX = (double)e.NewValue;
-                st.ScaleY = st.ScaleX;
+                st.ScaleY = st.ScaleX;               
             }
         }
 

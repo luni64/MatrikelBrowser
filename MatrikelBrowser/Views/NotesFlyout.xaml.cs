@@ -1,5 +1,5 @@
-﻿using ArchiveBrowser.ViewModels;
-using ArchiveBrowser.Views;
+﻿using MatrikelBrowser.ViewModels;
+using MatrikelBrowser.Views;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
@@ -8,7 +8,7 @@ using System.Windows.Controls;
 //using System.Windows.Forms;
 //using System.Windows.Input;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     /// <summary>
     /// Interaction logic for NotesFlyout.xaml

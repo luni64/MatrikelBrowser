@@ -1,22 +1,22 @@
-﻿using Interfaces;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
-namespace AEM
+namespace MbCore
 {
-    public class Country //: ICountry
+    //public class PlaceDTO
+    //{
+    //    public int Id { get; set; }
+    //    required public string Name { get; set; }
+    //    public string? Location { get; set; }
+
+    //}
+
+    public class Country
     {
-        public string Name { get; set; }
-        public List<Archive> Archives { get; }
-
-        public override string ToString() => $"{Name}";
-
-        public Country(string Name, List<Archive> Dioceses)
-        {
-            this.Name = Name;
-            this.Archives = Dioceses;//?.ToList<IDiocese>() ?? [];
-        }
+        public int Id { get; set; }
+        required public string Name { get; set; }
+        public ICollection<Archive> Archives { get; set; } = [];
+        public override string ToString() => Name;
     }
+
 }
+ 

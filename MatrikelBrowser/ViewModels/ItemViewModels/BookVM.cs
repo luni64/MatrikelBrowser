@@ -1,12 +1,11 @@
-﻿using AEM;
+﻿using MbCore;
 using Interfaces;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class BookVM : ItemVM
     {
@@ -28,10 +27,10 @@ namespace ArchiveBrowser.ViewModels
 
                 IBookmarkBase bm = new BookmarkBase()
                 {
-                    SheetNr = PageVMs.IndexOf(SelectedPage)+1,
+                    SheetNr = PageVMs.IndexOf(SelectedPage) + 1,
                     Title = "Neue Fundstelle",
                     X = x,
-                    Y = y,                               
+                    Y = y,
                 };
 
                 bookmarkVMs.Add(
@@ -42,53 +41,65 @@ namespace ArchiveBrowser.ViewModels
                         isLocked = false,
                         bookmarkType = this.model.BookType switch
                         {
-                            BookType.Taufen => BookmarkType.birth,
-                            BookType.Trauungen => BookmarkType.marriage,
-                            BookType.Sterbefälle => BookmarkType.death,
-                            _ => BookmarkType.misc,                            
+                            BookType.Taufbücher => BookmarkType.birth,
+                            BookType.Hochzeitsbücher => BookmarkType.marriage,
+                            BookType.Sterbebücher => BookmarkType.death,
+                            _ => BookmarkType.misc,
                         }
                     }
-                ); 
+                );
                 //model.Info.Bookmarks.Add(bm);
             }
         }
 
         public RelayCommand cmdDelBookmark => _cmdDelBookmark ??= new RelayCommand(doDelBookmark);
         void doDelBookmark(object? o)
-        {            
+        {
             //var bm = SelectedBookmark;
             if (o is BookmarkVM bookmarkVM)
             {
-               // model.Info.Bookmarks.Remove(bookmarkVM.model);
+                // model.Info.Bookmarks.Remove(bookmarkVM.model);
                 bookmarkVMs.Remove(bookmarkVM);
             }
         }
 
-        public RelayCommand cmdGenerateReport => _cmdGenerateReport ??= new RelayCommand(doGenerateReport);
-        void doGenerateReport(object? s)
-        {
-            ReportFile = Report.Generate(model)?.FullName;
-        }   
-
+        public RelayCommand cmdGenerateReport => _cmdGenerateReport ??= new RelayCommand((object? _) => ReportFile = Report.Generate(model)?.FullName);
         #endregion
 
         #region Properties ----------------------------------------
-        public string Title { get; }
-        public string ID { get; }
+        public ObservableCollection<PageVM> PageVMs { get; } = [];
+        public ObservableCollection<BookmarkVM> bookmarkVMs { get; } = [];
+        public string Title => model.Title;
+        public string ID => model.RefId;
         public string? SubTitle
         {
             get => _subTitle;
             set => SetProperty(ref _subTitle, value);
         }
-        public ObservableCollection<PageVM> PageVMs { get; } = [];
-        public ObservableCollection<BookmarkVM> bookmarkVMs { get; } = [];
+        public BookType BookType => model.BookType;
+
+        public override bool IsSelected
+        {
+            get => base.IsSelected;
+            set
+            {
+                if (value != base.IsSelected)
+                {
+                    if (value == true) Initialize();
+                    else SubTitle = null; 
+
+                    (parent as BookGroupVM)!.SelectedBook = value ? this : null;                    
+
+                    base.IsSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public PageVM? SelectedPage   // binds to the displayed page image
         {
             get => _selectedPage;
-            set
-            {
-                SetProperty(ref _selectedPage, value);
-            }
+            set => SetProperty(ref _selectedPage, value);
         }
         public NoteVM NoteVM
         {
@@ -102,21 +113,17 @@ namespace ArchiveBrowser.ViewModels
                 return _noteVM;
             }
         }
-        public ParishVM ParishVM { get; }
+
         public int SelectedPageNr     // binds to the page slider, delayed update, 
         {
             get => _selectedPageNr;
             set
             {
                 SetProperty(ref _selectedPageNr, value);
-                SelectedPage = PageVMs?.ElementAtOrDefault(SelectedPageNr-1);
+                SelectedPage = PageVMs?.ElementAtOrDefault(SelectedPageNr - 1);
             }
         }
-        public override bool IsSelected
-        {
-            get => _isSelected;
-            set => SetProperty(ref _isSelected, value);
-        }
+
 
         public double zoom
         {
@@ -146,11 +153,11 @@ namespace ArchiveBrowser.ViewModels
         public string? ReportFile { get; internal set; }
 
         #endregion
-        public async void Intialize()
+        public async void Initialize()
         {
             if (model.Pages.Count == 0) // we lazy load pages
             {
-                SubTitle = "Downloading...";
+                SubTitle = $"downloading page informations for book: {Title}";
                 await Task.Run(() =>
                 {
                     model.LoadPageInfo(); // load or read page info from mets.xml
@@ -166,21 +173,6 @@ namespace ArchiveBrowser.ViewModels
                     }
                 });
                 SubTitle = $"{PageVMs.Count} Blätter";
-
-                //foreach (var bm in model.Info.Bookmarks)
-                //{
-                //    if (bm.SheetNr <= PageVMs.Count) // just to be sure...
-                //    {                       
-                //        Application.Current.Dispatcher.Invoke(() =>
-                //        {
-                //            bookmarkVMs.Add(new BookmarkVM(bm,this)
-                //            {
-                //                ID = Guid.NewGuid().ToString(),
-                //                Page = PageVMs[bm.SheetNr],
-                //            });
-                //        });
-                //    }
-                //}
             }
             else
             {
@@ -197,21 +189,20 @@ namespace ArchiveBrowser.ViewModels
 
 
 
-        public BookVM(Book model, ParishVM parish)
+        public BookVM(Book model, BookGroupVM parent) : base(parent)
         {
             this.model = model;
-            this.ParishVM = parish;
-            Title = $"{model.Title}";         
-            ID = model.RefId;
             Indent = -10;
         }
 
-        
+
+        public readonly Book model;
+
         private RelayCommand? _cmdDelBookmark;
         private RelayCommand? _cmdChangePage;
         private RelayCommand? _cmdAddBookmark;
         private RelayCommand? _cmdGenerateReport;
-        private bool _isSelected;
+        //private bool _isSelected;
         private bool _isFavorite;
         private PageVM? _selectedPage;
         private int _selectedPageNr;
@@ -219,7 +210,6 @@ namespace ArchiveBrowser.ViewModels
         private NoteVM? _noteVM;
         private string? _subTitle;
         //private ReportVM? _reportVM;
-        private readonly Book model;
         private double _panX;
         private double _panY;
         private double _zoom = 0.3;

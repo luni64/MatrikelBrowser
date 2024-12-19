@@ -1,4 +1,4 @@
-﻿using AEM;
+﻿using MbCore;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -38,7 +38,7 @@ namespace OtherRepoTest
                 var country = ctx.Countries.FirstOrDefault(c => c.Name == "Deutschland");
                 if (country == null)
                 {
-                    country = new CountryDTO { Name = "Deutschland" };
+                    country = new Country { Name = "Deutschland" };
                     ctx.Add(country);
                 }
 
@@ -70,7 +70,7 @@ namespace OtherRepoTest
 
 
 
-                    var parish = new ParishDTO
+                    var parish = new Parish
                     {
                         RefId = id,
                         BookBaseUrl = "abc",
@@ -128,10 +128,10 @@ namespace OtherRepoTest
             var t = title.ToLower();
             BookType bt = BookType.None;
 
-            if (t.Contains("tauf")) bt |= BookType.Taufen;
-            if (t.Contains("trau")) bt |= BookType.Trauungen;
+            if (t.Contains("tauf")) bt |= BookType.Taufbücher;
+            if (t.Contains("trau")) bt |= BookType.Hochzeitsbücher;
             if (t.Contains("misch")) bt |= BookType.Mischbände;
-            if (t.Contains("sterb") || t.Contains("beerd")) bt |= BookType.Sterbefälle;
+            if (t.Contains("sterb") || t.Contains("beerd")) bt |= BookType.Sterbebücher;
             if (bt == BookType.None) bt = BookType.Verschiedenes;
             return ((int)bt & ((int)bt - 1)) == 0 ? bt : BookType.Mischbände;
         }

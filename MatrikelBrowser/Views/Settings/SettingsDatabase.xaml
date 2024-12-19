@@ -1,0 +1,98 @@
+﻿<UserControl 
+    x:Class="MatrikelBrowser.SettingsDatabase"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"  
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"    
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:MatrikelBrowser"
+    xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels" 
+    d:DataContext="{d:DesignInstance Type=vm:SettingsVM}"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800"
+    d:Background="AliceBlue"
+    >
+    
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox  
+                x:Name="tbDatabase"
+                Grid.Row="1"
+                Text="{Binding DataBaseFile}"
+                FontSize="14"
+                IsReadOnly="True"
+                mah:TextBoxHelper.Watermark="Datenbank" 
+                mah:TextBoxHelper.UseFloatingWatermark="True"
+                mah:TextBoxHelper.IsSpellCheckContextMenuEnabled="False"
+                mah:TextBoxHelper.AutoWatermark="True"
+                VerticalScrollBarVisibility="Visible"                  
+                />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="0,10,0,0">
+                <Button 
+                    Margin="0,0,0,0" Width="120"
+                    Click="SelectDatabaseClick"
+                    Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}">
+                    <StackPanel   
+                        Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial 
+                            Width="16" Height="18" VerticalAlignment="Center"
+                            Kind="FileTree"/>
+                        <TextBlock 
+                            Margin="8 0 0 0" VerticalAlignment="Center" 
+                            Text="Auswählen" 
+                            />
+                    </StackPanel>
+                </Button>
+                <!--<Button                     
+                    Width="130"
+                    Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}">
+                    <StackPanel
+                        Orientation="Horizontal">
+                        <iconPacks:PackIconMaterialDesign 
+                            Width="22" Height="22" VerticalAlignment="Center"
+                            Kind="FileCopy"/>
+                        <TextBlock 
+                            Margin="10 0 0 0" VerticalAlignment="Center" 
+                            Text="Kopieren" 
+                            />
+                    </StackPanel>
+                </Button>
+                <Button 
+                    Margin="10,0,0,0" Width="130"
+                    Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}">
+                    <StackPanel
+                        Orientation="Horizontal">
+                        <iconPacks:PackIconEvaIcons    
+                            Width="22" Height="22" VerticalAlignment="Center"
+                            Kind="FileAdd"/>
+                        <TextBlock 
+                            Margin="10 0 0 0" VerticalAlignment="Center" 
+                            Text="Neu" 
+                            />
+                    </StackPanel>
+                </Button>-->
+            </StackPanel>
+
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,30" TextAlignment="Justify">
+                <Run Text="Hinweis:" FontWeight="Bold" FontSize="17"/>
+                <LineBreak/>
+                <TextBlock FontSize="15" TextWrapping="Wrap" Margin="0,0">
+                    Sie können die Datenbank mit einem Dateimanager an einen beliebigen Speicherort verschieben oder kopieren. 
+                    Anschließend müssen Sie unten den neuen Speicherort auswählen.
+                    <LineBreak/>
+                    <LineBreak/>
+                    Falls Sie die Datenbank an einem von mehreren Benutzern zugänglichen Ort speichern (z. B. Cloud, Netzwerkfreigabe, 
+                    externer Speicher), beachten Sie bitte, dass die Multi-User-Fähigkeiten des hier verwendeten SQLite-Datenbankservers 
+                    nicht sehr ausgeprägt sind und gleichzeitiges Zugreifen auf die Datenbank nicht empfohlen wird.
+                </TextBlock>
+            </TextBlock>    
+        </Grid>
+    </Grid>
+</UserControl>

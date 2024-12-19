@@ -1,10 +1,10 @@
-﻿using AEM;
+﻿using MbCore;
 using Interfaces;
 
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
-    class MiscBookmarkVM : BaseViewModel, IDetailsVM
+    class MiscBookmarkVM(BookmarkVM bm) : BaseViewModel, IDetailsVM
     {
         public string Transcript
         {
@@ -19,14 +19,8 @@ namespace ArchiveBrowser.ViewModels
             }
         }
 
-        public MiscBookmarkVM(BookmarkVM? bm)
-        {
-            this.model = new MiscDetails(bm.model);
-            this.parent = bm;
-        }
-
-        public BookmarkVM parent { get; }
-        public MiscDetails model;
+        public BookmarkVM parent { get; } = bm;
+        public MiscDetails model = new MiscDetails(bm.model);
 
         public IBookmarkDetails detailsModel => model;
 

@@ -1,8 +1,8 @@
-﻿using AEM;
+﻿using MbCore;
 using Interfaces;
 
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     class MarriageDetailVM : BaseViewModel, IDetailsVM
     {

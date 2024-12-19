@@ -1,15 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using MbCore;
+using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Crmf;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Media;
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class LetterVM : ItemVM
     {
-        public string Letter { get; }
-        public List<ParishVM> ParishVMs { get; } = new();
+        public string Letter { get; } = string.Empty;
+        public ObservableCollection<ParishVM> ParishVMs { get; } = new();
 
-        public LetterVM(string Letter)
+        public LetterVM(IGrouping<char,Parish> parishGroup = null!, ArchiveVM parent = null!) : base(parent)
         {
-            this.Letter = Letter;            
+            if (parishGroup == null) return;
+
+            this.Letter = parishGroup.Key.ToString();
+            foreach(var parish in parishGroup)
+            {
+                ParishVMs.Add(new ParishVM(parish, this));
+            }
         }
     }
 }

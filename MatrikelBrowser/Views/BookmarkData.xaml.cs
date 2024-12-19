@@ -1,8 +1,8 @@
-﻿using ArchiveBrowser.ViewModels;
+﻿using MatrikelBrowser.ViewModels;
 using MahApps.Metro.Controls;
 using System.Windows;
 
-namespace ArchiveBrowser.Views
+namespace MatrikelBrowser.Views
 {
     public partial class BookmarkDetailsView : MetroWindow
     {

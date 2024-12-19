@@ -6,8 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
@@ -24,26 +23,16 @@ namespace ArchiveBrowser.ViewModels
             }
         }
 
-        public void OnPropertyChanged([CallerMemberName] string name = "")
-        {
-            
-            PropertyChangedEventHandler? handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
+        public void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         #endregion
 
-    
 
-        public class RelayCommand : ICommand
+        public class RelayCommand(Action<object?> execute, Predicate<object?>? canExecute) : ICommand
         {
             #region Fields
-            readonly Action<object?> _execute;
-            readonly Predicate<object?>? _canExecute;
+            readonly Action<object?> _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            readonly Predicate<object?>? _canExecute = canExecute;
             #endregion // Fields
 
             #region Constructors
@@ -52,23 +41,12 @@ namespace ArchiveBrowser.ViewModels
                 : this(execute, null)
             {
             }
-
-            public RelayCommand(Action<object?> execute, Predicate<object?>? canExecute)
-            {
-                if (execute == null) throw new ArgumentNullException("execute");
-
-                _execute = execute;
-                _canExecute = canExecute;
-            }
             #endregion // Constructors
 
             #region ICommand Members
 
             [DebuggerStepThrough]
-            public bool CanExecute(object? parameter)
-            {
-                return _canExecute == null ? true : _canExecute(parameter);
-            }
+            public bool CanExecute(object? parameter) => _canExecute == null || _canExecute(parameter);
             public event EventHandler? CanExecuteChanged
             {
                 add { CommandManager.RequerySuggested += value; }
@@ -82,20 +60,14 @@ namespace ArchiveBrowser.ViewModels
             #endregion // ICommand Members
         }
 
-        public class AsyncCommand : ICommand
+        public class AsyncCommand(Func<Task> execute, Func<bool> canExecute) : ICommand
         {
-            private readonly Func<Task> _execute;
-            private readonly Func<bool> _canExecute;
+            private readonly Func<Task> _execute = execute;
+            private readonly Func<bool> _canExecute = canExecute;
             private bool _isExecuting;
 
             public AsyncCommand(Func<Task> execute) : this(execute, () => true)
             {
-            }
-
-            public AsyncCommand(Func<Task> execute, Func<bool> canExecute)
-            {
-                _execute = execute;
-                _canExecute = canExecute;
             }
 
             public bool CanExecute(object? parameter)
@@ -120,10 +92,7 @@ namespace ArchiveBrowser.ViewModels
                 }
             }
 
-            protected virtual void OnCanExecuteChanged()
-            {
-                if (CanExecuteChanged != null) CanExecuteChanged(this, new EventArgs());
-            }
+            protected virtual void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, new EventArgs());
         }
 
 

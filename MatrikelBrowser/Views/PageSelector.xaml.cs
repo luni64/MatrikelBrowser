@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     /// <summary>
     /// Interaction logic for PageSelector.xaml

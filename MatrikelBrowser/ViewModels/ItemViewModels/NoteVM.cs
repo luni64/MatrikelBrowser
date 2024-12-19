@@ -1,6 +1,6 @@
 ﻿using Interfaces;
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class NoteVM : BaseViewModel
     {
