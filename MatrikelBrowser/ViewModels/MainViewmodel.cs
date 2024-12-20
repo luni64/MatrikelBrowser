@@ -1,5 +1,4 @@
 ﻿using AEM;
-using Interfaces;
 
 namespace ArchiveBrowser.ViewModels
 {

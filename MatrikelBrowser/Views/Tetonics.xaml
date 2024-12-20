@@ -107,7 +107,7 @@
 
             </TreeView.ItemContainerStyle>
             <TreeView.Resources>
-                <HierarchicalDataTemplate ItemsSource="{Binding DioceseVMs }" DataType="{x:Type vm:CountryVM}" >
+                <HierarchicalDataTemplate ItemsSource="{Binding ArchiveVMs }" DataType="{x:Type vm:CountryVM}" >
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
                         <iconPacks:PackIconPhosphorIcons Width="20" Height="20" Kind="GlobeLight" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <TextBlock  
@@ -117,7 +117,7 @@
                     </StackPanel>
                 </HierarchicalDataTemplate>
 
-                <HierarchicalDataTemplate ItemsSource="{Binding LetterVMs }" DataType="{x:Type vm:DioceseVM}" >
+                <HierarchicalDataTemplate ItemsSource="{Binding LetterVMs }" DataType="{x:Type vm:ArchiveVM}" >
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
                         <iconPacks:PackIconGameIcons Kind="ChessBishop"  Width="20" Height="20"  VerticalAlignment="Center" Margin="0,0,10,0" />
                         <TextBlock  

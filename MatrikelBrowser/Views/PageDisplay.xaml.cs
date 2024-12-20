@@ -34,12 +34,13 @@ namespace ArchiveBrowser
         {
             if (e.NewValue is PageVM pageVM)
             {
+                var p = pageVM.parent as BookVM;
                 var that = ((PageDisplay)d);
-                pageVM.Parent.bookmarkVMs.CollectionChanged -= that.Bookmarks_CollectionChanged;
-                pageVM.Parent.bookmarkVMs.CollectionChanged += that.Bookmarks_CollectionChanged;
+                p.bookmarkVMs.CollectionChanged -= that.Bookmarks_CollectionChanged;
+                p.bookmarkVMs.CollectionChanged += that.Bookmarks_CollectionChanged;
 
                 that.ClearBookmarks();
-                foreach (var bmVM in pageVM.Parent.bookmarkVMs.Where(b => b.SheetNr-1 == pageVM.SheetNr))
+                foreach (var bmVM in p.bookmarkVMs.Where(b => b.SheetNr-1 == pageVM.SheetNr))
                 {
                     that.AddBookmark(bmVM);
                 }

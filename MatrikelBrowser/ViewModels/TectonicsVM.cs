@@ -1,8 +1,6 @@
-﻿using Interfaces;
-using System.Collections.Generic;
+﻿using AEM;
 using System.Collections.ObjectModel;
 using System.Linq;
-using AEM;
 
 namespace ArchiveBrowser.ViewModels
 {
@@ -31,17 +29,16 @@ namespace ArchiveBrowser.ViewModels
         #endregion
 
         #region properties
-        public ObservableCollection<CountryVM> CountryVMs { get; } = [];
-        //public List<LetterVM> LetterVMs { get; } = [];
+        public ObservableCollection<CountryVM> CountryVMs { get; }       
         public ObservableCollection<BookVM> Favorites { get; } = [];
-        public BookVM? selectedBook
+        public BookVM? selectedBook  ///ToDo: move to BookTypeVM??
         {
             get => _selectedBook;
             set
             {
                 if (_selectedBook != value)
                 {
-                    if (_selectedBook != null)
+                    if (_selectedBook != null) // reset the currently selected book
                     {
                         _selectedBook.IsSelected = false;
                         _selectedBook.SubTitle = null;
@@ -58,84 +55,14 @@ namespace ArchiveBrowser.ViewModels
         }
         #endregion
 
-        public TectonicsVM(aemCore model)  // aem core should get an interface
+        public TectonicsVM(aemCore model) 
         {
             this.model = model;
-            // setup all item viewmodels
-            
-            foreach(var Country in model.Countries.OrderBy(c=>c.Name))
-            {
-                CountryVM countryVM = new(Country.Name);
-                foreach(var diocese in Country.Archives.OrderBy(d=>d.Name))
-                {
-                    DioceseVM dioceseVM = new(diocese.Name);
-                    var ParishGroups = diocese.Parishes.Where(p => p.Books.Any()).GroupBy(p => p.Place[0]);
-                    foreach (var ParishGroup in ParishGroups)
-                    {
-                        LetterVM letterVM = new(ParishGroup.Key.ToString());
-                        foreach (var Parish in ParishGroup.OrderBy(p => p.Place))
-                        {
-                            ParishVM parishVM = new(Parish);
-                            var BookGroups = Parish.Books.GroupBy(b => b.BookType);
-                            foreach (var bookGroup in BookGroups.OrderBy(g => g.Key))
-                            {
-                                BookTypeVM typeVM = new(bookGroup.Key);
-                                foreach (var book in bookGroup.OrderBy(b => b.RefId))
-                                {
-                                    typeVM.BookVMs.Add(new BookVM(book, parishVM));
-                                }
-                                parishVM.BookTypeVMs.Add(typeVM);
-                            }
-                            letterVM.ParishVMs.Add(parishVM);
-                        }
-                        dioceseVM.LetterVMs.Add(letterVM);
-                    };
-                    countryVM.DioceseVMs.Add( dioceseVM );
-                }
-                CountryVMs.Add(countryVM);
-            }
-            
-
-
-
-            //var ParishGroups = model.Parishes./*Where(p => p.Books.Any()).*/GroupBy(p => p.Place[0]);
-            //foreach (var ParishGroup in ParishGroups)
-            //{
-            //    LetterVM letterVM = new(ParishGroup.Key.ToString());
-            //    foreach (var Parish in ParishGroup.OrderBy(p => p.Place))
-            //    {
-            //        ParishVM parishVM = new(Parish);
-            //        var BookGroups = Parish.Books.GroupBy(b => b.Type);
-            //        foreach (var bookGroup in BookGroups.OrderBy(g => g.Key))
-            //        {
-            //            BookTypeVM typeVM = new(bookGroup.Key);
-            //            foreach (var book in bookGroup.OrderBy(b=>b.ID))
-            //            {
-            //                typeVM.BookVMs.Add(new BookVM(book, parishVM));
-            //            }
-            //            parishVM.BookTypeVMs.Add(typeVM);
-            //        }
-            //        letterVM.ParishVMs.Add(parishVM);
-            //    }
-            //    this.LetterVMs.Add(letterVM);
-            //};
-
-            //var bookVMs = LetterVMs.SelectMany(l => l.ParishVMs).SelectMany(p => p.BookTypeVMs).SelectMany(bt => bt.BookVMs);
-
-            //foreach (var favID in model.Favorites)
-            //{
-            //    var bookVM = bookVMs.FirstOrDefault(b => b.ID == favID);
-            //    if (bookVM != null)
-            //    {
-            //        Favorites.Add(bookVM);
-            //        bookVM.IsFavorite= true;
-            //    }
-            //}
+            CountryVMs = new(model.Countries.Select(c => new CountryVM(c)).ToList());   // recursively setup the view modesl
         }
 
-        aemCore model;
-
         private BookVM? _selectedBook;
-        RelayCommand? _cmdToogleFavorite;
+        private RelayCommand? _cmdToogleFavorite;
+        private readonly aemCore model;
     }
 }

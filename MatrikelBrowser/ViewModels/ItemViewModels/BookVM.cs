@@ -1,5 +1,6 @@
 ﻿using AEM;
 using Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -73,8 +74,8 @@ namespace ArchiveBrowser.ViewModels
         #endregion
 
         #region Properties ----------------------------------------
-        public string Title { get; }
-        public string ID { get; }
+        public string Title => model.Title;
+        public string ID => model.RefId;
         public string? SubTitle
         {
             get => _subTitle;
@@ -102,7 +103,7 @@ namespace ArchiveBrowser.ViewModels
                 return _noteVM;
             }
         }
-        public ParishVM ParishVM { get; }
+        //public ParishVM ParishVM { get; }
         public int SelectedPageNr     // binds to the page slider, delayed update, 
         {
             get => _selectedPageNr;
@@ -197,16 +198,15 @@ namespace ArchiveBrowser.ViewModels
 
 
 
-        public BookVM(Book model, ParishVM parish)
+        public BookVM(Book model, BookTypeVM parent) : base(parent)
         {
-            this.model = model;
-            this.ParishVM = parish;
-            Title = $"{model.Title}";         
-            ID = model.RefId;
+            this.model = model;           
             Indent = -10;
         }
 
         
+        private readonly Book model;
+
         private RelayCommand? _cmdDelBookmark;
         private RelayCommand? _cmdChangePage;
         private RelayCommand? _cmdAddBookmark;
@@ -219,7 +219,6 @@ namespace ArchiveBrowser.ViewModels
         private NoteVM? _noteVM;
         private string? _subTitle;
         //private ReportVM? _reportVM;
-        private readonly Book model;
         private double _panX;
         private double _panY;
         private double _zoom = 0.3;

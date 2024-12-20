@@ -8,7 +8,7 @@
         public required string ImageLink { get; set; }
         public required Book Book { get; set; }
 
-        public override string ToString() => Name;
+        public override string ToString() => ImageLink;
 
         public string loadImage() { return string.Empty; }
     }

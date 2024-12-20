@@ -51,31 +51,30 @@ namespace AEM
 
 
 
-        public static void GetAEMPages(this Book b)
+        public static void LoadPageInfoAEM(this Book book)
         {
             using var ctx = new MatrikelBrowserCTX();
 
-            if (ctx.Pages.Any(p => p.Book == b))  // do we have pages in db
+            if (ctx.Pages.Any(p => p.Book == book))  // do we already have pages in the database?
             {
-                ctx.Entry(b).Collection(b => b.Pages).Load(); // -> load them
+                ctx.Entry(book).Collection(b => b.Pages).Load(); // -> load them
                 return;
             }
 
-            var infoURLTemplate = b.Parish.Archive.BookInfoUrl;
-            var infoURL = infoURLTemplate.Replace("{BOOKID}", b.BookInfoLink);
+            var infoURLTemplate = book.Parish.Archive.BookInfoUrl;
+            var infoURL = infoURLTemplate.Replace("{BOOKID}", book.BookInfoLink);
 
             string bookInfoXML;
-
-            if (!File.Exists(b.Title))
+            if (!File.Exists(book.Title))  // Caching the bookInfo file during development. 
             {
                 Trace.WriteLine("download bookInfoFile");
                 HttpClient httpClient = new HttpClient();
                 bookInfoXML = httpClient.GetStringAsync(infoURL).GetAwaiter().GetResult();
-                File.WriteAllText(b.Title, bookInfoXML);
+                File.WriteAllText(book.Title, bookInfoXML);
             }
             else
             {
-                bookInfoXML = File.ReadAllText(b.Title);
+                bookInfoXML = File.ReadAllText(book.Title);
             }
 
 
@@ -84,21 +83,20 @@ namespace AEM
                 mets bookInfo = bookInfoXML.ParseXML<mets>() ?? new mets(); //see: https://de.wikipedia.org/wiki/Metadata_Encoding_%26_Transmission_Standard
 
                 List<string> pageLinks = bookInfo.fileSec.fileGrp.file.Select(p => p.FLocat.href).ToList();
-                b.PageLinkPrefix = FindLongestCommonPrefix(pageLinks);
+                book.PageLinkPrefix = FindLongestCommonPrefix(pageLinks);
 
                 foreach (var pageInfo in pageLinks) // generate Page objects from the information given in bookInfo.xml
                 {
-                    Page page = new Page
+                    book.Pages.Add(new Page
                     {
-                        Book = b,
-                        ImageLink = pageInfo.Substring(b.PageLinkPrefix.Length),
-                    };
-                    b.Pages.Add(page);
+                        Book = book,
+                        ImageLink = pageInfo.Substring(book.PageLinkPrefix.Length),
+                    });                    
                 };
 
                 //ctx.Attach(b.dto);
                 //ctx.Entry(b.dto).State = EntityState.Modified;
-                ctx.Update(b);
+                ctx.Update(book);
                 ctx.SaveChanges();
             }
         }

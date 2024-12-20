@@ -1,4 +1,5 @@
-﻿using Interfaces;
+﻿using AEM.InfoProviders;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,7 +16,7 @@ namespace AEM
         public BookType BookType { get; set; } = BookType.None;
         public string PageLinkPrefix { get; set; } = string.Empty;
         required public Parish Parish { get; set; }
-        required public ICollection<Page> Pages { get; set; } = [];
+        required public IList<Page> Pages { get; set; } = [];
 
         public override string ToString() => Title;
         
@@ -23,7 +24,17 @@ namespace AEM
         {
             if (!Pages.Any()) // only load if necessary
             {
-                loadPages?.Invoke();
+                switch(this.Parish.Archive.ArchiveType)
+                {
+                    case ArchiveType.AEM:
+                        this.LoadPageInfoAEM();
+                        break;
+                    case ArchiveType.MAT:
+                        break;
+                    default:
+                        break;
+                }
+              //  loadPages?.Invoke();
             }
 
             //if (hasInfo) return;  // did we already load the page info? -> no need to parse again
@@ -32,7 +43,7 @@ namespace AEM
             //loadBookInfo(bookFolder);
             //hasInfo = true;
         }
-        [NotMapped]
-        public Action loadPages { get; set; }
+        //[NotMapped]
+        //public Action loadPages { get; set; }
     }
 }

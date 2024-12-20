@@ -27,8 +27,8 @@ namespace AEM
                 Trace.TraceInformation("Database Migration...");                
                 ctx.Database.Migrate();
             }
-                        
-            _countries = ctx.Countries.Include(c => c.Archives).ThenInclude(d => d.Parishes).ThenInclude(p => p.Books).ToList();
+
+            _countries = ctx.Countries.Include(c => c.Archives).ThenInclude(d => d.Parishes.Where(p => p.Books.Any())).ThenInclude(p=>p.Books).OrderBy(c=>c.Name).ToList();
 
             if (notesFile.Exists)
             {
