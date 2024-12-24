@@ -412,7 +412,7 @@ namespace AEM
 
         static Image? getCutout(IBookmarkBase bookmark, Page page)
         {
-            var sheetImgFile = page.loadImage();
+            var sheetImgFile = page.GetOrCreateImage();
             if (!File.Exists(sheetImgFile)) return null;
 
             System.Drawing.Image sheetImg = new Bitmap(sheetImgFile);

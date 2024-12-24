@@ -147,11 +147,11 @@ namespace ArchiveBrowser.ViewModels
         public string? ReportFile { get; internal set; }
 
         #endregion
-        public async void Intialize()
+        public async void Initialize()
         {
             if (model.Pages.Count == 0) // we lazy load pages
             {
-                SubTitle = "Downloading...";
+                SubTitle = $"downloading page informations for book: {Title}";
                 await Task.Run(() =>
                 {
                     model.LoadPageInfo(); // load or read page info from mets.xml

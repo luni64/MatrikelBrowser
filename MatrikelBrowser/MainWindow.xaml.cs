@@ -17,6 +17,7 @@ using MahApps.Metro.Controls;
 
 
 
+
 namespace ArchiveBrowser
 {
     /// <summary>
@@ -45,11 +46,11 @@ namespace ArchiveBrowser
 
         private void Button_Click(object sender, RoutedEventArgs e) => FirstFlyout.IsOpen = true;
         private void Button_Click_1(object sender, RoutedEventArgs e) => NotesFlyout.IsOpen = true;
-        
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             var x = pageSelector.Focus();  // need to actively remove focus from Notes textbox to get changes before saving
-            if(DataContext is MainViewModel dc)
+            if (DataContext is MainViewModel dc)
             {
                 dc.cmdSave.Execute(null);
             }
@@ -60,6 +61,16 @@ namespace ArchiveBrowser
             if (DataContext is MainViewModel dc)
             {
                 dc.cmdSave.Execute(null);
+            }
+        }
+
+        private void Button_Settings(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel dc)
+            {
+                var settings = new SettingsWindow();
+                settings.DataContext = dc.SettingsVM;
+                settings.ShowDialog();
             }
         }
     }

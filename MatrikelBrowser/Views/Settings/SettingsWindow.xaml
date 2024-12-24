@@ -1,0 +1,97 @@
+﻿<mah:MetroWindow 
+    x:Class="ArchiveBrowser.SettingsWindow"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"  
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"    
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ArchiveBrowser"
+    xmlns:vm ="clr-namespace:ArchiveBrowser.ViewModels" 
+    d:DataContext="{d:DesignInstance Type=vm:SettingsVM}"
+    mc:Ignorable="d"
+    Title="Einstellungen" Height="450" Width="800">
+
+    <mah:MetroWindow.Resources>
+        <ResourceDictionary 
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:sys="clr-namespace:System;assembly=mscorlib">
+            <sys:Double x:Key="MahApps.Font.Size.FloatingWatermark">12</sys:Double>
+        </ResourceDictionary>
+    </mah:MetroWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
+        <mah:MetroTabControl 
+            Margin="20"
+            x:Name="TabControl"  mah:TabControlHelper.Transition="RightReplace"
+            TabStripPlacement="Left"
+            Style="{DynamicResource MahApps.Styles.TabControl.Animated}"
+            mah:TabControlHelper.Underlined="SelectedTabItem" mah:TabControlHelper.UnderlinePlacement="Left"             
+            mah:HeaderedControlHelper.HeaderFontSize="20" mah:HeaderedControlHelper.HeaderFontWeight="SemiBold" mah:HeaderedControlHelper.HeaderMargin="10,0,20,0"
+            >
+            <mah:MetroTabItem Header="Datenbank">
+                <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
+                    <local:SettingsDatabase/>                 
+                </Border>
+            </mah:MetroTabItem>
+            
+            <mah:MetroTabItem Header="Verzeichnisse">
+                <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
+                </Border>
+            </mah:MetroTabItem>
+            
+            <mah:MetroTabItem Header="Pfarreien">                
+                <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
+                    <TextBlock Margin="0" Text="you can bind to a command" />
+                </Border>
+
+            </mah:MetroTabItem>
+        </mah:MetroTabControl>
+
+        <!--<StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,20,15">
+            <Button 
+                Margin="0,0,0,0" Width="120"
+                Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}"
+                >
+                <StackPanel                
+                    Orientation="Horizontal">
+                    <iconPacks:PackIconModern 
+                        Width="16" Height="16" VerticalAlignment="Center"
+                        Kind="Cancel" />
+                    <TextBlock 
+                        Margin="10 0 0 0" VerticalAlignment="Center" 
+                        Text="Abbrechen" 
+                        />
+                </StackPanel>
+            </Button>
+            <Button 
+                Margin="10,0,0,0" Width="120" 
+                Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}"
+                >
+                <StackPanel                
+                    Orientation="Horizontal" >
+                    <iconPacks:PackIconModern 
+                        Width="16" Height="16" VerticalAlignment="Center"
+                        Kind="Save" />
+                    <TextBlock 
+                        Margin="10 0 0 0" VerticalAlignment="Center" 
+                        Text="Speichern" 
+                        />
+                </StackPanel>
+            </Button>
+        </StackPanel>-->
+
+
+
+    </Grid>
+
+
+
+
+</mah:MetroWindow>

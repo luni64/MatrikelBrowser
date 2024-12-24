@@ -20,9 +20,9 @@
         d:DataContext="{d:DesignInstance Type={x:Type viewmodels:PageVM}}"
         x:Name="border"                  
         ClipToBounds="True"        
-        PanX="{Binding Parent.PanX}"
-        PanY="{Binding Parent.PanY}"
-        Zoom="{Binding Parent.zoom}">
+        PanX="{Binding parent.PanX}"
+        PanY="{Binding parent.PanY}"
+        Zoom="{Binding parent.zoom}">
 
 
         <Canvas x:Name="PageCanvas" >

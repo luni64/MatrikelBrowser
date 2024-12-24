@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,8 +10,56 @@ using System.Xml.Serialization;
 
 namespace AEM
 {
-    internal static class ParseHelpers
+    public static class ParseHelpers
     {
+        /// <summary>
+        /// Converts a string representation of a title to a corresponding <see cref="BookType"/> value.
+        /// </summary>
+        /// <param name="title">The title string to be evaluated.</param>
+        /// <returns>
+        /// A <see cref="BookType"/> enumeration value that represents the type of book derived from the title.
+        /// If the title contains multiple matches, <see cref="BookType.Mischbände"/> is returned.
+        /// </returns>
+        /// <remarks>
+        /// The method performs a case-insensitive search for specific key-syllables in the title:
+        /// <list type="bullet">
+        ///   <item><description>"tauf" maps to <see cref="BookType.Taufen"/>.</description></item>
+        ///   <item><description>"trau" maps to <see cref="BookType.Trauungen"/>.</description></item>
+        ///   <item><description>"misch" maps to <see cref="BookType.Mischbände"/>.</description></item>
+        ///   <item><description>"sterb" or "beerd" maps to <see cref="BookType.Sterbefälle"/>.</description></item>
+        /// </list>
+        /// If no match is found, the method returns <see cref="BookType.Verschiedenes"/>.
+        /// </remarks>
+        public static BookType toBookType(this string title)
+        {
+            var t = title.ToLower();
+            BookType bt = BookType.None;
+
+            if (t.Contains("tauf")) bt |= BookType.Taufen;
+            if (t.Contains("trau")) bt |= BookType.Trauungen;
+            if (t.Contains("misch")) bt |= BookType.Mischbände;
+            if (t.Contains("sterb") || t.Contains("beerd")) bt |= BookType.Sterbefälle;
+            if (bt == BookType.None) bt = BookType.Verschiedenes;
+            return ((int)bt & ((int)bt - 1)) == 0 ? bt : BookType.Mischbände;
+        }
+
+        /// <summary>
+        /// Converts the input string into a safe filename by replacing invalid characters with underscores.
+        /// </summary>
+        /// <param name="filename">The string to be converted into a safe filename.</param>
+        /// <returns>
+        /// A string where all invalid filename characters, including spaces, are replaced with underscores.
+        /// </returns>
+        /// <remarks>
+        /// The method uses <see cref="Path.GetInvalidFileNameChars"/> to identify characters that are not allowed in filenames,
+        /// appending a space (' ') to this list. Each invalid character in the input string is replaced with an underscore ('_').
+        /// </remarks>
+        public static string toSafeFilename(this string filename)
+        {            
+            char[] invalidChars = Path.GetInvalidFileNameChars().Append(' ').ToArray(); 
+            return string.Concat(filename.Select(c => invalidChars.Contains(c) ? '_' : c)); // Replace invalid characters with an underscore 
+        }
+
         public static Stream ToStream(this string @this)
         {
             var stream = new MemoryStream();
@@ -21,12 +70,11 @@ namespace AEM
             return stream;
         }
 
-        public static T? ParseXML<T>(this string @this) where T : class
+        internal static T? ParseXML<T>(this string @this) where T : class
         {
             var reader = XmlReader.Create(@this.Trim().ToStream(), new XmlReaderSettings() { ConformanceLevel = ConformanceLevel.Document });
             return new XmlSerializer(typeof(T)).Deserialize(reader) as T;
         }
-
 
         public static string FindLongestCommonPrefix(List<string> strings)
         {
@@ -49,57 +97,6 @@ namespace AEM
             return prefix;
         }
 
-
-
-        public static void LoadPageInfoAEM(this Book book)
-        {
-            using var ctx = new MatrikelBrowserCTX();
-
-            if (ctx.Pages.Any(p => p.Book == book))  // do we already have pages in the database?
-            {
-                ctx.Entry(book).Collection(b => b.Pages).Load(); // -> load them
-                return;
-            }
-
-            var infoURLTemplate = book.Parish.Archive.BookInfoUrl;
-            var infoURL = infoURLTemplate.Replace("{BOOKID}", book.BookInfoLink);
-
-            string bookInfoXML;
-            if (!File.Exists(book.Title))  // Caching the bookInfo file during development. 
-            {
-                Trace.WriteLine("download bookInfoFile");
-                HttpClient httpClient = new HttpClient();
-                bookInfoXML = httpClient.GetStringAsync(infoURL).GetAwaiter().GetResult();
-                File.WriteAllText(book.Title, bookInfoXML);
-            }
-            else
-            {
-                bookInfoXML = File.ReadAllText(book.Title);
-            }
-
-
-            if (!string.IsNullOrEmpty(bookInfoXML))
-            {
-                mets bookInfo = bookInfoXML.ParseXML<mets>() ?? new mets(); //see: https://de.wikipedia.org/wiki/Metadata_Encoding_%26_Transmission_Standard
-
-                List<string> pageLinks = bookInfo.fileSec.fileGrp.file.Select(p => p.FLocat.href).ToList();
-                book.PageLinkPrefix = FindLongestCommonPrefix(pageLinks);
-
-                foreach (var pageInfo in pageLinks) // generate Page objects from the information given in bookInfo.xml
-                {
-                    book.Pages.Add(new Page
-                    {
-                        Book = book,
-                        ImageLink = pageInfo.Substring(book.PageLinkPrefix.Length),
-                    });                    
-                };
-
-                //ctx.Attach(b.dto);
-                //ctx.Entry(b.dto).State = EntityState.Modified;
-                ctx.Update(book);
-                ctx.SaveChanges();
-            }
-        }
     }
 }
 

@@ -11,7 +11,7 @@ namespace AEM
         public required string Place { get; set; }
         public string Church { get; set; } = string.Empty;
         required public Archive Archive { get; set; }
-        required public string BookBaseUrl { get; set; }
+        public string BookBaseUrl { get; set; }
         public List<Book> Books { get; set; } = [];
 
         [NotMapped]

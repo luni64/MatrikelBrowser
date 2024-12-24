@@ -22,7 +22,7 @@
         <view:StringToImageConverter x:Key="valueconverter"/>
     </Window.Resources>-->
 
-    <mah:MetroWindow.LeftWindowCommands>
+    <!--<mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
             <Button Click="SaveButton_Click" >
                 <Button.ContentTemplate>
@@ -42,7 +42,29 @@
                 </Button.ContentTemplate>
             </Button>
         </mah:WindowCommands>
-    </mah:MetroWindow.LeftWindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>-->
+
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <Button Click="Button_Settings" >
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconForkAwesome  
+                                Width="16"
+                                Height="16"
+                                VerticalAlignment="Center"
+                                Kind="Bars" />
+                            <TextBlock 
+                            Margin="8 0 0 0"
+                            VerticalAlignment="Center"
+                            Text="Einstellungen" />
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
 
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl x:Name="flyoutsControl">
@@ -65,7 +87,7 @@
             <mah:Flyout 
                 x:Name="NotesFlyout"
                 DataContext="{Binding tectonicsVM.selectedBook}"
-                Header="{Binding ParishVM.Title}"
+                Header="{Binding parent.parent.Title}"
                 Width="350" Margin="0,30,0,0" Position="Left"                     
                 Theme="Inverse"
                 AreAnimationsEnabled="True"

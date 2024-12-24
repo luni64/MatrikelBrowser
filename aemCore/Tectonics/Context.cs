@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.IO;
 
 namespace AEM
@@ -13,12 +14,18 @@ namespace AEM
         public DbSet<Book> Books { get; set; }
         public DbSet<Parish> Parishes { get; set; }
         public DbSet<Archive> Archives { get; set; }
-        public DbSet<Country> Countries { get; set; }        
+        public DbSet<Country> Countries { get; set; }
+
+        public MatrikelBrowserCTX(string? database = null)
+        {
+            
+        }
+
+        public static string DatabaseFile { get; set; } = string.Empty;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(
-                "Data Source= c:/Users/lutz/Documents/MatrikelBrowser.db");//, b=>b.MigrationsAssembly("../MatrikelBrowser")); C:\Users\lutz\Documents
+            optionsBuilder.UseSqlite($"Data Source={DatabaseFile}");
         }
     }
 

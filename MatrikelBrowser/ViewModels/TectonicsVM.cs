@@ -47,7 +47,7 @@ namespace ArchiveBrowser.ViewModels
 
                     if (_selectedBook != null)
                     {
-                        _selectedBook.Intialize(); // lazy load pages information 
+                        _selectedBook.Initialize(); // lazy load pages information 
                         _selectedBook.IsSelected = true;
                     }
                 }
