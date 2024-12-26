@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Security.Policy;
 
-namespace AEM
+namespace MbCore
 {
     public class Page 
     {

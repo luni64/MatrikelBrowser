@@ -1,10 +1,10 @@
-﻿using AEM;
+﻿using MbCore;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
-    public class TectonicsVM : BaseViewModel
+    public class TectonicsVM(aemCore model) : BaseViewModel
     {
         #region commands
         public RelayCommand cmdToogleFavorite => _cmdToogleFavorite ??= new RelayCommand(doToggleFavorite);
@@ -29,7 +29,7 @@ namespace ArchiveBrowser.ViewModels
         #endregion
 
         #region properties
-        public ObservableCollection<CountryVM> CountryVMs { get; }       
+        public ObservableCollection<CountryVM> CountryVMs { get; } = [];
         public ObservableCollection<BookVM> Favorites { get; } = [];
         public BookVM? selectedBook  ///ToDo: move to BookTypeVM??
         {
@@ -55,14 +55,17 @@ namespace ArchiveBrowser.ViewModels
         }
         #endregion
 
-        public TectonicsVM(aemCore model) 
-        {
-            this.model = model;
-            CountryVMs = new(model.Countries.Select(c => new CountryVM(c)).ToList());   // recursively setup the view modesl
+        public void UpdateData()
+        {  
+            CountryVMs.Clear();
+            foreach (var country in model.Countries)
+            {
+                CountryVMs.Add(new CountryVM(country));
+            }
         }
 
         private BookVM? _selectedBook;
         private RelayCommand? _cmdToogleFavorite;
-        private readonly aemCore model;
+        private readonly aemCore model = model;
     }
 }

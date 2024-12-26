@@ -1,4 +1,4 @@
-﻿using AEM;
+﻿using MbCore;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class BookVM : ItemVM
     {

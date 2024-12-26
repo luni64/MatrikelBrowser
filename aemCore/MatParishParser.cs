@@ -1,14 +1,11 @@
-﻿using AEM;
-using HtmlAgilityPack;
-using Microsoft.EntityFrameworkCore;
+﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Policy;
 
-namespace OtherRepoTest
+namespace MbCore
 {
     internal class MatParishParser
     {
@@ -52,10 +49,8 @@ namespace OtherRepoTest
 
             using var ctx = new MatrikelBrowserCTX();
 
-            var country = ctx.Countries.FirstOrDefault(c => c.Name == CountryName) ??
-                new AEM.Country { Name = CountryName };
-            var archive = ctx.Archives.FirstOrDefault(a => a.Name == DioceseName && a.Country == country) ??
-                new Archive { Name = DioceseName, Country = country, ArchiveType = ArchiveType.MAT, ViewerUrl = "", BookInfoUrl = "https://data.matricula-online.eu/{BOOKID}", };
+            var country = ctx.Countries.FirstOrDefault(c => c.Name == CountryName) ?? new MbCore.Country { Name = CountryName };
+            var archive = ctx.Archives.FirstOrDefault(a => a.Name == DioceseName && a.Country == country) ?? new Archive { Name = DioceseName, Country = country, ArchiveType = ArchiveType.MAT, ViewerUrl = "", BookInfoUrl = "https://data.matricula-online.eu/{BOOKID}", };
 
             var booksTable = htmlDoc.DocumentNode.SelectSingleNode("//table[@class='table table-bordered w-100']");
             if (booksTable == null) return null;
@@ -63,7 +58,9 @@ namespace OtherRepoTest
 
             // use the fist book to look up the base url
             var c = rows[1].SelectNodes("td").FirstOrDefault();
-            var path = Path.GetDirectoryName(c.SelectSingleNode(".//a[@href]").GetAttributeValue("href", string.Empty).Trim('/')).Replace('\\', '/');
+            if(c == null) return null;
+            var path = Path.GetDirectoryName(c.SelectSingleNode(".//a[@href]").GetAttributeValue("href", string.Empty).Trim('/'))?.Replace('\\', '/');
+            if (path == null) return null;
 
             var parish = new Parish
             {
@@ -93,7 +90,7 @@ namespace OtherRepoTest
                     BookType = matrikeltyp.toBookType(),
                     Title = $"{matrikeltyp} ({datum})",
                     BookInfoLink = link,
-                });             
+                });
             }
 
             return parish;

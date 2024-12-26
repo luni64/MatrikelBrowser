@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AEM.Interfaces
+namespace MbCore.Interfaces
 {
     internal interface IBookInfoProvider
     {

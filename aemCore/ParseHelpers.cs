@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace AEM
+namespace MbCore
 {
     public static class ParseHelpers
     {

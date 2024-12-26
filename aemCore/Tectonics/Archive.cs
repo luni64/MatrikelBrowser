@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AEM
+namespace MbCore
 {
     public class Archive
     {

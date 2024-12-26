@@ -1,10 +1,10 @@
-﻿using AEM;
+﻿using MbCore;
 using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class BookTypeVM : ItemVM
     {

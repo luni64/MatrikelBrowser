@@ -1,4 +1,4 @@
-﻿using AEM;
+﻿using MbCore;
 using Interfaces;
 using Org.BouncyCastle.Crypto;
 using System;
@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Windows.Media.Media3D;
 
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
 
     public interface IDetailsVM
@@ -47,8 +47,8 @@ namespace ArchiveBrowser.ViewModels
             }
         }
 
-        private IDetailsVM _selectedViewModel;
-        public IDetailsVM SelectedViewModel
+        private IDetailsVM? _selectedViewModel;
+        public IDetailsVM? SelectedViewModel
         {
             get => _selectedViewModel;
             set => SetProperty(ref _selectedViewModel, value);

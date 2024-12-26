@@ -1,15 +1,17 @@
-﻿using MahApps.Metro.Controls;
+﻿using MatrikelBrowser.ViewModels;
+using MahApps.Metro.Controls;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser.Views
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
     public partial class SettingsWindow : MetroWindow
     {
-        public SettingsWindow()
+        public SettingsWindow(SettingsVM vm)
         {
             InitializeComponent();
+            DataContext = vm;
         }
     }
 }

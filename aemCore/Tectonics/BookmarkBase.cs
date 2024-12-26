@@ -1,6 +1,6 @@
 ﻿using Interfaces;
 
-namespace AEM
+namespace MbCore
 {
     public class BookmarkBase : IBookmarkBase
     {

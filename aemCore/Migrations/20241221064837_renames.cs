@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace AEM.Migrations
+namespace MbCore.Migrations
 {
     /// <inheritdoc />
     public partial class renames : Migration

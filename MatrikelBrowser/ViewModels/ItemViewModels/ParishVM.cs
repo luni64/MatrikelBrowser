@@ -1,28 +1,32 @@
-﻿using AEM;
+﻿using MbCore;
 using Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.ObjectModel;
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class ParishVM : ItemVM
     {
-        public string Title => model.Name;
-        public string Church => model.Church;
-        public string SubTitle => $"{model.RefId} {model.Church} (#{model.Books.Count}";
-        public string RefNr => model.RefId;
-        public List<BookTypeVM> BookTypeVMs { get; }//= new();
-        public ParishVM(Parish model, LetterVM parent): base(parent)
+        public string Title => model?.Name ?? string.Empty;
+        public string Church => model?.Church ?? string.Empty;
+        public string SubTitle => $"{model?.RefId} {model?.Church} (#{model?.Books.Count}";
+        public string RefNr => model?.RefId ?? string.Empty;
+
+        
+
+        public ObservableCollection<BookTypeVM>? BookTypeVMs { get; }= new();
+        public ParishVM(Parish? model = null, LetterVM? parent = null): base(parent)
         {
             this.model = model;
 
-            var BookGroups = model.Books.GroupBy(b => b.BookType).OrderBy(bt => bt.Key);
-            BookTypeVMs = BookGroups.Select(bt => new BookTypeVM(bt, this)).ToList();            
+            //var BookGroups = model.Books.GroupBy(b => b.BookType).OrderBy(bt => bt.Key);
+            //BookTypeVMs = BookGroups.Select(bt => new BookTypeVM(bt, this)).ToList();            
 
             Indent = -10;
         }
 
-        private readonly Parish model;
+        internal readonly Parish? model;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Interfaces;
 using System.Collections.Generic;
 
-namespace AEM
+namespace MbCore
 {
     /// <summary>
     /// Represents a book entity in the application.

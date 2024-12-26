@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 
-namespace AEM
+namespace MbCore
 {
     public enum ArchiveType { AEM, MAT }
 

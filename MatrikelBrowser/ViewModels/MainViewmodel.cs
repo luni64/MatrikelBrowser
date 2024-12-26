@@ -1,49 +1,38 @@
-﻿using AEM;
-using iText.Commons.Utils;
+﻿using MbCore;
+using MatrikelBrowser.Infrastructure;
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
         #region Commands                
-        public RelayCommand cmdSave => _cmdSave ??= new RelayCommand(doSave);
-        private void doSave(object? o)
-        {
-            model.saveNotes();
-        }
+        public RelayCommand cmdSave => _cmdSave ??= new RelayCommand((object? _) => aemCore.saveNotes());
+        public RelayCommand cmdSettings => _cmdSettings ??= new RelayCommand((object? _) => dialogService.ShowDialog(new SettingsVM(model)));
         #endregion
 
         #region Properties
         public TectonicsVM tectonicsVM { get; }
-        public SettingsVM SettingsVM { get; }
         #endregion
 
         public MainViewModel()
         {
-            setup();
-            var settings = MatrikelBrowser.Properties.Settings.Default;
-            string dbFilename = settings.DatabaseFile;
-            model = new aemCore();
-
-            var dbInfo = model.CheckDatabase(dbFilename);
-            if(dbInfo.IsCompatible)
-            {
-                if(dbInfo.PendingMigrations > 0)
-                {
-                    model.MigrateDatabase(dbFilename);  // todo: ask user to confirm first
-                }
-                model.SetDatabase(dbFilename);
-            }
-
-
-            SettingsVM = new(model);
+            model = new();
             tectonicsVM = new(model);
+            model.DatabaseChanged += () => tectonicsVM.UpdateData();  // update the displayed data in case of db changes
+
+            var dbFilname = getDatabaseFilename(); // read from user settings
+            if (!model.SetDatabase(dbFilname))     // try to set the database, data will be empty in case of errors
+            {
+                Trace.TraceInformation("Error loading data");
+            }
         }
 
         #region private methods and fields  
-        private void setup()
+        private static string getDatabaseFilename()
         {
             var settings = MatrikelBrowser.Properties.Settings.Default;
 
@@ -59,11 +48,13 @@ namespace ArchiveBrowser.ViewModels
                 settings.DatabaseFile = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "MatrikelBrowser", "MatrikelBrowser.db"));
                 settings.Save();
             }
-            //MatrikelBrowserCTX.DatabaseFile = settings.DatabaseFile;
+            return settings.DatabaseFile;
         }
 
         private RelayCommand? _cmdSave;
-        private readonly aemCore model;
+        private RelayCommand? _cmdSettings;
+        private aemCore model { get; set; }
+        private readonly IDialogService dialogService = new DialogService();
         #endregion
     }
 }

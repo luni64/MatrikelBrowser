@@ -16,7 +16,7 @@ using iText.Commons.Utils;
 using Microsoft.AspNetCore.WebUtilities;
 
 
-namespace AEM
+namespace MbCore
 {
     public static class BookExtensions
     {
@@ -71,7 +71,7 @@ namespace AEM
 
             if (!string.IsNullOrEmpty(bookInfoXML))
             {
-                mets bookInfo = bookInfoXML.ParseXML<mets>() ?? new mets(); //see: https://de.wikipedia.org/wiki/Metadata_Encoding_%26_Transmission_Standard
+                Mets bookInfo = bookInfoXML.ParseXML<Mets>() ?? new Mets(); //see: https://de.wikipedia.org/wiki/Metadata_Encoding_%26_Transmission_Standard
 
                 List<string> pageLinks = bookInfo.fileSec.fileGrp.file.Select(p => p.FLocat.href).ToList();
                 book.ImageLinkPrefix = FindLongestCommonPrefix(pageLinks);

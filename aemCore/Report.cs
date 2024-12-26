@@ -19,16 +19,16 @@ using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
 using Tab = iText.Layout.Element.Tab;
 
-namespace AEM
+namespace MbCore
 {
     public static class Report
     {
-        public static Style Title = new();
-        public static Style normal = new();
-        public static Style heading1 = new();
-        public static Style heading2 = new();
-        public static Style blueHeading = new();
-        public static Style link = new();
+        internal static Style Title = new();
+        internal static Style normal = new();
+        internal static Style heading1 = new();
+        internal static Style heading2 = new();
+        internal static Style blueHeading = new();
+        internal static Style link = new();
 
         public static FileInfo? Generate(Book book)
         {
@@ -485,7 +485,7 @@ namespace AEM
         }
         static FileInfo makeCleanFile(Book book)
         {
-            return new FileInfo(Path.Combine(KnownFolders.Downloads.Path, book.ToString() + ".pdf")
+            return new FileInfo(Path.Combine(KnownFolders.Downloads!.Path!, book.ToString() + ".pdf")
                 .ToLower()
                 .Replace(" ", "_")
                 .Replace("ä", "ae")

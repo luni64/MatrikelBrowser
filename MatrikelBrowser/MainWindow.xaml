@@ -1,12 +1,12 @@
-﻿<mah:MetroWindow x:Class="ArchiveBrowser.MainWindow"
+﻿<mah:MetroWindow x:Class="MatrikelBrowser.MainWindow"
                  xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"             
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:vm="clr-namespace:ArchiveBrowser.ViewModels"
-                 xmlns:view="clr-namespace:ArchiveBrowser"
+                 xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels"
+                 xmlns:view="clr-namespace:MatrikelBrowser"
                  Closing="MetroWindow_Closing"  
                  mc:Ignorable="d"
                  d:DataContext="{d:DesignInstance Type={x:Type vm:MainViewModel}}"                                                   
@@ -46,7 +46,7 @@
 
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            <Button Click="Button_Settings" >
+            <Button Command="{Binding cmdSettings}" >
                 <Button.ContentTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">

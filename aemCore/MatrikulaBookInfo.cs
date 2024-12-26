@@ -1,6 +1,6 @@
 ﻿using Interfaces;
 
-namespace OtherRepoTest
+namespace MbCore
 {
     public class MatrikulaBookInfo 
     {

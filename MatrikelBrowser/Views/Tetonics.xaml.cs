@@ -1,4 +1,4 @@
-﻿using ArchiveBrowser.ViewModels;
+﻿using MatrikelBrowser.ViewModels;
 using MahApps.Metro.IconPacks;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     /// <summary>
     /// Interaction logic for Tetronics.xaml

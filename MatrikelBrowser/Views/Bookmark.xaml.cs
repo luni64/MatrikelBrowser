@@ -1,5 +1,5 @@
-﻿using ArchiveBrowser.ViewModels;
-using ArchiveBrowser.Views;
+﻿using MatrikelBrowser.ViewModels;
+using MatrikelBrowser.Views;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     /// <summary>
     /// Interaktionslogik für Bookmark.xaml
@@ -154,7 +154,7 @@ namespace ArchiveBrowser
 
         #region Scaling ---------------------------------------
         Point? oldScalerPosition;
-        private bool imgArr_SsMouseOver;
+       // private bool imgArr_SsMouseOver;
 
         private void Scaler_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

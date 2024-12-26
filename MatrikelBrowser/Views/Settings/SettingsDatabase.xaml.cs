@@ -1,10 +1,10 @@
-﻿using ArchiveBrowser.ViewModels;
+﻿using MatrikelBrowser.ViewModels;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     /// <summary>
     /// Interaction logic for SettingsDatabase.xaml

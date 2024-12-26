@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 
-namespace AEM
+namespace MbCore
 {
     public static  class PageExtensions
     {

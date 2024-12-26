@@ -1,7 +1,7 @@
 ﻿using Interfaces;
 using System;
 
-namespace AEM
+namespace MbCore
 {
     public class Person
     {

@@ -1,5 +1,5 @@
 ﻿using Interfaces;
-using AEM;
+using MbCore;
 using Microsoft.VisualBasic.ApplicationServices;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.IO;
@@ -8,7 +8,7 @@ using System;
 using System.Net;
 
 
-namespace ArchiveBrowser.ViewModels
+namespace MatrikelBrowser.ViewModels
 {
     public class PageVM : ItemVM
     {

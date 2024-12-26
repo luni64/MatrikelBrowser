@@ -1,4 +1,4 @@
-﻿using ArchiveBrowser.ViewModels;
+﻿using MatrikelBrowser.ViewModels;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     /// <summary>
     /// Interaction logic for PageDisplay.xaml
@@ -32,15 +32,14 @@ namespace ArchiveBrowser
 
         static void OnPageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue is PageVM pageVM)
-            {
-                var p = pageVM.parent as BookVM;
+            if (e.NewValue is PageVM pageVM && pageVM.parent is BookVM bookVM)
+            {               
                 var that = ((PageDisplay)d);
-                p.bookmarkVMs.CollectionChanged -= that.Bookmarks_CollectionChanged;
-                p.bookmarkVMs.CollectionChanged += that.Bookmarks_CollectionChanged;
+                bookVM.bookmarkVMs.CollectionChanged -= that.Bookmarks_CollectionChanged;
+                bookVM.bookmarkVMs.CollectionChanged += that.Bookmarks_CollectionChanged;
 
                 that.ClearBookmarks();
-                foreach (var bmVM in p.bookmarkVMs.Where(b => b.SheetNr-1 == pageVM.SheetNr))
+                foreach (var bmVM in bookVM.bookmarkVMs.Where(b => b.SheetNr-1 == pageVM.SheetNr))
                 {
                     that.AddBookmark(bmVM);
                 }

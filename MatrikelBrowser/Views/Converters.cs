@@ -14,7 +14,7 @@ using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using MahApps.Metro.IconPacks;
 
-namespace ArchiveBrowser
+namespace MatrikelBrowser
 {
     public class BoolToObjectConverter : MarkupExtension, IValueConverter
     {
@@ -45,8 +45,8 @@ namespace ArchiveBrowser
 
     public class BoolToObjectConverter2 : IValueConverter
     {
-        PackIconMaterialKind checkedIconKind = PackIconMaterialKind.Star;
-        PackIconBase uncheckedIcon = new PackIconMaterial() { Kind = PackIconMaterialKind.Star,Width = 10, Height = 10 };
+        //PackIconMaterialKind checkedIconKind = PackIconMaterialKind.Star;
+        //PackIconBase uncheckedIcon = new PackIconMaterial() { Kind = PackIconMaterialKind.Star,Width = 10, Height = 10 };
 
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
