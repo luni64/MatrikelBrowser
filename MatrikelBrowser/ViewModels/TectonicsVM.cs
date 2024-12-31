@@ -1,10 +1,38 @@
-﻿using MbCore;
+﻿using Interfaces;
+using MbCore;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace MatrikelBrowser.ViewModels
 {
-    public class TectonicsVM(aemCore model) : BaseViewModel
+    public class TabItemVM : BaseViewModel
+    {
+        public string Header { get; private set; }
+        //public string Letter { get; } = (book.parent.parent as ParishVM)!.Title.Substring(0, 1);
+        public string Letter { get; }
+            
+        public string Parish { get; }
+        public string Date { get; } = "(1654 - 1802)";
+        public BookVM book { get; set; }
+
+        public TabItemVM(BookVM book)
+        {
+            this.book = book;
+
+            Header = book.Title;
+            Parish = book.model.Parish.Name;
+            Letter = book.BookType switch
+            {
+                BookType.Mischbände => "M",
+                BookType.Taufbücher => "T",
+                BookType.Hochzeitsbücher => "H",
+                _ => ""
+            };
+        }
+    }
+
+    public class TectonicsVM(aemCore model) : ItemVM(null)
     {
         #region commands
         public RelayCommand cmdToogleFavorite => _cmdToogleFavorite ??= new RelayCommand(doToggleFavorite);
@@ -31,36 +59,41 @@ namespace MatrikelBrowser.ViewModels
         #region properties
         public ObservableCollection<CountryVM> CountryVMs { get; } = [];
         public ObservableCollection<BookVM> Favorites { get; } = [];
-        public BookVM? selectedBook  ///ToDo: move to BookTypeVM??
+
+        public ObservableCollection<TabItemVM> DisplayedBooks { get; } = [];
+
+        TabItemVM? _selectedTab;
+        public TabItemVM? selectedTab
+        {
+            get => _selectedTab;
+            set => SetProperty(ref _selectedTab, value);
+        }
+
+        private CountryVM? _selectedCountry;
+        public CountryVM? SelectedCountry
+        {
+            get => _selectedCountry;
+            set => SetProperty(ref _selectedCountry, value);
+        }
+
+        public BookVM? selectedBook  ///ToDo: move to BookGroupVM??
         {
             get => _selectedBook;
             set
             {
-                if (_selectedBook != value)
-                {
-                    if (_selectedBook != null) // reset the currently selected book
-                    {
-                        _selectedBook.IsSelected = false;
-                        _selectedBook.SubTitle = null;
-                    }
-                    SetProperty(ref _selectedBook, value);
-
-                    if (_selectedBook != null)
-                    {
-                        _selectedBook.Initialize(); // lazy load pages information 
-                        _selectedBook.IsSelected = true;
-                    }
-                }
+                SetProperty(ref _selectedBook, value);
+                if(value != null) DisplayedBooks.Add(new TabItemVM(value));
+                selectedTab = DisplayedBooks.Last();
             }
         }
         #endregion
 
         public void UpdateData()
-        {  
+        {
             CountryVMs.Clear();
             foreach (var country in model.Countries)
             {
-                CountryVMs.Add(new CountryVM(country));
+                CountryVMs.Add(new CountryVM(country, this));
             }
         }
 

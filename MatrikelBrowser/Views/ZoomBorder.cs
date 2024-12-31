@@ -90,7 +90,7 @@ namespace MatrikelBrowser
                 //Trace.WriteLine($"onZoom {e.NewValue}");
                 var st = zb.GetScaleTransform(zb.child);
                 st.ScaleX = (double)e.NewValue;
-                st.ScaleY = st.ScaleX;
+                st.ScaleY = st.ScaleX;               
             }
         }
 

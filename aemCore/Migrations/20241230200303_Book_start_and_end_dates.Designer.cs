@@ -3,6 +3,7 @@ using System;
 using MbCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MbCore.Migrations
 {
     [DbContext(typeof(MatrikelBrowserCTX))]
-    partial class MatrikelBrowserCTXModelSnapshot : ModelSnapshot
+    [Migration("20241230200303_Book_start_and_end_dates")]
+    partial class Book_start_and_end_dates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");

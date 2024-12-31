@@ -8,7 +8,7 @@ namespace MbCore
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.loc.gov/METS/")]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.loc.gov/METS/", IsNullable = false)]
-    public partial class Mets
+    public partial class mets
     {
         private metsDmdSec dmdSecField;
 

@@ -1,19 +1,14 @@
-﻿using System;
+﻿//using System.Windows.Forms;
+using HtmlAgilityPack;
+using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-//using System.Windows.Forms;
-using HtmlAgilityPack;
-using iText.Commons.Utils;
-using Microsoft.AspNetCore.WebUtilities;
 
 
 namespace MbCore
@@ -34,19 +29,18 @@ namespace MbCore
         /// </remarks>        
         public static bool LoadPageInfo(this Book book)
         {
-            if (book.Pages.Any()) return true; // only load pages if necessary
+            if (book.Pages.Any()) return true; // only load pages if necessary            
 
-            bool ok = book.Parish.Archive.ArchiveType switch
+            var archiveType = book.Parish.Archive.ArchiveType;
+
+            bool ok = archiveType switch
             {
                 ArchiveType.AEM => book.LoadPageInfoAEM(),
                 ArchiveType.MAT => book.LoadPageInfoMAT(),
                 _ => false
             };
 
-            if (!ok)
-            {
-                Trace.TraceError("Page info load error");
-            }
+            if (!ok) Trace.TraceError("Page info load error");
             return ok;
         }
 
@@ -55,33 +49,44 @@ namespace MbCore
         {
             using var ctx = new MatrikelBrowserCTX();
 
-            if (ctx.Pages.Any(p => p.Book == book))  // do we already have pages in the database?
+            if (ctx.Pages.Any(p => p.Book == book))  // use pages from database if available
             {
                 Trace.TraceInformation("book already has page infos");
                 ctx.Entry(book).Collection(b => b.Pages).Load(); // -> load them from db
                 return true;
             }
 
+            // download the book info from the archive, and update database accordingly
             var infoURLTemplate = book.Parish.Archive.BookInfoUrl;
             var infoURL = infoURLTemplate.Replace("{BOOKID}", book.BookInfoLink);
 
-            Trace.TraceInformation("download page infos from archive");
+            Trace.TraceInformation($"download page info for book {book.Title} ({book.Parish.Name}) from archive {book.Parish.Archive}");
             using HttpClient httpClient = new HttpClient();
             string bookInfoXML = httpClient.GetStringAsync(infoURL).GetAwaiter().GetResult();
 
             if (!string.IsNullOrEmpty(bookInfoXML))
             {
-                Mets bookInfo = bookInfoXML.ParseXML<Mets>() ?? new Mets(); //see: https://de.wikipedia.org/wiki/Metadata_Encoding_%26_Transmission_Standard
+                mets bookInfo = bookInfoXML.ParseXML<mets>() ?? new mets(); //see: https://de.wikipedia.org/wiki/Metadata_Encoding_%26_Transmission_Standard
+                                
+                // read out start and end dates of the book
+                var dates = bookInfo.dmdSec.mdWrap.xmlData.mods.originInfo.dateCreated;
+                string? startString = dates.FirstOrDefault(d => d.point == "start")?.Value;
+                string? endString = dates.FirstOrDefault(d => d.point == "end")?.Value;
 
+                if (DateOnly.TryParse(startString, out DateOnly StartDate)) book.StartDate = StartDate;
+                if (DateOnly.TryParse(endString, out DateOnly EndDate)) book.EndDate = EndDate;
+
+                // read out info about the books pages
                 List<string> pageLinks = bookInfo.fileSec.fileGrp.file.Select(p => p.FLocat.href).ToList();
                 book.ImageLinkPrefix = FindLongestCommonPrefix(pageLinks);
 
+                book.Pages.Clear(); //should be empty here bit clear anyway
                 foreach (var pageInfo in pageLinks) // generate Page objects from the information given in bookInfo.xml
                 {
                     book.Pages.Add(new Page
                     {
                         Book = book,
-                        ImageId = pageInfo.Substring(book.ImageLinkPrefix.Length),
+                        ImageId = pageInfo.Substring(book.ImageLinkPrefix.Length), // only store the non constant part to reduce database size
                     });
                 };
 

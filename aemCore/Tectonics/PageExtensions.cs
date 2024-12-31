@@ -5,7 +5,7 @@ using System.Net;
 
 namespace MbCore
 {
-    public static  class PageExtensions
+    public static class PageExtensions
     {
         public static string GetOrCreateImage(this Page page)
         {
@@ -18,16 +18,16 @@ namespace MbCore
                 page.Book.Parish.Archive.Name.toSafeFilename(),
                 $"{page.Book.Parish.RefId}_{page.Book.Parish.Name}".toSafeFilename(),
                 $"{page.Book.RefId}_{page.Book.Title}".toSafeFilename()
-                );            
+                );
             Directory.CreateDirectory(cacheFolder);
 
-            var file = Path.Combine(cacheFolder, $"folio_{sheetNr}.jpg");            
+            var file = Path.Combine(cacheFolder, $"folio_{sheetNr}.jpg");
             if (!System.IO.File.Exists(file))
             {
                 Trace.TraceInformation($"download image {page.ImageURL} to {file}");
 
                 using (WebClient client = new())
-                {                    
+                {
                     client.DownloadFile(page.ImageURL, file);
                 }
             }

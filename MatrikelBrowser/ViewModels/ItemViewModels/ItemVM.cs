@@ -6,7 +6,7 @@
         virtual public bool IsSelected { get; set; } = false;
         virtual public bool IsExpanded { get; set; } = false;
 
-        public ItemVM? parent { get; }
+        public ItemVM parent { get; }
         public ItemVM(ItemVM? parent)
         {
             this.parent = parent;

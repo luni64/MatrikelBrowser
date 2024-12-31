@@ -16,5 +16,6 @@
         <wv2:WebView2 x:Name="webView" Source="https://data.matricula-online.eu/de/suchen/" Height="400" Margin="20" />
         <Button Content="test" Click="Button_Click" HorizontalAlignment="Center" Width="100" Margin="15"/>
         <Button Content="translate" Command="{Binding cmdTranslate}" Width ="100" HorizontalAlignment="Center" Margin="15" />
+        <Button Content="add dates" Command="{Binding cmdAddDates}" Width ="100" HorizontalAlignment="Center" Margin="15" />
     </StackPanel>
 </Window>

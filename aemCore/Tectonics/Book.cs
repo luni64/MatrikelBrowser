@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace MbCore
@@ -24,9 +25,24 @@ namespace MbCore
         public string Title { get; internal set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets the date of the first entry in the book.
+        /// </summary>
+        public DateOnly? StartDate { get; internal set; }
+        
+        /// <summary>
+        /// Gets or sets the date of the last entry in the book.
+        /// </summary>
+        public DateOnly? EndDate { get; internal set; }
+
+        /// <summary>
         /// Gets or sets the link to detailed book information, typically pointing to an external resource.
         /// </summary>
         public string BookInfoLink { get; internal set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets notes associated with this book.
+        /// </summary>
+        public string Note { get; internal set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the type of the book, represented by the <see cref="BookType"/> enumeration.

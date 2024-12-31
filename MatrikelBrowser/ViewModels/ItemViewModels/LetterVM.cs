@@ -10,51 +10,18 @@ namespace MatrikelBrowser.ViewModels
 {
     public class LetterVM : ItemVM
     {
-        public string Letter { get; }
+        public string Letter { get; } = string.Empty;
         public ObservableCollection<ParishVM> ParishVMs { get; } = new();
 
-
-        public override bool IsExpanded
+        public LetterVM(IGrouping<char,Parish> parishGroup = null!, ArchiveVM parent = null!) : base(parent)
         {
-            get => base.IsExpanded;
-            set
+            if (parishGroup == null) return;
+
+            this.Letter = parishGroup.Key.ToString();
+            foreach(var parish in parishGroup)
             {
-                if (value == true && ParishVMs.Any(a => a.parent == null)) // if expanded -> Check for dummy entries.
-                {
-                    ParishVMs.Clear();
-
-                    using var ctx = new MatrikelBrowserCTX();
-
-                    if (parent is ArchiveVM archiveVM)
-                    {
-                        // Retrieve the parishes with the corresponding first letter
-                        var parishes = ctx.Parishes
-                            .Where(p => p.Archive == archiveVM.model && p.Name.Substring(0, 1) == Letter)
-                            .OrderBy(p => p.Name)
-                            .ToList();
-
-                        foreach (var parish in parishes)
-                        {
-                            ParishVMs.Add(new ParishVM(parish, this));
-                        }
-                    }
-
-
-                }
-                base.IsExpanded = value;
-
-
+                ParishVMs.Add(new ParishVM(parish, this));
             }
         }
-
-        public LetterVM(string Letter = "", ArchiveVM? parent = null) : base(parent)
-        {
-            this.Letter = Letter;
-            ParishVMs.Add(new ParishVM());          
-        }
-
-
-        //IGrouping<char, Parish> group;
-        //List<Parish> Parishes = [];
     }
 }

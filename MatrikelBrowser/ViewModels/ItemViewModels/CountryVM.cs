@@ -1,9 +1,6 @@
 ﻿using MbCore;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
 
 namespace MatrikelBrowser.ViewModels
 {
@@ -17,29 +14,33 @@ namespace MatrikelBrowser.ViewModels
             get => base.IsExpanded;
             set
             {
-                if (value == true && ArchiveVMs.Any(a => a.parent == null)) // check for dummy
+                if (value == true && model.Archives.Count == 0)
                 {
-                    ArchiveVMs.Clear();
-                    using var ctx = new MatrikelBrowserCTX();
-                    ctx.Entry(model).Collection(c => c.Archives).Load();
+                    ArchiveVMs.Clear(); // remove dummy
 
+                    model.LoadArchives();
                     foreach (var a in model.Archives)
                     {
-                        var avm = new ArchiveVM(a, this);
-
                         ArchiveVMs.Add(new ArchiveVM(a, this));
                     }
-
                 }
                 base.IsExpanded = value;
             }
         }
 
-        public CountryVM(Country model) : base(null)
+        //public override bool IsSelected
+        //{
+        //    get => base.IsSelected;
+        //    set
+        //    {
+        //        ((TectonicsVM)parent).SelectedCountry = this;               
+        //        base.IsSelected = value;
+        //    }
+        //}
+        public CountryVM(Country model, TectonicsVM parent) : base(parent)
         {
             this.model = model;
-            //ArchiveVMs = new (model.Archives.Select(a=>new ArchiveVM(a, this)).ToList());
-            ArchiveVMs.Add(new ArchiveVM()); // dummy
+            ArchiveVMs.Add(ArchiveVM.Dummy);
         }
         Country model;
     }

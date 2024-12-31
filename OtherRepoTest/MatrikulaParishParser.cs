@@ -140,15 +140,17 @@ namespace OtherRepoTest
             {
                 if (parish.Books.Any(b => b.RefId == bookInfo.REFID)) continue;
 
-                parish.Books.Add(new Book
-                {
-                    Title = bookInfo.Title,
-                    BookType = bookInfo.Type,
-                    RefId = bookInfo.REFID,
-                    BookInfoLink = bookInfo.InfoUrl,
-                    Parish = parish,                    
-                    Pages = [],                    
-                });
+                parish.AddBook(parish, bookInfo.InfoUrl, bookInfo.Title, bookInfo.REFID, bookInfo.Type);
+
+                //parish.Books.Add(new Book
+                //{
+                //    Title = bookInfo.Title,
+                //    BookType = bookInfo.Type,
+                //    RefId = bookInfo.REFID,
+                //    BookInfoLink = bookInfo.InfoUrl,
+                //    Parish = parish,                    
+                //    Pages = [],                    
+                //});
             }
 
             ctx.SaveChanges();

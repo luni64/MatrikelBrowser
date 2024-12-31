@@ -1,4 +1,5 @@
-﻿using MbCore;
+﻿using AEM.Tectonics;
+using MbCore;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -12,43 +13,39 @@ namespace MatrikelBrowser.ViewModels
 
         public override bool IsExpanded
         {
-            get => base.IsExpanded; 
+            get => base.IsExpanded;
             set
-            {               
-                if (value == true && LetterVMs.Any(a => a.parent == null)) // if expanded -> Check for dummy entries.
+            {
+                if (value == true && model.Parishes.Count == 0) // if expanded the first time
                 {
-                    LetterVMs.Clear(); 
-                                      
-                    using var ctx = new MatrikelBrowserCTX();
+                    LetterVMs.Clear(); // remove dummy
 
-                    // Retrieve the distinct first letters of parish names associated with the given model.
-                    var letters = ctx.Parishes
-                        .Where(p => p.Archive == model) 
-                        .Select(e => e.Name.Substring(0, 1)) // Extract the first character of each name.
-                        .Distinct() 
-                        .OrderBy(letter => letter) 
-                        .ToList();
-                   
+                    model.LoadParishes();
+                    var parishGroups = model.Parishes.ToLookup(l => l.Name[0]);  // group parishes by first letter
+
                     Trace.Write($"  {Name}: ");
-                    foreach (var letter in letters)
+                    foreach (var parishGroup in parishGroups)
                     {
-                        Trace.Write($"{letter} "); 
-                        LetterVMs.Add(new LetterVM(letter, this)); // Create a new LetterVM for each letter and add it to the list.
+                        Trace.Write($"{parishGroup.Key} ");
+                        LetterVMs.Add(new LetterVM(parishGroup, this)); // Create a new LetterVM for each letter and add it to the list.
                     }
                     Trace.WriteLine(""); 
                 }
-                base.IsExpanded = value; 
+                base.IsExpanded = value;
             }
         }
 
 
-        public ArchiveVM(Archive? archive = null, CountryVM? parent = null) : base(parent)
+        public ArchiveVM(Archive archive = null!, CountryVM parent = null!) : base(parent)
         {
-            model = archive!;           
+            if (archive == null) return;
+            model = archive;
             LetterVMs.Add(new LetterVM()); // dummy, load actual entries only if expanded
             Indent = -8;
         }
 
         internal readonly Archive model;
+
+        public static ArchiveVM Dummy => new ArchiveVM();
     }
 }
