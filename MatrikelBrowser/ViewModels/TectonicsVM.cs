@@ -11,9 +11,9 @@ namespace MatrikelBrowser.ViewModels
         public string Header { get; private set; }
         //public string Letter { get; } = (book.parent.parent as ParishVM)!.Title.Substring(0, 1);
         public string Letter { get; }
-            
+
         public string Parish { get; }
-        public string Date { get; } = "(1654 - 1802)";
+        public string Date { get; } = string.Empty;
         public BookVM book { get; set; }
 
         public TabItemVM(BookVM book)
@@ -22,11 +22,18 @@ namespace MatrikelBrowser.ViewModels
 
             Header = book.Title;
             Parish = book.model.Parish.Name;
+
+            if (book.model.StartDate.HasValue && book.model.EndDate.HasValue)
+            {
+                Date = $"{book.model.StartDate.Value.Year}-{book.model.EndDate.Value.Year}";
+            }
+           
             Letter = book.BookType switch
             {
                 BookType.Mischbände => "M",
                 BookType.Taufbücher => "T",
                 BookType.Hochzeitsbücher => "H",
+                BookType.Verschiedenes => "V",
                 _ => ""
             };
         }
@@ -82,7 +89,7 @@ namespace MatrikelBrowser.ViewModels
             set
             {
                 SetProperty(ref _selectedBook, value);
-                if(value != null) DisplayedBooks.Add(new TabItemVM(value));
+                if (value != null) DisplayedBooks.Add(new TabItemVM(value));
                 selectedTab = DisplayedBooks.Last();
             }
         }

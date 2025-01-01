@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Diagnostics;
 using iText.Layout.Properties;
+using System.Windows.Media.Animation;
+using System;
 
 
 
@@ -22,7 +24,12 @@ namespace MatrikelBrowser
         }
 
         private void TreeViewItem_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e) => e.Handled = true;
-        private void Button_Click(object sender, RoutedEventArgs e) => FirstFlyout.IsOpen = true;
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //FirstFlyout.IsOpen = true;
+            AnimateColumnWidth(grid, 2, 0, 0.2);
+        }
+
         private void Button_Click_1(object sender, RoutedEventArgs e) => NotesFlyout.IsOpen = true;
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -34,111 +41,78 @@ namespace MatrikelBrowser
         }
 
 
-        //private void MyTabControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    var originalSource = e.OriginalSource as DependencyObject;
-        //    while (originalSource != null && !(originalSource is TabItem))
-        //    {
-        //        originalSource = VisualTreeHelper.GetParent(originalSource);
-        //    }
-
-        //    var p = originalSource;
-        //    while (p != null && !(p is TabControl))
-        //    {
-        //        p = VisualTreeHelper.GetParent(p);
-        //    }
-
-
-        //    if (originalSource is TabItem tabItem)
-        //    {
-        //        _draggedItem = tabItem;
-        //    }
-
-        //}
-
-        private void MyTabControl_MouseMove(object sender, MouseEventArgs e)
+        private void AnimateColumnWidth(Grid grid, int columnIndex, double targetWidth, double durationSeconds)
         {
-            if (e.Source is TabItem tabItem && e.LeftButton == MouseButtonState.Pressed)
+            if (grid == null || columnIndex >= grid.ColumnDefinitions.Count) return;
+
+            var column = grid.ColumnDefinitions[columnIndex];
+            double currentWidth = column.ActualWidth;
+
+            // Create the animation
+            var animation = new GridLengthAnimation2()
             {
-                DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
-            }
+                From = new GridLength(currentWidth),
+                To = new GridLength(targetWidth),
+                
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                AutoReverse = true // This will reverse back to the original width
+            };
 
+            
 
+            // Create and start the storyboard
+            Storyboard storyboard = new Storyboard();
+            Storyboard.SetTarget(animation, column);
+            Storyboard.SetTargetProperty(animation, new PropertyPath("Width"));
 
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+        }
+    }
 
-            //if (_draggedItem != null && e.LeftButton == MouseButtonState.Pressed)
-            //{
-            //    Trace.WriteLine(DragDrop.DoDragDrop(_draggedItem, _draggedItem, DragDropEffects.All));
-            //}
+    public class GridLengthAnimation2 : AnimationTimeline
+    {
+       
+        public GridLength From
+        {
+            get { return (GridLength)GetValue(FromProperty); }
+            set { SetValue(FromProperty, value); }
         }
 
-        private void MyTabControl_Drop(object sender, DragEventArgs e)
-        {
-            var tabItemTarget = GetTargetTabItem(e.OriginalSource);
-            if (tabItemTarget != null)
-            {
-                var tabItemSource = (TabItem)e.Data.GetData(typeof(TabItem));
-                if (tabItemTarget != tabItemSource)
-                {
-                    if (tabControl.DataContext is TectonicsVM vm)
-                    {
-                        int sourceIndex = tabControl.Items.IndexOf(tabItemSource.DataContext);
-                        int targetIndex = tabControl.Items.IndexOf(tabItemTarget.DataContext);// the rest of your code
+        public static readonly DependencyProperty FromProperty =
+          DependencyProperty.Register("From", typeof(GridLength), typeof(GridLengthAnimation2));
 
-                        vm.DisplayedBooks.Move(sourceIndex, targetIndex);
-                    }
-                }
-            }
+        public GridLength To
+        {
+            get { return (GridLength)GetValue(ToProperty); }
+            set { SetValue(ToProperty, value); }
         }
 
-        private TabItem GetTargetTabItem(object originalSource)
+        public static readonly DependencyProperty ToProperty =
+            DependencyProperty.Register("To", typeof(GridLength), typeof(GridLengthAnimation2));
+
+        public override Type TargetPropertyType
         {
-            var current = originalSource as DependencyObject;
-
-            while (current != null)
-            {
-                var tabItem = current as TabItem;
-                if (tabItem != null)
-                {
-                    return tabItem;
-                }
-
-                current = VisualTreeHelper.GetParent(current);
-            }
-
-            return null;
+            get { return typeof(GridLength); }
         }
 
-        private TabItem _draggedItem;
-
-        private int oldTgtIdx, oldSrcIdx;
-
-        private void MyTabControl_DragLeave(object sender, DragEventArgs e)
+        protected override Freezable CreateInstanceCore()
         {
-            if (tabControl.DataContext is TectonicsVM vm)
-            {               
-                vm.DisplayedBooks.Move(oldTgtIdx, oldSrcIdx);
-                Trace.TraceInformation($"dragleave {oldTgtIdx} -> {oldSrcIdx}");
-            }
+            return new GridLengthAnimation2();
         }
 
-        private void MyTabControl_DragEnter(object sender, DragEventArgs e)
+        public override object GetCurrentValue(object defaultOriginValue, object defaultDestinationValue, AnimationClock animationClock)
         {
-            var tabItemTarget = GetTargetTabItem(e.OriginalSource);
-            if (tabItemTarget != null)
-            {
-                Trace.TraceInformation("dragEnter");
-                var tabItemSource = (TabItem)e.Data.GetData(typeof(TabItem));
-                if (tabItemTarget != tabItemSource)
-                {
-                    if (tabControl.DataContext is TectonicsVM vm)
-                    {
-                        oldSrcIdx = tabControl.Items.IndexOf(tabItemSource.DataContext);
-                        oldTgtIdx = tabControl.Items.IndexOf(tabItemTarget.DataContext);// the rest of your code
+            double fromValue = this.From.Value;
+            double toValue = this.To.Value;
 
-                        vm.DisplayedBooks.Move(oldSrcIdx, oldTgtIdx);
-                    }
-                }
+            if (fromValue > toValue)
+            {
+                return new GridLength((1 - animationClock.CurrentProgress.Value) * (fromValue - toValue) + toValue, this.To.IsStar ? GridUnitType.Star : GridUnitType.Pixel);
+            }
+            else
+            {
+                return new GridLength((animationClock.CurrentProgress.Value) * (toValue - fromValue) + fromValue, this.To.IsStar ? GridUnitType.Star : GridUnitType.Pixel);
             }
         }
     }

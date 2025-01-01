@@ -46,6 +46,6 @@ namespace MatrikelBrowser.ViewModels
 
         internal readonly Archive model;
 
-        public static ArchiveVM Dummy => new ArchiveVM();
+        public static ArchiveVM Dummy => new();
     }
 }
