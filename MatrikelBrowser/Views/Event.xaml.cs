@@ -42,7 +42,7 @@ namespace MatrikelBrowser
         public static readonly DependencyProperty HProperty =
             DependencyProperty.Register("H", typeof(double), typeof(Bookmark), new PropertyMetadata(0.0));
 
-        public Bookmark(BookmarkVM DataContext)
+        public Bookmark(EventVM DataContext)
         {
             InitializeComponent();
             this.DataContext = DataContext;
@@ -50,7 +50,7 @@ namespace MatrikelBrowser
             Canvas.SetLeft(this, 0);
             Canvas.SetTop(this, 0);
 
-            if (DataContext is BookmarkVM vm)
+            if (DataContext is EventVM vm)
             {
                 vm.PropertyChanged += Dc_PropertyChanged;
                 doLock(vm.isLocked);
@@ -90,7 +90,7 @@ namespace MatrikelBrowser
 
         private void Dc_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is BookmarkVM vm)
+            if (sender is EventVM vm)
             {
                 if (e.PropertyName == "isLocked")
                 {

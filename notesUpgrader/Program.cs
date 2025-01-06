@@ -108,18 +108,18 @@ namespace notesUpgrader
                             case BookmarkType.birth:
                                 nbm.Details = new BirthDetails
                                 {
-                                    Child = new Person
+                                    Child = new PersonOld
                                     {
                                         Name = obm.Person1,
                                         BirthDate = obm.EventDate,
-                                        state = obm.Flag1 ? birthState.legitmate : birthState.illegitmate
+                                        state = obm.Flag1 ? BirthState.legitmate : BirthState.illegitmate
                                     },
-                                    Father = new Person
+                                    Father = new PersonOld
                                     {
                                         Name = obm.Father,
                                         //Occupation = bm.
                                     },
-                                    Mother = new Person
+                                    Mother = new PersonOld
                                     {
                                         Name = obm.Mother
                                         //Occupation = bm.
@@ -130,39 +130,39 @@ namespace notesUpgrader
                             case BookmarkType.marriage:
                                 nbm.Details = new MarriageDetails
                                 {
-                                    Groom = new Person
+                                    Groom = new PersonOld
                                     {
                                         Name = obm.Person1,
                                         BirthDate = obm.Date1,
                                         Occupation = obm.Status1,
                                     },
 
-                                    Bride = new Person
+                                    Bride = new PersonOld
                                     {
                                         Name = obm.Person2,
                                         BirthDate = obm.Date2,
                                         Occupation = obm.Status2,
                                     },
-                                    GroomFather = new Person
+                                    GroomFather = new PersonOld
                                     {
                                         Name = obm.Person3,
                                         Occupation = obm.Status3,
                                     },
-                                    GroomMother = new Person
+                                    GroomMother = new PersonOld
                                     {
                                         Name = obm.Person4,
                                         Occupation = obm.Status3,
                                     },
-                                    BrideFather = new Person
+                                    BrideFather = new PersonOld
                                     {
                                         Name = obm.Person5,
                                         Occupation = obm.Status4,
                                     },
-                                    BrideMother = new Person
+                                    BrideMother = new PersonOld
                                     {
                                         Name = obm.Person6,
                                     },
-                                    Witnesses = new Person
+                                    Witnesses = new PersonOld
                                     {
                                         Name = obm.Others,
                                     }
@@ -170,7 +170,7 @@ namespace notesUpgrader
                                 break;
 
                             default:
-                            //case BookmarkType.misc:
+                            //case EventType.misc:
                                 nbm.Details = new MiscDetails();                                
                                 break;
 

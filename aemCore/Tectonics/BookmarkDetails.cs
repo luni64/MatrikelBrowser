@@ -3,7 +3,7 @@ using System;
 
 namespace MbCore
 {
-    public class Person
+    public class PersonOld
     {
         public string Name { get; set; }
         public string Occupation { get; set; }
@@ -11,9 +11,9 @@ namespace MbCore
        // public string BaptismDate { get; set; }
         public string DeathDate { get; set; }
         public bool living { get; set; }
-        public birthState state { get; set; }
+        public BirthState state { get; set; }
 
-        public Person(Person? p = null)
+        public PersonOld(PersonOld? p = null)
         {
             if (p != null)
             {
@@ -33,7 +33,7 @@ namespace MbCore
                 //BaptismDate = string.Empty;
                 DeathDate = string.Empty;
                 living = false;
-                state = birthState.unknown;
+                state = BirthState.unknown;
             }
         }
 
@@ -42,10 +42,10 @@ namespace MbCore
 
     public class BirthDetails : IBookmarkDetails
     {
-        public Person Child { get; set; }
-        public Person Father { get; set; }
-        public Person Mother { get; set; }
-        public Person GodParent { get; set; }
+        public PersonOld Child { get; set; }
+        public PersonOld Father { get; set; }
+        public PersonOld Mother { get; set; }
+        public PersonOld GodParent { get; set; }
 
         public BirthDetails(IBookmarkBase? bm = null)
         {
@@ -61,13 +61,13 @@ namespace MbCore
 
     public class MarriageDetails : IBookmarkDetails
     {
-        public Person Groom { get; set; }
-        public Person GroomFather { get; set; }
-        public Person GroomMother { get; set; }
-        public Person Bride { get; set; }
-        public Person BrideFather { get; set; }
-        public Person BrideMother { get; set; }
-        public Person Witnesses { get; set; }
+        public PersonOld Groom { get; set; }
+        public PersonOld GroomFather { get; set; }
+        public PersonOld GroomMother { get; set; }
+        public PersonOld Bride { get; set; }
+        public PersonOld BrideFather { get; set; }
+        public PersonOld BrideMother { get; set; }
+        public PersonOld Witnesses { get; set; }
 
         public MarriageDetails(IBookmarkBase? bm = null)
         {
@@ -86,9 +86,9 @@ namespace MbCore
 
     public class DeathDetails : IBookmarkDetails
     {
-        public Person Deceased { get; set; }
-        public Person Father { get; set; }
-        public Person Mother { get; set; }
+        public PersonOld Deceased { get; set; }
+        public PersonOld Father { get; set; }
+        public PersonOld Mother { get; set; }
         public string FuneralDate { get; set; }
         public string Cause { get; set; }
         public string Age { get; set; }

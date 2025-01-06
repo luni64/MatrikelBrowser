@@ -1,4 +1,6 @@
-﻿using Interfaces;
+﻿using AEM;
+using AEM.Tectonics;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -42,7 +44,7 @@ namespace MbCore
         /// <summary>
         /// Gets or sets notes associated with this book.
         /// </summary>
-        public string Note { get; internal set; } = string.Empty;
+        public string Note { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the type of the book, represented by the <see cref="BookType"/> enumeration.
@@ -58,12 +60,14 @@ namespace MbCore
         /// <summary>
         /// Gets or sets the parish associated with the book. This is a required navigation property.
         /// </summary>
-        public Parish Parish { get; internal set; } = null!;
+        virtual public Parish Parish { get; internal set; } = null!;
 
         /// <summary>
         /// Gets or sets the collection of pages belonging to the book. This is a required navigation property.
         /// </summary>
-        public IList<Page> Pages { get; internal set; } = [];
+        virtual public List<Page> Pages { get; internal set; } = [];
+
+        virtual public List<Event> Events { get; internal set; } = [];
 
         /// <summary>
         /// Returns the title of the book as a string representation.

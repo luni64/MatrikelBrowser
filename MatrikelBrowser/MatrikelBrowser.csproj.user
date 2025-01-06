@@ -10,6 +10,9 @@
     <Compile Update="Views\BooksTabControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\HalfCircleButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Settings\SettingsDatabase.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -22,6 +25,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\BooksTabControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\HalfCircleButton.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Settings\SettingsDatabase.xaml">

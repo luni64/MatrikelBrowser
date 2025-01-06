@@ -20,12 +20,12 @@ namespace MatrikelBrowser.ViewModels
         }
         public bool Legitimate
         {
-            get => model.Child.state == birthState.legitmate;
+            get => model.Child.state == BirthState.legitmate;
             set
             {
-                if (value != (model.Child.state == birthState.legitmate))
+                if (value != (model.Child.state == BirthState.legitmate))
                 {
-                    if (model.Child != null) model.Child.state = value ? birthState.legitmate : birthState.illegitmate;
+                    if (model.Child != null) model.Child.state = value ? BirthState.legitmate : BirthState.illegitmate;
                     OnPropertyChanged();
                 }
             }

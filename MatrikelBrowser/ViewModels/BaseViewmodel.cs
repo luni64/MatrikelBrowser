@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -21,6 +22,23 @@ namespace MatrikelBrowser.ViewModels
                 field = value;
                 OnPropertyChanged(name);
             }
+        }
+
+        protected void SetProperty<T, TProperty>(T obj, Expression<Func<T, TProperty>> propertySelector, TProperty value, [CallerMemberName] string name = "")
+        {
+            var propertyInfo = (propertySelector.Body as MemberExpression)?.Member as System.Reflection.PropertyInfo;
+            if (propertyInfo != null)
+            {
+                TProperty field = (TProperty)propertyInfo.GetValue(obj);
+
+                if (!EqualityComparer<TProperty>.Default.Equals(field, value))
+                {
+                    propertyInfo.SetValue(obj, value);
+                    OnPropertyChanged(name);
+                }
+            }
+
+
         }
 
         public void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -83,7 +101,7 @@ namespace MatrikelBrowser.ViewModels
                 OnCanExecuteChanged();
                 try
                 {
-                        await _execute();
+                    await _execute();
                 }
                 finally
                 {

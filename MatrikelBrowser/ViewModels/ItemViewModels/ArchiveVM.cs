@@ -16,22 +16,27 @@ namespace MatrikelBrowser.ViewModels
             get => base.IsExpanded;
             set
             {
-                if (value == true && model.Parishes.Count == 0) // if expanded the first time
-                {
-                    LetterVMs.Clear(); // remove dummy
-
-                    model.LoadParishes();
-                    var parishGroups = model.Parishes.ToLookup(l => l.Name[0]);  // group parishes by first letter
-
-                    Trace.Write($"  {Name}: ");
-                    foreach (var parishGroup in parishGroups)
-                    {
-                        Trace.Write($"{parishGroup.Key} ");
-                        LetterVMs.Add(new LetterVM(parishGroup, this)); // Create a new LetterVM for each letter and add it to the list.
-                    }
-                    Trace.WriteLine(""); 
-                }
+                if (value == true) LoadLetters();
                 base.IsExpanded = value;
+            }
+        }
+
+        public void LoadLetters()
+        {
+            if (model.Parishes.Count == 0) // if expanded the first time
+            {
+                LetterVMs.Clear(); // remove dummy
+
+                model.LoadParishes();
+                var parishGroups = model.Parishes.ToLookup(l => l.Name[0]);  // group parishes by first letter
+
+                Trace.Write($"  {Name}: ");
+                foreach (var parishGroup in parishGroups)
+                {
+                    Trace.Write($"{parishGroup.Key} ");
+                    LetterVMs.Add(new LetterVM(parishGroup, this)); // Create a new LetterVM for each letter and add it to the list.
+                }
+                Trace.WriteLine("");
             }
         }
 

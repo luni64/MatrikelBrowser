@@ -27,18 +27,23 @@ namespace MatrikelBrowser.ViewModels
             get => base.IsExpanded;
             set
             {
-                if (value == true && parent is LetterVM letterVM && BookTypeVMs.Any(a => a.parent == null)) // if expanding and has a dummy entry (i.e. is empty)
-                {
-                    BookTypeVMs.Clear();
-                    model.LoadBooks();
-
-                    var bookGroups = model.Books.OrderBy(b => b.BookType).ToLookup(b => b.BookType); // group books by type
-                    foreach (var bookGroup in bookGroups)
-                    {
-                        BookTypeVMs.Add(new BookGroupVM(bookGroup, this));
-                    }
-                }
+                if (value == true) LoadBooks();
                 base.IsExpanded = value;
+            }
+        }
+
+        public void LoadBooks()
+        {
+            if (parent is LetterVM letterVM && BookTypeVMs.Any(a => a.parent == null)) // if expanding and has a dummy entry (i.e. is empty)
+            {
+                BookTypeVMs.Clear();
+                model.LoadBooks();
+
+                var bookGroups = model.Books.OrderBy(b => b.BookType).ToLookup(b => b.BookType); // group books by type
+                foreach (var bookGroup in bookGroups)
+                {
+                    BookTypeVMs.Add(new BookGroupVM(bookGroup, this));
+                }
             }
         }
 

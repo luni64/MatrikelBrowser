@@ -8,7 +8,9 @@ namespace MbCore
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.loc.gov/METS/")]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.loc.gov/METS/", IsNullable = false)]
+#pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     public partial class mets
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     {
         private metsDmdSec dmdSecField;
 

@@ -140,7 +140,7 @@ namespace OtherRepoTest
             {
                 if (parish.Books.Any(b => b.RefId == bookInfo.REFID)) continue;
 
-                parish.AddBook(parish, bookInfo.InfoUrl, bookInfo.Title, bookInfo.REFID, bookInfo.Type);
+                parish.AddBook(bookInfo.InfoUrl, bookInfo.Title, bookInfo.REFID, bookInfo.Type);
 
                 //parish.Books.Add(new Book
                 //{

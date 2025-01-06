@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices;
 using static System.Net.WebRequestMethods;
 using File = System.IO.File;
+using System.IO;
 
 namespace OtherRepoTest
 {
@@ -50,7 +51,7 @@ namespace OtherRepoTest
                         Name = "München Freising",
                         Country = country,
                         BookInfoUrl = "https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?id=Rep_{BOOKID}_mets_actapro.xml",
-                        ViewerUrl = "https://dfg-viewer.de/show/?tx_dlf[id]={BOOKURL}",
+                        ViewerUrl = "https://dfg-viewer.de/show/?tx_dlf[Id]={BOOKURL}",
                         ArchiveType = ArchiveType.AEM,
                     };
                     ctx.Add(archive);
@@ -82,7 +83,7 @@ namespace OtherRepoTest
                     };
                     ctx.Add(parish);
 
-                    //Trace.WriteLine($"ID: {id}, Place: {place}, Church: {church}");
+                    //Trace.WriteLine($"ID: {Id}, Place: {place}, Church: {church}");
 
                     // Access nested Books array
                     JArray books = (JArray)parishEntry["Books"]!;
@@ -92,15 +93,17 @@ namespace OtherRepoTest
                         string? title = bookInfo["Title"]!.ToString();
                         string? BookInfoID = bookInfo["BookInfoID"]!.ToString();
 
-                        parish.Books.Add(new Book()
-                        {
-                            Parish = parish,
-                            BookInfoLink = BookInfoID,
-                            Title = title,
-                            RefId = bookId,
-                            BookType = title.toBookType(),
-                            Pages = []
-                        }); ;
+                        parish.AddBook(BookInfoID,title,bookId,title.toBookType());
+
+                        //parish.Books.Add(new Book()
+                        //{
+                        //    Parish = parish,
+                        //    BookInfoLink = BookInfoID,
+                        //    Title = title,
+                        //    RefId = bookId,
+                        //    BookType = title.toBookType(),
+                        //    Pages = []
+                        //}); ;
                     }
                 }
                 ctx.SaveChanges();
@@ -110,6 +113,11 @@ namespace OtherRepoTest
 
         public MainVM()
         {
+            var core = new aemCore();
+
+            var DatabaseFile = (Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "MatrikelBrowser", "MatrikelBrowser.db"));
+            MatrikelBrowserCTX.DatabaseFile = DatabaseFile;
+
             using var ctx = new MatrikelBrowserCTX();
 
             //ctx.Database.EnsureDeleted();

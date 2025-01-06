@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MbCore.Migrations
+namespace AEM.Migrations
 {
     [DbContext(typeof(MatrikelBrowserCTX))]
     partial class MatrikelBrowserCTXModelSnapshot : ModelSnapshot
@@ -16,6 +16,127 @@ namespace MbCore.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
+
+            modelBuilder.Entity("AEM.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Date1")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Date2")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Date3")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Date4")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("H")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Occupation1")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Occupation2")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Occupation3")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person1")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person2")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person3")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person4")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person5")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person6")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person7")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SheetNr")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Transcript")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("W")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("X")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Y")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("AEM.Tectonics.SettingsEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SettingsTable");
+                });
 
             modelBuilder.Entity("MbCore.Archive", b =>
                 {
@@ -65,7 +186,7 @@ namespace MbCore.Migrations
                     b.Property<int>("BookType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("EndDate")
+                    b.Property<DateOnly?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImageLinkPrefix")
@@ -83,7 +204,7 @@ namespace MbCore.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateOnly?>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
@@ -175,6 +296,17 @@ namespace MbCore.Migrations
                     b.ToTable("Parishes");
                 });
 
+            modelBuilder.Entity("AEM.Event", b =>
+                {
+                    b.HasOne("MbCore.Book", "Book")
+                        .WithMany("Events")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
             modelBuilder.Entity("MbCore.Archive", b =>
                 {
                     b.HasOne("MbCore.Country", "Country")
@@ -226,6 +358,8 @@ namespace MbCore.Migrations
 
             modelBuilder.Entity("MbCore.Book", b =>
                 {
+                    b.Navigation("Events");
+
                     b.Navigation("Pages");
                 });
 

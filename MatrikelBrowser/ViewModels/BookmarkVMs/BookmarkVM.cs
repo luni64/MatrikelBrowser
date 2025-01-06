@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media.Media3D;
+using AEM.Tectonics;
 
 
 namespace MatrikelBrowser.ViewModels
@@ -22,8 +23,8 @@ namespace MatrikelBrowser.ViewModels
         private void doDelSelf(object? o)
         {
                         
-            parent.cmdDelBookmark.Execute(this);
-            //model.Info.Bookmarks.Remove(SelectedBookmark.model);
+            parent.cmdDelEvent.Execute(this);
+            //marriageModel.Info.Bookmarks.Remove(SelectedBookmark.marriageModel);
             //parent.bookmarkVMs.Remove(this);
         }
 
@@ -119,8 +120,11 @@ namespace MatrikelBrowser.ViewModels
 
         private BookVM parent;
 
+
+
         public BookmarkVM(IBookmarkBase model, BookVM parent)
         {
+            if (model == null) return;
             cmdSaveDetails = new RelayCommand(doSaveDetails);
             cmdDelSelf = new RelayCommand(doDelSelf);
 
@@ -139,7 +143,7 @@ namespace MatrikelBrowser.ViewModels
                 case MiscDetails: bookmarkType = BookmarkType.misc; break;
             }
 
-            
+
         }
 
         public IBookmarkBase model { get; }

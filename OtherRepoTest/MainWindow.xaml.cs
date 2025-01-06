@@ -1,6 +1,8 @@
 ﻿using HtmlAgilityPack;
 using Microsoft.Web.WebView2.WinForms;
+using Microsoft.Web.WebView2.Wpf;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WebView2 = Microsoft.Web.WebView2.Wpf.WebView2;
 
 namespace OtherRepoTest
 {
@@ -19,26 +22,78 @@ namespace OtherRepoTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        Microsoft.Web.WebView2.Wpf.IWebView2 wv;
+
         public MainWindow()
         {
             InitializeComponent();
+            wv = webView;
+
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+        private async void onDOM(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2DOMContentLoadedEventArgs e)
         {
-            Microsoft.Web.WebView2.Wpf.IWebView2 wv = webView;
+            //string xmlContent = await wv.ExecuteScriptAsync(script);
+            var sHtml = await wv.CoreWebView2.ExecuteScriptAsync("document.body.innerHTML;");
+            var x = System.Text.Json.JsonSerializer.Deserialize<string>(sHtml);
+        }
+
+        private void onDownloadStarting(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs args)
+        {
+            Trace.WriteLine("DownloadStarting");
+            var downloadOp = args.DownloadOperation;
+            args.DownloadOperation.StateChanged += (sender2, args2) =>
+            {
+                var state = downloadOp.State;
+                switch (state)
+                {
+                    case Microsoft.Web.WebView2.Core.CoreWebView2DownloadState.InProgress:
+                        Trace.WriteLine("Download StateChanged: InProgress");
+                        break;
+                    case Microsoft.Web.WebView2.Core.CoreWebView2DownloadState.Completed:
+                        Trace.WriteLine("Download StateChanged: Completed");
+                        break;
+                    case Microsoft.Web.WebView2.Core.CoreWebView2DownloadState.Interrupted:
+                        Trace.WriteLine("Download StateChanged: Interrupted, reason: " + downloadOp.InterruptReason);
+                        break;
+                }
+            };
+        }
+
+
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //var wv = new WebView2();
+
+            //var wv = new WebView2();
+
+            //await wv.EnsureCoreWebView2Async();
+
+
+
+            //wv.CoreWebView2.DownloadStarting += onDownloadStarting;
+            //wv.CoreWebView2.DOMContentLoaded += onDOM;
+            //wv.CoreWebView2.Navigate("https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?id=Rep_dee8b795-a918-4e77-98f2-afc92e18655a_mets_actapro.xml");
+            //wv.CoreWebView2.Navigate("https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?id=Rep_dee8b795-a918-4e77-98f2-afc92e18655a_mets_actapro.xml");
+            //wv.CoreWebView2.Navigate("https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?id=Rep_7eba57ab-0512-4667-9c13-faf2efd08133_mets_actapro.xml");
+            //"https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?Id=Rep_7eba57ab-0512-4667-9c13-faf2efd08133_mets_actapro.xml"
+            //7eba57ab - 0512 - 4667 - 9c13 - faf2efd08133
+            //wv.Source = new Uri("https://google.com");
+
 
             string s = webView.Source.ToString();
-           
-            if(DataContext is MainVM vm)
+
+            if (DataContext is MainVM vm)
             {
                 vm.cmdTest.Execute(s);
             }
 
-            //  if(webView is WebView2 wv)
-            //    {
+            if (webView is WebView2 wv)
+            {
 
-            //    }
+            }
         }
 
         void read(string path)

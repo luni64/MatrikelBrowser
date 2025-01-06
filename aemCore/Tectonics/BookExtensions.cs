@@ -1,5 +1,7 @@
 ﻿//using System.Windows.Forms;
+using AEM;
 using HtmlAgilityPack;
+using iText.Kernel.Geom;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System;
@@ -9,6 +11,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 
 namespace MbCore
@@ -27,6 +31,36 @@ namespace MbCore
         /// <remarks>
         /// This method is an extension of the <see cref="Book"/> class.       
         /// </remarks>        
+
+        public static void Save(this Book book)
+        {
+            Trace.TraceInformation($"Saving book {book.RefId} {book.Title}");
+            using var ctx = new MatrikelBrowserCTX();
+            ctx.Update(book);
+            ctx.SaveChanges();
+        }
+
+        public static bool LoadEvents(this Book book)
+        {
+            if (book.Events.Any()) return true; // only load events if necessary            
+
+            using var ctx = new MatrikelBrowserCTX();
+
+            ctx.Entry(book).Collection(b => b.Events).Load();
+
+
+            return true;
+        }
+
+        public static void AddEvent(this Book book, Event evnt)
+        {
+            using MatrikelBrowserCTX ctx = new();
+            book.Events.Add(evnt);
+            ctx.Update(book);
+            ctx.SaveChanges();
+        }
+
+
         public static bool LoadPageInfo(this Book book)
         {
             if (book.Pages.Any()) return true; // only load pages if necessary            
@@ -35,7 +69,7 @@ namespace MbCore
 
             bool ok = archiveType switch
             {
-                ArchiveType.AEM => book.LoadPageInfoAEM(),
+                ArchiveType.AEM => book.LoadPageInfoAEM().GetAwaiter().GetResult(),
                 ArchiveType.MAT => book.LoadPageInfoMAT(),
                 _ => false
             };
@@ -45,7 +79,7 @@ namespace MbCore
         }
 
 
-        private static bool LoadPageInfoAEM(this Book book)
+        private async static Task<bool> LoadPageInfoAEM(this Book book)
         {
             using var ctx = new MatrikelBrowserCTX();
 
@@ -62,12 +96,19 @@ namespace MbCore
 
             Trace.TraceInformation($"download page info for book {book.Title} ({book.Parish.Name}) from archive {book.Parish.Archive}");
             using HttpClient httpClient = new HttpClient();
-            string bookInfoXML = httpClient.GetStringAsync(infoURL).GetAwaiter().GetResult();
+
+            httpClient.DefaultRequestHeaders.UserAgent.Clear();
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36");
+
+            //var x = httpClient.DefaultRequestHeaders;
+
+            string bookInfoXML =  httpClient.GetStringAsync(infoURL).GetAwaiter().GetResult();
+
 
             if (!string.IsNullOrEmpty(bookInfoXML))
             {
                 mets bookInfo = bookInfoXML.ParseXML<mets>() ?? new mets(); //see: https://de.wikipedia.org/wiki/Metadata_Encoding_%26_Transmission_Standard
-                                
+
                 // read out start and end dates of the book
                 var dates = bookInfo.dmdSec.mdWrap.xmlData.mods.originInfo.dateCreated;
                 string? startString = dates.FirstOrDefault(d => d.point == "start")?.Value;

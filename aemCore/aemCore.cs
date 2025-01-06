@@ -22,7 +22,7 @@ namespace MbCore
 
 
         /// <summary>
-        /// Occurs when the state of the database has changed.
+        /// Occurs when the State of the database has changed.
         /// </summary>
         /// <remarks>
         /// This event is triggered whenever there are changes to the database,
@@ -56,7 +56,10 @@ namespace MbCore
             MatrikelBrowserCTX.DatabaseFile = database;
             try
             {
+                
                 using var ctx = new MatrikelBrowserCTX();
+
+                //ctx.Database.EnsureDeleted();
 
                 int n = ctx.Database.GetPendingMigrations().Count();
                 if (n> 0)
@@ -117,6 +120,8 @@ namespace MbCore
 
         public static void saveNotes()
         {
+            
+
             //var allBookInfos = Parishes
             //    .SelectMany(p => p.Books)
             //    .Select(book => book.Info)

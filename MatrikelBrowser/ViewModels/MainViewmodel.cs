@@ -10,7 +10,11 @@ namespace MatrikelBrowser.ViewModels
     public class MainViewModel : BaseViewModel
     {
         #region Commands                
-        public RelayCommand cmdSave => _cmdSave ??= new RelayCommand((object? _) => aemCore.saveNotes());
+        public RelayCommand cmdSave => _cmdSave ??= new RelayCommand((object? _) =>
+        {
+            tectonicsVM.SaveSelectedTab();
+            tectonicsVM.SaveSettings();
+        });
         public RelayCommand cmdSettings => _cmdSettings ??= new RelayCommand((object? _) => dialogService.ShowDialog(new SettingsVM(model)));
         #endregion
 

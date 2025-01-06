@@ -1,5 +1,4 @@
-﻿using MbCore;
-using Interfaces;
+﻿using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +23,13 @@ namespace MatrikelBrowser.ViewModels
             }
         }
 
-
-        public BookGroupVM(IGrouping<BookType, Book>? books = null, ParishVM? parent = null) : base(parent)
+        public BookGroupVM(IGrouping<BookType, MbCore.Book>? books = null, ParishVM? parent = null) : base(parent)
         {
             if (books != null)
             {
                 this.Name = Enum.GetName(typeof(BookType), books.Key) ?? "?";
                 foreach (var book in books.OrderBy(b => b.RefId))
-                {
+                {   
                     BookVMs.Add(new BookVM(book, this));
                 }
             }

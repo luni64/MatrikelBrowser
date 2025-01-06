@@ -44,7 +44,7 @@
             Grid.Row="1" Grid.Column="0" Width="25" Height="20" Margin="0,0,5,0" 
             Background="#2FFFFFFF"
             Focusable="False"
-            ToolTip="10 pages back"
+            ToolTip="10 Seiten zurück"  ToolTipService.InitialShowDelay="100"
     >
             <Button.CommandParameter>
                 <sys:Int32>-10</sys:Int32>
@@ -57,7 +57,7 @@
             Grid.Row="1" Grid.Column="1" Width="25" Height="20" Margin="0,0,5,0" 
             Background="#2FFFFFFF"
             Focusable="False"
-            ToolTip="one page back"
+            ToolTip="Eine Seite zurück"  ToolTipService.InitialShowDelay="100"
             >
             <Button.CommandParameter>
                 <sys:Int32>-1</sys:Int32>
@@ -83,7 +83,7 @@
             Grid.Row="1" Grid.Column="3" 
             Background="#2FFFFFFF"
             Focusable="False"
-            ToolTip="one page forward"
+            ToolTip="Eine Seite forwärts"  ToolTipService.InitialShowDelay="100"
             >            
             <Button.CommandParameter>
                 <sys:Int32>+1</sys:Int32>
@@ -96,7 +96,7 @@
             Grid.Row="1" Grid.Column="4" Width="25" Height="20" Margin="5,0,0,0" 
             Background="#2FFFFFFF"
             Focusable="False"
-            ToolTip="10 pages forward">
+            ToolTip="10 Seiten forwärts" ToolTipService.InitialShowDelay="100">
             <Button.CommandParameter>
                 <sys:Int32>+10</sys:Int32>
             </Button.CommandParameter>

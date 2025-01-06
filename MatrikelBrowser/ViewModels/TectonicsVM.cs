@@ -1,79 +1,84 @@
-﻿using Interfaces;
+﻿using AEM;
 using MbCore;
+using AEM.Tectonics;
+using Interfaces;
+using MahApps.Metro.IconPacks;
+using MbCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic.Logging;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Controls;
 
 namespace MatrikelBrowser.ViewModels
 {
-    public class TabItemVM : BaseViewModel
+
+
+    class letter
     {
-        public string Header { get; private set; }
-        //public string Letter { get; } = (book.parent.parent as ParishVM)!.Title.Substring(0, 1);
-        public string Letter { get; }
-
-        public string Parish { get; }
-        public string Date { get; } = string.Empty;
-        public BookVM book { get; set; }
-
-        public TabItemVM(BookVM book)
-        {
-            this.book = book;
-
-            Header = book.Title;
-            Parish = book.model.Parish.Name;
-
-            if (book.model.StartDate.HasValue && book.model.EndDate.HasValue)
-            {
-                Date = $"{book.model.StartDate.Value.Year}-{book.model.EndDate.Value.Year}";
-            }
-           
-            Letter = book.BookType switch
-            {
-                BookType.Mischbände => "M",
-                BookType.Taufbücher => "T",
-                BookType.Hochzeitsbücher => "H",
-                BookType.Verschiedenes => "V",
-                _ => ""
-            };
-        }
+        public Dictionary<int, List<int>> parishes = [];
     }
+
+    class archive
+    {
+        public Dictionary<string, List<letter>> letters = [];
+    }
+    class country
+    {
+        public Dictionary<int, List<archive>>? archives = [];
+    }
+
+    class settingss
+    {
+        public Dictionary<int, List<country>>? countries = [];
+    }
+
 
     public class TectonicsVM(aemCore model) : ItemVM(null)
     {
+
+
+
+
         #region commands
-        public RelayCommand cmdToogleFavorite => _cmdToogleFavorite ??= new RelayCommand(doToggleFavorite);
-        void doToggleFavorite(object? param)
-        {
-            if (param is BookVM bookVM)
-            {
-                if (Favorites.Contains(bookVM))
-                {
-                    Favorites.Remove(bookVM);
-                    model.Favorites.Remove(bookVM.ID);
-                    bookVM.IsFavorite = false;
-                }
-                else
-                {
-                    Favorites.Add(bookVM);
-                    model.Favorites.Add(bookVM.ID);
-                    bookVM.IsFavorite = true;
-                }
-            }
-        }
+        // public RelayCommand cmdToogleFavorite => _cmdToogleFavorite ??= new RelayCommand(doToggleFavorite);
+        //void doToggleFavorite(object? param)
+        //{
+        //    if (param is Book bookVM)
+        //    {
+        //        if (Favorites.Contains(bookVM))
+        //        {
+        //            Favorites.Remove(bookVM);
+        //            model.Favorites.Remove(bookVM.ID);
+        //            bookVM.IsFavorite = false;
+        //        }
+        //        else
+        //        {
+        //            Favorites.Add(bookVM);
+        //            model.Favorites.Add(bookVM.ID);
+        //            bookVM.IsFavorite = true;
+        //        }
+        //    }
+        //}
         #endregion
 
         #region properties
         public ObservableCollection<CountryVM> CountryVMs { get; } = [];
-        public ObservableCollection<BookVM> Favorites { get; } = [];
-
         public ObservableCollection<TabItemVM> DisplayedBooks { get; } = [];
 
-        TabItemVM? _selectedTab;
         public TabItemVM? selectedTab
         {
             get => _selectedTab;
-            set => SetProperty(ref _selectedTab, value);
+            set
+            {
+                if (_selectedTab != value)  // new tab selected
+                {
+                    _selectedTab?.book.model.Save(); // save the old one before switching to the new tab
+                    SetProperty(ref _selectedTab, value);
+                }
+            }
         }
 
         private CountryVM? _selectedCountry;
@@ -89,11 +94,27 @@ namespace MatrikelBrowser.ViewModels
             set
             {
                 SetProperty(ref _selectedBook, value);
-                if (value != null) DisplayedBooks.Add(new TabItemVM(value));
-                selectedTab = DisplayedBooks.Last();
+                if (value != null)
+                {
+                    var existing = DisplayedBooks.FirstOrDefault(b => b.book == value);
+                    if (existing == null)
+                    {
+                        DisplayedBooks.Add(new TabItemVM(value));
+                    }
+                    selectedTab = existing != null ? existing : DisplayedBooks.Last();
+                }
             }
         }
         #endregion
+        public void SaveSelectedTab()
+        {
+            if (_selectedTab != null)
+            {
+                _selectedTab.book.model.Save();
+            }
+
+            return;
+        }
 
         public void UpdateData()
         {
@@ -102,8 +123,73 @@ namespace MatrikelBrowser.ViewModels
             {
                 CountryVMs.Add(new CountryVM(country, this));
             }
+                        
+            // open previously opened books
+            using var ctx = new MatrikelBrowserCTX();
+            var openBooksSetting = ctx.SettingsTable.FirstOrDefault(s => s.Key == "OpenBooks")?.Value;
+
+            if (openBooksSetting != null)
+            {
+                var bookIDs = openBooksSetting.Split('-').Select(b => int.Parse(b));     // parse the list of book IDs from the settigs entry
+                var books = ctx.Books.Where(b => bookIDs.Contains(b.Id));                // get corresponding entities from db 
+
+                var parishIDs = books.Select(b => b.Parish.Id).Distinct().ToList();      // list of all parish IDs belonging to the books
+                var parishes = ctx.Parishes.Where(p => parishIDs.Contains(p.Id));        // get corresponding entities from db 
+
+                var archiveIDs = parishes.Select(p => p.Archive.Id).Distinct().ToList(); // list of all archive IDs belonging to the parishes
+                var archives = ctx.Archives.Where(a => archiveIDs.Contains(a.Id));       // get corresponding entities from db 
+
+                var countryIDs = archives.Select(a => a.Country.Id).Distinct().ToList(); // list of all country IDs belonging to the archives
+                                                                                                   
+                foreach (var countryVM in CountryVMs.Where(c=>countryIDs.Contains(c.model.Id)))  
+                {
+                    countryVM.LoadArchives();
+                    foreach (var archiveVM in countryVM.ArchiveVMs.Where(a => archiveIDs.Contains(a.model.Id)))
+                    {
+                        archiveVM.LoadLetters();
+                        foreach (var letterVM in archiveVM.LetterVMs.Where(l => l.ParishVMs.Any(p => parishIDs.Contains(p.model.Id))))
+                        {                            
+                            foreach (var parishVM in letterVM.ParishVMs.Where(p => parishIDs.Contains(p.model.Id)))
+                            {                                
+                                parishVM.LoadBooks();
+                                foreach (var bookGroupVM in parishVM.BookTypeVMs.Where(x => x.BookVMs.Any(b => bookIDs.Contains(b.model.Id))))
+                                {                                   
+                                    foreach (var bookVM in bookGroupVM.BookVMs.Where(b => bookIDs.Contains(b.model.Id)))
+                                    {
+                                        bookVM.Initialize();
+                                        DisplayedBooks.Add(new TabItemVM(bookVM));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                selectedTab = DisplayedBooks.FirstOrDefault();
+            }
         }
 
+        public void SaveSettings()
+        {
+            using var ctx = new MatrikelBrowserCTX();
+
+            SettingsEntry? OpenBooks;
+            OpenBooks = ctx.SettingsTable.FirstOrDefault(s => s.Key == "OpenBooks");
+            if (OpenBooks == null)
+            {
+                OpenBooks = new SettingsEntry { Key = "OpenBooks" };
+                ctx.SettingsTable.Add(OpenBooks);
+            }
+
+            var books = DisplayedBooks.Select(d => d.book.model).ToList();
+
+            string s = DisplayedBooks.FirstOrDefault()?.book.model.Id.ToString() ?? "";
+            OpenBooks.Value = DisplayedBooks.Skip(1).Aggregate(seed: s, (c, n) => c + $"-{n.book.model.Id}");
+
+            ctx.SaveChanges();
+
+        }
+
+        TabItemVM? _selectedTab;
         private BookVM? _selectedBook;
         private RelayCommand? _cmdToogleFavorite;
         private readonly aemCore model = model;

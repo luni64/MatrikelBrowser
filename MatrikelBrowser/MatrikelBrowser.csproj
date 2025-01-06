@@ -40,7 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dragablz" Version="0.0.3.234" />
     <PackageReference Include="itext" Version="8.0.5" />
     <PackageReference Include="MahApps.Metro" Version="3.0.0-alpha0492" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="5.1.0" />

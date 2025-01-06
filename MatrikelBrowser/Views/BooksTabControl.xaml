@@ -5,17 +5,25 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"     
     xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels"
     xmlns:view="clr-namespace:MatrikelBrowser"     
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MatrikelBrowser.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:MatrikelBrowser.Views" 
+    d:DataContext="{d:DesignInstance Type=vm:TectonicsVM}"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800">
 
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="250"/>
+        </Grid.RowDefinitions>
+    
     <mah:MetroTabControl
+        Grid.Row="0"
         x:Name="tabControl"  
-        Margin="5,5" 
         SelectedItem ="{Binding selectedTab}"                                    
         ItemsSource="{Binding DisplayedBooks}"  
         mah:TabControlHelper.Underlined="None"      
@@ -35,23 +43,23 @@
         <TabControl.ItemTemplate>
             <DataTemplate>
                 <Border BorderBrush="Black" BorderThickness="0" Padding="2" CornerRadius="5">
-                <Grid ToolTip="{Binding Header}"  Width="160" Margin="5,5,0,0" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <!--<ColumnDefinition Width="auto"/>-->
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
+                    <Grid ToolTip="{Binding Header}"  Width="160" Margin="5,5,0,0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding Parish}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,2"  />
-                    <TextBlock Text="{Binding Letter}" Grid.Column="0" Grid.Row="1" FontSize="18" FontWeight="ExtraBold" LineHeight="18" LineStackingStrategy="BlockLineHeight"      Grid.RowSpan="1" VerticalAlignment="Center" Margin="0,0,5,0"  />
-                    <TextBlock Text="{Binding Date}"   Grid.Column="1" Grid.Row="1" FontSize="18" FontWeight="ExtraBold" LineHeight="18" LineStackingStrategy="BlockLineHeight"   HorizontalAlignment="Left" VerticalAlignment="Center"  />
-                    <TextBlock Text="{Binding Header}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" FontSize="12" FontWeight="SemiBold"  LineHeight="13" LineStackingStrategy="BlockLineHeight"    HorizontalAlignment="Left" Margin="0,2,0,0" />
-                </Grid>
+                        <TextBlock Text="{Binding Parish}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,2"  />
+                        <TextBlock Text="{Binding Letter}" Grid.Column="0" Grid.Row="1" FontSize="18" FontWeight="ExtraBold" LineHeight="18" LineStackingStrategy="BlockLineHeight"      Grid.RowSpan="1" VerticalAlignment="Center" Margin="0,0,5,0"  />
+                        <TextBlock Text="{Binding Date}"   Grid.Column="1" Grid.Row="1" FontSize="18" FontWeight="ExtraBold" LineHeight="18" LineStackingStrategy="BlockLineHeight"   HorizontalAlignment="Left" VerticalAlignment="Center"  />
+                        <TextBlock Text="{Binding Header}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" FontSize="12" FontWeight="SemiBold"  LineHeight="13" LineStackingStrategy="BlockLineHeight"    HorizontalAlignment="Left" Margin="0,2,0,0" />
+                    </Grid>
                 </Border>
             </DataTemplate>
         </TabControl.ItemTemplate>
@@ -87,12 +95,12 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <view:PageDisplay  
                             Page="{Binding SelectedPage }"  
                             Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,0">
                         </view:PageDisplay>
-                        
+
                         <view:PageSelector
                             Background="#7FFFFFFF" 
                             Grid.Row="1" Grid.Column="1" Width="500"  Margin="0,10,0,10" VerticalAlignment="Top"                      
@@ -104,4 +112,7 @@
         </TabControl.ContentTemplate>
 
     </mah:MetroTabControl>
+    
+    <view:NotesFlyout Grid.Row="1" DataContext="{Binding selectedTab.book }" />
+    </Grid>
 </UserControl>

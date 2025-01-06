@@ -9,23 +9,21 @@
     xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels" 
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800" d:Background="White"
-    d:DataContext="{d:DesignInstance Type={x:Type vm:BookVM}}"
-    >
+    d:DataContext="{d:DesignInstance Type={x:Type vm:BookVM}}">
 
     <UserControl.Resources>       
         <view:StringToImageConverter x:Key="StringToImageConverter"/>
     </UserControl.Resources>
 
-    <view:ZoomBorder        
-      
+    <view:ZoomBorder            
         x:Name="border"                  
         ClipToBounds="True"        
         PanX="{Binding PanX, Mode=TwoWay}"
         PanY="{Binding PanY, Mode=TwoWay}"
         Zoom="{Binding zoom, Mode=TwoWay}"
         >
-
-        <Canvas x:Name="PageCanvas" Background="AliceBlue" >
+        
+        <Canvas x:Name="PageCanvas">
             <Canvas.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Neue Fundstelle anlegen" Click="AddBookmarkClick"/>               

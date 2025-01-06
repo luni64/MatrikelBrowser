@@ -1,95 +1,125 @@
-﻿<UserControl x:Class="MatrikelBrowser.NotesFlyout" 
-             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"                          
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MatrikelBrowser"
-             xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels"
-             mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="500"  d:Background="AntiqueWhite" 
-             d:DataContext="{d:DesignInstance Type={x:Type vm:BookVM}}" >
+﻿<UserControl 
+    x:Class="MatrikelBrowser.NotesFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels"
+    Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="900" 
+    d:DataContext="{d:DesignInstance Type={x:Type vm:BookVM}}" 
+    >
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Orange.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
-        <StackPanel Grid.Row="0" Grid.Column="1"   Margin="10" >
-            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{DynamicResource MahApps.Font.Size.Default}"/>
-        </StackPanel>
+    <!--Background="#FF2B2B2B"-->
+    <Border  CornerRadius="15,15,0,0" Padding="10" >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
 
-        <TextBox  Text="{Binding NoteVM.document, Mode=TwoWay}"                   
-                  Grid.Row="1" Grid.Column="0" Margin="10,0,10,10" VerticalAlignment="Stretch"
-                  FontSize="{DynamicResource MahApps.Font.Size.Default}"
-                  TextWrapping="WrapWithOverflow" AcceptsReturn="True" AcceptsTab="True"
-                  mah:TextBoxHelper.Watermark="Notizen" 
-                  mah:TextBoxHelper.IsSpellCheckContextMenuEnabled="False"
-                  VerticalScrollBarVisibility="Visible"                  
-                  />
+            
 
-        <GridSplitter Grid.Row="2" ResizeDirection="Rows" />
-
-        <DockPanel Grid.Column="0" Grid.Row="3" LastChildFill="True">
             <Label  
-                Content="Fundstellen:" 
-                DockPanel.Dock="Top" Margin="10,0,0,0"
-                FontSize="{DynamicResource MahApps.Font.Size.Default}"
-            />
+                Grid.Row="0" Grid.RowSpan="2"  Grid.Column="0"
+                Content="Notizen zum Buch" 
+                FontSize="16" FontWeight="Light"  VerticalAlignment="Bottom" >
+                <Label.LayoutTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-90"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Label.LayoutTransform>
+            </Label>
 
-            <Button 
-                Content="Report" 
-                Click="ReportClick"  
-                DockPanel.Dock="Bottom" Margin="10,5,10,35"
-                />
+            <TextBox  
+                d:DataContext="{d:DesignInstance Type={x:Type vm:EventVM}}" 
+                Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=False, Delay=100}"                            
+                Grid.Row="0" Grid.RowSpan="2"  Grid.Column="1"  Margin="0,0,0,5" VerticalAlignment="Stretch"
+                FontSize="16"
+                TextWrapping="WrapWithOverflow" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True"
+                VerticalScrollBarVisibility="Visible"    
+                CaretBrush="White"
+              />
 
-            <Button 
-                Content="Lesezeichen Löschen" 
-                ToolTip="Löscht das ausgewählte Lesezeichen"
-                Command="{Binding cmdDelBookmark}"  CommandParameter="{Binding SelectedBookmark}"                
-                DockPanel.Dock="Bottom" Margin="10,5,10,5"
-                />
+            <!--<GridSplitter Grid.Row="2" ResizeDirection="Rows" />-->
 
-            <Button 
-                Content="Neues Lesezeichen" 
-                ToolTip="Erstellt eine neues Lesezeichen auf der geöffneten Seite"
-                Command="{Binding cmdAddBookmark, Mode=OneWay}"  
-                DockPanel.Dock="Bottom" Margin="10,5,10,5"
-                />
+            <Label  
+                Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"               
+                FontSize="16" FontWeight="Light" Content="Fundstellen im Buch"  VerticalAlignment="Bottom" >
+                <Label.LayoutTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-90"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Label.LayoutTransform>
+            </Label>
 
-            <ListBox       
+                <!--ItemsSource="{Binding findingVMs, Mode=OneWay}"   
+                Background="Transparent"
+                SelectedValue="{Binding SelectedEvent, Mode=TwoWay}"-->
+            <ListBox 
+             
                 x:Name="lbBookmarks"
-                Margin="10,0,10,0"
+                Grid.Column="4" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,0,5" BorderThickness="1"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
-                ItemsSource="{Binding bookmarkVMs}"    
-                SelectedItem="{Binding SelectedBookmark}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate >
-                        <Grid TextBlock.FontSize="{DynamicResource MahApps.Font.Size.Default}" >
+                ItemsSource="{Binding EventVMs, Mode=OneWay}"
+                SelectedValue="{Binding SelectedEvent}"              
+                Style="{DynamicResource MahApps.Styles.ListBox}"
+                >
+                
+                <ListBox.ItemContainerStyle>  <!--see https://stackoverflow.com/a/7780980-->
+                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">                    
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemTemplate>                   
+                    <DataTemplate>
+                        <Grid TextBlock.FontSize="{DynamicResource MahApps.Font.Size.Default}" d:DataContext = "{d:DesignInstance Type={x:Type vm:EventVM}}" >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="75"/>
-                                <ColumnDefinition Width="*" MaxWidth="210"/>
+                                <ColumnDefinition Width="auto" MinWidth="40"/>
+                                <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding SheetNr,  StringFormat=Blatt {0}}" HorizontalAlignment="Stretch" />
-                            <TextBlock Grid.Column="1" Text="{Binding Title, Mode=TwoWay}" ToolTip="Doppel-Klick zum Editieren"  />
-                            <Button                                   
-                                Command="{Binding cmdDelSelf}"
-                                
+                            <TextBlock Grid.Column="0" Text="{Binding SheetNr,  StringFormat=B.{0}}" HorizontalAlignment="Stretch"  />
+                            <TextBlock Grid.Column="1" Text="{Binding Title, Mode=TwoWay}" Margin="5,0,0,0" ToolTip="Doppel-Klick zum Editieren"   />
+                            <Button                                 
                                 x:Name="delButton"
-                                Padding="0"
-                                Margin="5,0,0,0"
-                                Grid.Column="2"                                                  
+                                Command="{Binding DataContext.cmdDelEvent, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"                                
+                                CommandParameter="{Binding DataContext, RelativeSource={RelativeSource Self}}" 
+                                ToolTip="Fundstelle löschen"        
+                                Grid.Column="2" Margin="2,0,2,0" HorizontalAlignment="Right" Padding="0" 
+                                Background="Transparent"                                      
                                 Focusable="False"                                              
-                                Content="{iconPacks:Modern Kind=Delete}"  
-                                ToolTip="Fundstelle löschen"
-                                >
+                                Content="{iconPacks:Modern Kind=Delete}" >
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.ToolBar}">
                                         <Setter Property="Visibility" Value="Hidden" />
@@ -105,6 +135,41 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-        </DockPanel>
-    </Grid>
+
+            <!--<Rectangle Grid.Column="2" Grid.RowSpan="3" Fill="DarkGray" VerticalAlignment="Stretch" Width="2"/>-->
+
+            <!--<Label
+                Grid.Row="0" Grid.Column="5" Margin="8,0,0,10"
+                FontSize="16" FontWeight="SemiBold"
+                Content="Details zur Fundstelle"
+            />-->
+            <TextBox 
+                Grid.Column="5" Grid.Row="1" Margin="10,0,0,10"> 
+                
+            </TextBox>
+
+            <!--<StackPanel Grid.Column="2" Grid.Row="1" >
+                <Button 
+                Content="Report" 
+                Click="ReportClick"  
+                Margin="0,0,0,0"
+                />
+
+                <Button 
+                Content="Lesezeichen Löschen" 
+                ToolTip="Löscht das ausgewählte Lesezeichen"
+                Command="{Binding cmdDelBookmark}"  CommandParameter="{Binding SelectedBookmark}"                
+                  Margin="0,0,0,0"
+                />
+
+                <Button 
+                Content="Neues Lesezeichen" 
+                ToolTip="Erstellt eine neues Lesezeichen auf der geöffneten Seite"
+                Command="{Binding cmdAddBookmark, Mode=OneWay}"  
+                Margin="0,0,0,0"
+                />
+            </StackPanel>-->
+        </Grid>
+
+    </Border>
 </UserControl>

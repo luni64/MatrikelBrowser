@@ -1,10 +1,6 @@
 ﻿using MbCore;
-using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Crmf;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Media;
 
 namespace MatrikelBrowser.ViewModels
 {

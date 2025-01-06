@@ -19,7 +19,7 @@ namespace MatrikelBrowser.ViewModels
 
         //public string LoadImage()
         //{
-        //    var filename = $"C:/Users/lutz/AppData/Roaming/lunOptics/aemBrowser/books/{model.Book.RefId}/pages/file_{SheetNr + 1}.jpg";
+        //    var filename = $"C:/Users/lutz/AppData/Roaming/lunOptics/aemBrowser/books/{marriageModel.Book.RefId}/pages/file_{SheetNr + 1}.jpg";
         //    if (!File.Exists(filename))
         //    {
         //        Trace.TraceInformation("download image");
@@ -42,7 +42,7 @@ namespace MatrikelBrowser.ViewModels
             
             SheetNr = model.Book.Pages.IndexOf(model);
             URL = new Uri(model.ImageURL);
-           // ImageFilename =  model.GetLocalFilename();
+           // ImageFilename =  marriageModel.GetLocalFilename();
         }
     }
 }

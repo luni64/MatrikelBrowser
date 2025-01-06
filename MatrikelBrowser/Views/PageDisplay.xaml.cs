@@ -35,13 +35,13 @@ namespace MatrikelBrowser
             if (e.NewValue is PageVM pageVM && pageVM.parent is BookVM bookVM)
             {               
                 var that = ((PageDisplay)d);
-                bookVM.bookmarkVMs.CollectionChanged -= that.Bookmarks_CollectionChanged;
-                bookVM.bookmarkVMs.CollectionChanged += that.Bookmarks_CollectionChanged;
+                bookVM.EventVMs.CollectionChanged -= that.Bookmarks_CollectionChanged;
+                bookVM.EventVMs.CollectionChanged += that.Bookmarks_CollectionChanged;
 
                 that.ClearBookmarks();
-                foreach (var bmVM in bookVM.bookmarkVMs.Where(b => b.SheetNr-1 == pageVM.SheetNr))
+                foreach (var eventVM in bookVM.EventVMs.Where(e=> e.SheetNr-1 == pageVM.SheetNr))
                 {
-                    that.AddBookmark(bmVM);
+                    that.AddBookmark(eventVM);
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace MatrikelBrowser
             {
                 case NotifyCollectionChangedAction.Add:
 
-                    foreach (BookmarkVM bm in e.NewItems!)
+                    foreach (EventVM bm in e.NewItems!)
                     {
                         AddBookmark(bm);
                     }
@@ -69,7 +69,7 @@ namespace MatrikelBrowser
 
             foreach (BookmarkVM bookmarkVM in bookmarkVMs)
             {
-                var bookmarkUI = bookmarkUIs.FirstOrDefault(b => b.Uid == bookmarkVM.ID);  // find the canvas child which corresponds to the removed view model
+                var bookmarkUI = bookmarkUIs.FirstOrDefault(b => b.Uid == bookmarkVM.ID);  // find the canvas child which corresponds to the removed view marriageModel
                 if (bookmarkUI != null)
                 {
                     PageCanvas.Children.Remove(bookmarkUI);
@@ -86,13 +86,13 @@ namespace MatrikelBrowser
             }
         }
 
-        void AddBookmark(BookmarkVM bmVM)
+        void AddBookmark(EventVM eventVM)
         {
-            var bookmark = new Bookmark(bmVM);           
+            var bookmark = new Bookmark(eventVM);           
 
             bookmark.SetBinding(Bookmark.TextProperty, new Binding
             {
-                Source = bmVM,
+                Source = eventVM,
                 Path = new PropertyPath("Title"),
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
@@ -100,43 +100,43 @@ namespace MatrikelBrowser
 
             bookmark.SetBinding(Canvas.TopProperty, new Binding
             {
-                Source = bmVM,
+                Source = eventVM,
                 Path = new PropertyPath("Y"),
                 Mode = BindingMode.TwoWay,
             });
 
             bookmark.SetBinding(Canvas.LeftProperty, new Binding
             {
-                Source = bmVM,
+                Source = eventVM,
                 Path = new PropertyPath("X"),
                 Mode = BindingMode.TwoWay,
             });
 
             bookmark.SetBinding(Bookmark.WProperty, new Binding
             {
-                Source = bmVM,
+                Source = eventVM,
                 Path = new PropertyPath("W"),
                 Mode = BindingMode.TwoWay,
             });
 
             bookmark.SetBinding(Bookmark.HProperty, new Binding
             {
-                Source = bmVM,
+                Source = eventVM,
                 Path = new PropertyPath("H"),
                 Mode = BindingMode.TwoWay,
             });
 
 
-            //bookmark.Width = bmVM.W;
-            //bookmark.Height = bmVM.H;
+            //bookmark.Width = eventVM.W;
+            //bookmark.Height = eventVM.H;
 
-            Canvas.SetLeft(bookmark, bmVM.X);
-            Canvas.SetTop(bookmark, bmVM.Y);
-            bookmark.flip(bmVM.X);
+            Canvas.SetLeft(bookmark, eventVM.X);
+            Canvas.SetTop(bookmark, eventVM.Y);
+            bookmark.flip(eventVM.X);
 
 
             int idx = PageCanvas.Children.Add(bookmark);
-            PageCanvas.Children[idx].Uid = bmVM.ID;
+            PageCanvas.Children[idx].Uid = eventVM.ID.ToString();
         }
 
         public override string ToString()

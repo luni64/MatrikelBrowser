@@ -2,28 +2,28 @@
 
 #nullable disable
 
-namespace MbCore.Migrations
+namespace AEM.Migrations
 {
     /// <inheritdoc />
-    public partial class Added_Booknotes : Migration
+    public partial class Restructure2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Note",
-                table: "Books",
-                type: "TEXT",
+            migrationBuilder.AddColumn<int>(
+                name: "EventType",
+                table: "Events",
+                type: "INTEGER",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Note",
-                table: "Books");
+                name: "EventType",
+                table: "Events");
         }
     }
 }

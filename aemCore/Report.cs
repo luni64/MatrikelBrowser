@@ -441,7 +441,7 @@ namespace MbCore
             lnk.AddStyle(link);
             return lnk;
         }
-        static Cell makePersonEntry(string title, Person p)
+        static Cell makePersonEntry(string title, PersonOld p)
         {
             var table = new Table(UnitValue.CreatePointArray(new float[] { 25, 350 })).SetBorder(Border.NO_BORDER).SetFixedLayout().UseAllAvailableWidth()
                 .AddCell(new Cell(2, 1).SetBorder(Border.NO_BORDER).SetFontSize(7).SetVerticalAlignment(VerticalAlignment.MIDDLE).Add(new Paragraph(title)))

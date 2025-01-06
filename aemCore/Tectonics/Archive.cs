@@ -9,9 +9,10 @@ namespace MbCore
         public string Name { get; set; } = string.Empty;
         public required string BookInfoUrl { get; set; }
         public required string ViewerUrl { get; set; }
-        public List<Parish> Parishes { get; set; } = [];
-        required public Country Country { get; set; }
         required public ArchiveType ArchiveType { get; set; }
+        
+        virtual public List<Parish> Parishes { get; set; } = [];
+        virtual required public Country Country { get; set; }
 
         public override string ToString() => Name;
     }
