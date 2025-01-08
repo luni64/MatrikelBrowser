@@ -26,7 +26,7 @@ namespace MatrikelBrowser.ViewModels
 
         protected void SetProperty<T, TProperty>(T obj, Expression<Func<T, TProperty>> propertySelector, TProperty value, [CallerMemberName] string name = "")
         {
-            var propertyInfo = (propertySelector.Body as MemberExpression)?.Member as System.Reflection.PropertyInfo;
+             var propertyInfo = (propertySelector.Body as MemberExpression)?.Member as System.Reflection.PropertyInfo;
             if (propertyInfo != null)
             {
                 TProperty field = (TProperty)propertyInfo.GetValue(obj);

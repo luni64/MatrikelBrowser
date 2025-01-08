@@ -9,6 +9,7 @@ using AEM;
 using AEM.Tectonics.Events;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
+using iText.Kernel.Pdf.Canvas.Parser;
 
 namespace MatrikelBrowser.ViewModels
 {
@@ -38,7 +39,7 @@ namespace MatrikelBrowser.ViewModels
                     X = x,
                     Y = y,
                     W = 500,
-                    H = 250,                    
+                    H = 250,
 
                     EventType = this.model.BookType switch
                     {
@@ -213,9 +214,26 @@ namespace MatrikelBrowser.ViewModels
                 if (model.Events.Count > 0)
                 {
                     EventVMs.Clear();
+
+
+
                     foreach (var evnt in model.Events)
                     {
-                        EventVMs.Add(new EventVM(evnt));
+                        EventVMs.Add(evnt.EventType switch
+                        {
+                            BookmarkType.birth => (EventVM)new BirthEventVM(evnt),
+                            //BookmarkType.marriage => (EventVM) new MarriageEventVM(evnt),
+                            BookmarkType.death => (EventVM)new DeathEventVM(evnt),
+
+                            _ => new BirthEventVM(evnt),
+                        });
+
+
+
+
+
+
+
                     }
                 }
                 SubTitle = $"{PageVMs.Count} Blätter";

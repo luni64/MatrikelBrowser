@@ -21,6 +21,7 @@ namespace AEM
         public double H { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Transcript { get; set; } = string.Empty;
+        public string Remarks { get; set; } = string.Empty;
         public string Notes { get; set; } = string.Empty;
                                                                // BIRTH           / MARRIAGE       / DEATH
         public string Person1 { get; set; } = string.Empty;    // child           / groom          / deceased

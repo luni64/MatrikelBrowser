@@ -21,6 +21,58 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Orange.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+
+
+            <DataTemplate DataType="{x:Type vm:BirthEventVM}">
+                <ScrollViewer VerticalScrollBarVisibility="Visible" >
+                    <Grid HorizontalAlignment="Stretch" Margin="0,0,20,0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                <Setter Property="Margin" Value="0,0,0,10"/>
+                                <Setter Property="mah:TextBoxHelper.UseFloatingWatermark" Value="True"/>
+                                <Setter Property="FontSize" Value="13"/>
+                            </Style>
+                        </Grid.Resources>
+
+                        <TextBox Text="{Binding ChildName}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Name des Kindes" />
+                        <TextBox Text="{Binding Birthday}" Grid.Row="0" Grid.Column="4"  Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Geburtstag" />
+                        <TextBox Text="{Binding Baptism}" Grid.Row="0" Grid.Column="6"  Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Tauftag" />
+
+                        <TextBox Text="{Binding Father}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Vater des Kindes"/>
+                        <TextBox Text="{Binding FatherOccupation}" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand des Vaters" />
+                        <TextBox Text="{Binding Mother}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Mutter des Kindes" />
+                        <TextBox Text="{Binding GodFather}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Taufpate / Taufpatin" />
+                        <TextBox Text="{Binding Remarks}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="7" Height="150" mah:TextBoxHelper.Watermark="Bemerkungen" AcceptsReturn="True" />
+
+
+                    </Grid>
+                </ScrollViewer>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:DeathDetailsVM}">
+                <StackPanel>
+                    <TextBlock Text="asdfasafasdff"/>
+                    <TextBox Text="{Binding Deceased}" />
+                    <TextBox Text="{Binding DeathDate}" Width="200" />
+                </StackPanel>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -33,61 +85,41 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="15"/>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="12*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
 
-
-
             <Label  
-                Grid.Row="0" Grid.RowSpan="2"  Grid.Column="0"
+                Grid.Row="0" Grid.Column="0" 
                 Content="Notizen zum Buch" 
                 FontSize="16" FontWeight="Light"  VerticalAlignment="Bottom" >
-                <Label.LayoutTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="-90"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Label.LayoutTransform>
             </Label>
 
             <TextBox  
                 d:DataContext="{d:DesignInstance Type={x:Type vm:EventVM}}" 
                 Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=False, Delay=100}"                            
-                Grid.Row="0" Grid.RowSpan="2"  Grid.Column="1"  Margin="0,0,0,5" VerticalAlignment="Stretch"
+                Grid.Row="1" Grid.RowSpan="1"  Grid.Column="0" VerticalAlignment="Stretch"
                 FontSize="16"
                 TextWrapping="WrapWithOverflow" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True"
                 VerticalScrollBarVisibility="Visible"    
                 CaretBrush="White"
               />
 
-            <!--<GridSplitter Grid.Row="2" ResizeDirection="Rows" />-->
+            <GridSplitter Grid.Column="1" Grid.Row="1"  Background="Transparent" />
 
             <Label  
-                Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"               
+                Grid.Row="0"  Grid.Column="2"               
                 FontSize="16" FontWeight="Light" Content="Fundstellen im Buch"  VerticalAlignment="Bottom" >
-                <Label.LayoutTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="-90"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Label.LayoutTransform>
             </Label>
 
-            <!--ItemsSource="{Binding findingVMs, Mode=OneWay}"   
-                Background="Transparent"
-                SelectedValue="{Binding SelectedEvent, Mode=TwoWay}"-->
-            <ListBox 
-             
+
+            <ListBox              
                 x:Name="lbBookmarks"
-                Grid.Column="4" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,0,5" BorderThickness="1"
+                Grid.Column="2" Grid.Row="1" Grid.RowSpan="1" BorderThickness="1" MinWidth="250"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                 ItemsSource="{Binding EventVMs, Mode=OneWay}"
                 SelectedValue="{Binding SelectedEvent}"              
@@ -137,32 +169,32 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <!--<Rectangle Grid.Column="2" Grid.RowSpan="3" Fill="DarkGray" VerticalAlignment="Stretch" Width="2"/>-->
+            <GridSplitter Grid.Column="3" Grid.Row="1" Background="Transparent"/>
 
-            <!--<Label
-                Grid.Row="0" Grid.Column="5" Margin="8,0,0,10"
-                FontSize="16" FontWeight="SemiBold"
-                Content="Details zur Fundstelle"
-            />-->
-            <ScrollViewer Grid.Column="5" Grid.Row="1" VerticalScrollBarVisibility="Visible">
-            <StackPanel  
-                Margin="10,0,10,10">
-                <Label Content="Details der Funstelle"  FontSize="16" FontWeight="Light"/>
+            <Label 
+                Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" 
+                Content="Details zur ausgewählten Fundstelle"  FontSize="16" FontWeight="Light"/>
+
+            <DockPanel Grid.Column ="4" Grid.Row="1" >
                 <TextBox 
+                    DockPanel.Dock="Top"
                     Text="{Binding SelectedEvent.Title}"
-                    mah:TextBoxHelper.Watermark="Title" mah:TextBoxHelper.UseFloatingWatermark="True"     
+                    mah:TextBoxHelper.Watermark="Titel" mah:TextBoxHelper.UseFloatingWatermark="True"     
+                    Margin="0,0,0,10"
                     />
+
                 <TextBox 
-                    Margin="0,10,0,0"
-                    Height="250"
-                    Text="{Binding SelectedEvent.}"
-                    mah:TextBoxHelper.Watermark="Transkript" mah:TextBoxHelper.UseFloatingWatermark="True"     
-                    />
-                
+                Grid.Column="4" Grid.Row="1" VerticalAlignment="Stretch"                
+                Text="{Binding SelectedEvent.Transcript}" AcceptsReturn="True"
+                mah:TextBoxHelper.Watermark="Transkript" mah:TextBoxHelper.UseFloatingWatermark="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                </TextBox>
+            </DockPanel>
+
+            <GridSplitter Grid.Column="5" Grid.Row="1" Width="5" Background="Transparent"/>
 
 
-            </StackPanel>
-            </ScrollViewer>
+            <ContentControl Grid.Column="6" Grid.Row="1" Content="{Binding SelectedEvent}" Background="AliceBlue" />
+
 
             <!--<StackPanel Grid.Column="2" Grid.Row="1" >
                 <Button 
@@ -189,3 +221,4 @@
 
     </Border>
 </UserControl>
+
