@@ -66,12 +66,44 @@
                 </ScrollViewer>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vm:DeathDetailsVM}">
-                <StackPanel>
-                    <TextBlock Text="asdfasafasdff"/>
-                    <TextBox Text="{Binding Deceased}" />
-                    <TextBox Text="{Binding DeathDate}" Width="200" />
-                </StackPanel>
+            <DataTemplate DataType="{x:Type vm:DeathEventVM}">
+                <ScrollViewer VerticalScrollBarVisibility="Visible" >
+                    <Grid HorizontalAlignment="Stretch" Margin="0,0,20,0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                <Setter Property="Margin" Value="0,0,0,10"/>
+                                <Setter Property="mah:TextBoxHelper.UseFloatingWatermark" Value="True"/>
+                                <Setter Property="FontSize" Value="13"/>
+                            </Style>
+                        </Grid.Resources>
+
+                        <TextBox Text="{Binding Name}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Verstorbener" />
+                        <TextBox Text="{Binding Death}" Grid.Row="0" Grid.Column="4"  Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Todestag" />
+                        <TextBox Text="{Binding Burial}" Grid.Row="0" Grid.Column="6"  Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Begräbnis" />
+                        <TextBox Text="{Binding Occupation}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Stand des Verstorbenen" />
+
+                        <TextBox Text="{Binding Father}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Vater"/>
+                        <TextBox Text="{Binding Mother}" Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Mutter" />
+                        <TextBox Text="{Binding Reason}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Todesursache" />
+                        <TextBox Text="{Binding Remarks}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="7" Height="150" mah:TextBoxHelper.Watermark="Bemerkungen" AcceptsReturn="True" />
+                    </Grid>
+                </ScrollViewer>
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -84,7 +116,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="15"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="15"/>
@@ -175,13 +207,27 @@
                 Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" 
                 Content="Details zur ausgewählten Fundstelle"  FontSize="16" FontWeight="Light"/>
 
-            <DockPanel Grid.Column ="4" Grid.Row="1" >
-                <TextBox 
-                    DockPanel.Dock="Top"
+            <DockPanel Grid.Column ="4" Grid.Row="1" Margin="0,0,0,0" >
+                <Grid  DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox                     
                     Text="{Binding SelectedEvent.Title}"
-                    mah:TextBoxHelper.Watermark="Titel" mah:TextBoxHelper.UseFloatingWatermark="True"     
-                    Margin="0,0,0,10"
-                    />
+                    mah:TextBoxHelper.Watermark="Titel" mah:TextBoxHelper.UseFloatingWatermark="True"   Margin="0,0,0,10" />
+
+                    <ComboBox Grid.Column="2" Margin="0,0,0,10" mah:TextBoxHelper.UseFloatingWatermark="True"  mah:TextBoxHelper.Watermark="Art der Fundstelle">
+                        <ComboBoxItem Content="Taufeintrag"/>
+                        <ComboBoxItem Content="Hochzeitseingrat"/>
+                        <ComboBoxItem Content="Todeseintrag"/>
+                        <ComboBoxItem Content="Verschiedenes"/>
+                    </ComboBox>
+                    
+                    
+                </Grid>
 
                 <TextBox 
                 Grid.Column="4" Grid.Row="1" VerticalAlignment="Stretch"                

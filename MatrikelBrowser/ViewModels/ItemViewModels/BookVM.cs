@@ -50,9 +50,15 @@ namespace MatrikelBrowser.ViewModels
                         _ => BookmarkType.misc
                     }
                 };
+
                 model.AddEvent(evnt);
 
-                var evm = new BirthEventVM(evnt);
+                var evm = evnt.EventType switch
+                {
+                    BookmarkType.birth => (EventVM) new BirthEventVM(evnt),
+                    BookmarkType.death => (EventVM) new DeathEventVM(evnt),
+                    _ => new BirthEventVM(evnt)
+                } ;
                 evm.isLocked = false;
                 EventVMs.Add(evm);
 

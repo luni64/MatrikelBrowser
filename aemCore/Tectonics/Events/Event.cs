@@ -22,7 +22,7 @@ namespace AEM
         public string Title { get; set; } = string.Empty;
         public string Transcript { get; set; } = string.Empty;
         public string Remarks { get; set; } = string.Empty;
-        public string Notes { get; set; } = string.Empty;
+        
                                                                // BIRTH           / MARRIAGE       / DEATH
         public string Person1 { get; set; } = string.Empty;    // child           / groom          / deceased
         public string Person2 { get; set; } = string.Empty;    // child-father    / groom-father   / deceased-father
@@ -38,8 +38,9 @@ namespace AEM
         public string Date4 { get; set; } = string.Empty;      //                 / bride-birthday 
 
         public string Occupation1 { get; set; } = string.Empty;//                 / groom-occ       / deceased-occ
-        public string Occupation2 { get; set; } = string.Empty;//                 / bride-occ       / deceased-occ
+        public string Occupation2 { get; set; } = string.Empty;//                 / bride-occ       / 
         public string Occupation3 { get; set; } = string.Empty;// father-occ      / groom-father-occ/ 
+        public string Misc { get; set; } = string.Empty;       //                 /                 / reason  
 
         // navigation
         virtual public Book Book { get; set; } = null!;
