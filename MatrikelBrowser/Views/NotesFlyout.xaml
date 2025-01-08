@@ -81,7 +81,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>                           
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
@@ -97,11 +97,63 @@
                         <TextBox Text="{Binding Death}" Grid.Row="0" Grid.Column="4"  Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Todestag" />
                         <TextBox Text="{Binding Burial}" Grid.Row="0" Grid.Column="6"  Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Begräbnis" />
                         <TextBox Text="{Binding Occupation}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Stand des Verstorbenen" />
-
+                        
                         <TextBox Text="{Binding Father}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Vater"/>
                         <TextBox Text="{Binding Mother}" Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Mutter" />
                         <TextBox Text="{Binding Reason}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Todesursache" />
                         <TextBox Text="{Binding Remarks}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="7" Height="150" mah:TextBoxHelper.Watermark="Bemerkungen" AcceptsReturn="True" />
+                    </Grid>
+                </ScrollViewer>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:MarriageEventVM}">
+                <ScrollViewer VerticalScrollBarVisibility="Visible" >
+                    <Grid HorizontalAlignment="Stretch" Margin="0,0,20,0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="7*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                <Setter Property="Margin" Value="0,0,0,10"/>
+                                <Setter Property="mah:TextBoxHelper.UseFloatingWatermark" Value="True"/>
+                                <Setter Property="FontSize" Value="13"/>
+                            </Style>
+                        </Grid.Resources>
+
+                        <TextBox Text="{Binding Groom}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Bräutigam" FontWeight="SemiBold" FontSize="15" />
+                        <TextBox Text="{Binding GroomBirthday}" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Geburtstag" />
+                        <TextBox Text="{Binding GroomOccupation}" Grid.Row="0" Grid.Column="4"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand und Wohnort" />
+                        <TextBox Text="{Binding GroomFather}" Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Vater des Bräutigams" />
+                        <TextBox Text="{Binding GroomFatherOcc}" Grid.Row="1" Grid.Column="4"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand und Wohnort" />
+                        <TextBox Text="{Binding GroomMother}" Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Mutter des Bräutigams" />
+                        <TextBox Text="{Binding }" Grid.Row="2" Grid.Column="4"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand und Wohnort" />
+                        <Rectangle HorizontalAlignment="Stretch" Grid.Row="3" Grid.ColumnSpan="7" Fill="Gray" Height="2" Margin="0,5,0,12" />
+                        <TextBox Text="{Binding Bride}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Braut" FontWeight="SemiBold" FontSize="15"/>
+                        <TextBox Text="{Binding BrideBirthday}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Geburtstag" />
+                        <TextBox Text="{Binding BrideOccupation}" Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand und Wohnort" />
+                        <TextBox Text="{Binding BrideFather}" Grid.Row="5" Grid.Column="0"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Brautvater" />
+                        <TextBox Text="{Binding BrideMother}" Grid.Row="5" Grid.Column="4"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Brautmutter" />
+                        <TextBox Text="{Binding }" Grid.Row="6" Grid.Column="0"  Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Stand und Wohnort der Brauteltern" />
+                        <TextBox Text="{Binding Witnesses}" Grid.Row="7" Grid.Column="0"  Grid.ColumnSpan="7"  Height="60" mah:TextBoxHelper.Watermark="Zeugen" AcceptsReturn="True"/>
+
+                        <TextBox Text="{Binding Remarks}" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="7" Height="100" mah:TextBoxHelper.Watermark="Bemerkungen" AcceptsReturn="True" />
                     </Grid>
                 </ScrollViewer>
             </DataTemplate>
@@ -121,7 +173,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="15"/>
                 <ColumnDefinition Width="12*"/>
-                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="15"/>
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
 
@@ -225,8 +277,6 @@
                         <ComboBoxItem Content="Todeseintrag"/>
                         <ComboBoxItem Content="Verschiedenes"/>
                     </ComboBox>
-                    
-                    
                 </Grid>
 
                 <TextBox 
@@ -236,8 +286,7 @@
                 </TextBox>
             </DockPanel>
 
-            <GridSplitter Grid.Column="5" Grid.Row="1" Width="5" Background="Transparent"/>
-
+            <GridSplitter Grid.Column="5" Grid.Row="1" Width="20" Background="Transparent"/>
 
             <ContentControl Grid.Column="6" Grid.Row="1" Content="{Binding SelectedEvent}" Background="AliceBlue" />
 

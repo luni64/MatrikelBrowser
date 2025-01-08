@@ -57,6 +57,7 @@ namespace MatrikelBrowser.ViewModels
                 {
                     BookmarkType.birth => (EventVM) new BirthEventVM(evnt),
                     BookmarkType.death => (EventVM) new DeathEventVM(evnt),
+                    BookmarkType.marriage => (EventVM)new MarriageEventVM(evnt),
                     _ => new BirthEventVM(evnt)
                 } ;
                 evm.isLocked = false;
@@ -228,9 +229,8 @@ namespace MatrikelBrowser.ViewModels
                         EventVMs.Add(evnt.EventType switch
                         {
                             BookmarkType.birth => (EventVM)new BirthEventVM(evnt),
-                            //BookmarkType.marriage => (EventVM) new MarriageEventVM(evnt),
+                            BookmarkType.marriage => (EventVM) new MarriageEventVM(evnt),
                             BookmarkType.death => (EventVM)new DeathEventVM(evnt),
-
                             _ => new BirthEventVM(evnt),
                         });
 
