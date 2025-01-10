@@ -19,9 +19,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Orange.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
 
 
             <DataTemplate DataType="{x:Type vm:BirthEventVM}">
@@ -81,7 +80,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>                           
+                            <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
@@ -97,7 +96,7 @@
                         <TextBox Text="{Binding Death}" Grid.Row="0" Grid.Column="4"  Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Todestag" />
                         <TextBox Text="{Binding Burial}" Grid.Row="0" Grid.Column="6"  Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Begräbnis" />
                         <TextBox Text="{Binding Occupation}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Stand des Verstorbenen" />
-                        
+
                         <TextBox Text="{Binding Father}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Vater"/>
                         <TextBox Text="{Binding Mother}" Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Mutter" />
                         <TextBox Text="{Binding Reason}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Todesursache" />
@@ -161,7 +160,11 @@
     </UserControl.Resources>
 
     <!--Background="#FF2B2B2B"-->
-    <Border  CornerRadius="15,15,0,0" Margin="0,0,5,0" Padding="10"   Background="{DynamicResource MahApps.Brushes.Flyout.Background}" >
+    <Border  
+        CornerRadius="15,15,0,0" Margin="0,0,5,0" Padding="10" 
+        BorderBrush="{DynamicResource MahApps.Brushes.Flyout.Foreground}"  BorderThickness="1"           
+        Background="{DynamicResource MahApps.Brushes.Flyout.Background}"         
+        >
         <Grid Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -203,7 +206,7 @@
 
             <ListBox              
                 x:Name="lbBookmarks"
-                Grid.Column="2" Grid.Row="1" Grid.RowSpan="1" BorderThickness="1" MinWidth="250"
+                Grid.Column="2" Grid.Row="1" Grid.RowSpan="1" BorderThickness="1" MinWidth="250" 
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                 ItemsSource="{Binding EventVMs, Mode=OneWay}"
                 SelectedValue="{Binding SelectedEvent}"              
