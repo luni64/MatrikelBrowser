@@ -40,6 +40,8 @@ namespace AEM
         public string Occupation1 { get; set; } = string.Empty;//                 / groom-occ       / deceased-occ
         public string Occupation2 { get; set; } = string.Empty;//                 / bride-occ       / 
         public string Occupation3 { get; set; } = string.Empty;// father-occ      / groom-father-occ/ 
+        public string Occupation4 { get; set; } = string.Empty;//                 / groom-mother-occ/ 
+        public string Occupation5 { get; set; } = string.Empty;//                 / bride-parents-occ/ 
         public string Misc { get; set; } = string.Empty;       //                 /                 / reason  
 
         // navigation

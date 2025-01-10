@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace MbCore
@@ -156,6 +157,7 @@ namespace MbCore
         }
         private static bool CheckDatabase(string database)
         {
+            if (!File.Exists(database)) return false;
             using (var connection = new SqliteConnection($"Data Source={database}"))
             {
                 connection.Open();

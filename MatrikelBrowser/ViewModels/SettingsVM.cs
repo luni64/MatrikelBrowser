@@ -55,8 +55,8 @@ namespace MatrikelBrowser.ViewModels
             this.model = model;
             _databaseFile = MatrikelBrowserCTX.DatabaseFile;
            
-            using var ctx = new MatrikelBrowserCTX();
-            Parishes = new([.. ctx.Parishes]);
+            //using var ctx = new MatrikelBrowserCTX();
+            //Parishes = new([.. ctx.Parishes]);
         }
 
         private string _databaseFile;
