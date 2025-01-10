@@ -70,6 +70,8 @@ namespace MatrikelBrowser.ViewModels
         public string GroomOccupation { get => model.Occupation1; set => SetProperty(model, e => e.Occupation1, value); }
         public string BrideOccupation { get => model.Occupation2; set => SetProperty(model, e => e.Occupation2, value); }
         public string GroomFatherOcc { get => model.Occupation3; set => SetProperty(model, e => e.Occupation3, value); }
+        public string GroomMotherOcc { get => model.Occupation4; set => SetProperty(model, e => e.Occupation4, value); }
+        public string BrideParentsOcc { get => model.Occupation5; set => SetProperty(model, e => e.Occupation5, value); }
 
 
         public string MarriageDate { get => model.Date1; set => SetProperty(model, e => e.Date1, value); }

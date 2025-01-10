@@ -36,7 +36,7 @@ namespace MatrikelBrowser
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //FirstFlyout.IsOpen = true;
-            if (grid.ColumnDefinitions[2].ActualWidth == 0)
+            if (grid2.ColumnDefinitions[2].ActualWidth == 0)
             {
                 AnimateColumnWidth(2, 450, 0.25);
                 nextColArrow = rightArrow;
@@ -92,7 +92,7 @@ namespace MatrikelBrowser
 
         private void AnimateColumnWidth(int columnIndex, double targetWidth, double durationSeconds)
         {
-            var column = grid.ColumnDefinitions[columnIndex];
+            var column = grid2.ColumnDefinitions[columnIndex];
             double currentWidth = column.ActualWidth;
 
             var animation = new GridLengthAnimation

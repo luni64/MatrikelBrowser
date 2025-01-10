@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels"
-    Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
+  
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="900" 
@@ -143,14 +143,14 @@
                         <TextBox Text="{Binding GroomFather}" Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Vater des Bräutigams" />
                         <TextBox Text="{Binding GroomFatherOcc}" Grid.Row="1" Grid.Column="4"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand und Wohnort" />
                         <TextBox Text="{Binding GroomMother}" Grid.Row="2" Grid.Column="0"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Mutter des Bräutigams" />
-                        <TextBox Text="{Binding }" Grid.Row="2" Grid.Column="4"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand und Wohnort" />
+                        <TextBox Text="{Binding GroomMotherOcc}" Grid.Row="2" Grid.Column="4"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand und Wohnort" />
                         <Rectangle HorizontalAlignment="Stretch" Grid.Row="3" Grid.ColumnSpan="7" Fill="Gray" Height="2" Margin="0,5,0,12" />
                         <TextBox Text="{Binding Bride}" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Braut" FontWeight="SemiBold" FontSize="15"/>
                         <TextBox Text="{Binding BrideBirthday}" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="1" mah:TextBoxHelper.Watermark="Geburtstag" />
                         <TextBox Text="{Binding BrideOccupation}" Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Stand und Wohnort" />
                         <TextBox Text="{Binding BrideFather}" Grid.Row="5" Grid.Column="0"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Brautvater" />
                         <TextBox Text="{Binding BrideMother}" Grid.Row="5" Grid.Column="4"  Grid.ColumnSpan="3" mah:TextBoxHelper.Watermark="Brautmutter" />
-                        <TextBox Text="{Binding }" Grid.Row="6" Grid.Column="0"  Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Stand und Wohnort der Brauteltern" />
+                        <TextBox Text="{Binding BrideParentsOcc}" Grid.Row="6" Grid.Column="0"  Grid.ColumnSpan="7" mah:TextBoxHelper.Watermark="Stand und Wohnort der Brauteltern" />
                         <TextBox Text="{Binding Witnesses}" Grid.Row="7" Grid.Column="0"  Grid.ColumnSpan="7"  Height="60" mah:TextBoxHelper.Watermark="Zeugen" AcceptsReturn="True"/>
 
                         <TextBox Text="{Binding Remarks}" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="7" Height="100" mah:TextBoxHelper.Watermark="Bemerkungen" AcceptsReturn="True" />
@@ -161,8 +161,8 @@
     </UserControl.Resources>
 
     <!--Background="#FF2B2B2B"-->
-    <Border  CornerRadius="15,15,0,0" Padding="10" >
-        <Grid>
+    <Border  CornerRadius="15,15,0,0" Margin="0,0,5,0" Padding="10"   Background="{DynamicResource MahApps.Brushes.Flyout.Background}" >
+        <Grid Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
