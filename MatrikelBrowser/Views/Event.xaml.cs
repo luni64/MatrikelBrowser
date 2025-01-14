@@ -190,15 +190,15 @@ namespace MatrikelBrowser
 
 
 
-        private void EditDetails(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is BookmarkVM dc)
-            {
-                var detailsView = new BookmarkDetailsView(dc);
-                detailsView.Owner = Application.Current.MainWindow;
-                detailsView.Show();
-            }
-        }
+        //private void EditDetails(object sender, RoutedEventArgs e)
+        //{
+        //    if (DataContext is BookmarkVM dc)
+        //    {
+        //        var detailsView = new BookmarkDetailsView(dc);
+        //        detailsView.Owner = Application.Current.MainWindow;
+        //        detailsView.Show();
+        //    }
+        //}
     }
 }
 

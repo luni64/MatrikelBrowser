@@ -27,7 +27,7 @@ namespace OtherRepoTest
         public MainWindow()
         {
             InitializeComponent();
-            wv = webView;
+            //wv = webView;
 
         }
 
@@ -83,17 +83,17 @@ namespace OtherRepoTest
             //wv.Source = new Uri("https://google.com");
 
 
-            string s = webView.Source.ToString();
+            //string s = webView.Source.ToString();
 
             if (DataContext is MainVM vm)
             {
-                vm.cmdTest.Execute(s);
+                vm.cmdTest.Execute("");
             }
 
-            if (webView is WebView2 wv)
-            {
+            //if (webView is WebView2 wv)
+            //{
 
-            }
+            //}
         }
 
         void read(string path)

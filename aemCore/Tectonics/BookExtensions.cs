@@ -133,6 +133,8 @@ namespace MbCore
 
                 ctx.Update(book);
                 ctx.SaveChanges();
+
+                
             }
             return true;
         }

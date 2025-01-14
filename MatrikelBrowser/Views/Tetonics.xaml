@@ -9,25 +9,20 @@
              xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels"           
              xmlns:view="clr-namespace:MatrikelBrowser" xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              d:DataContext="{d:DesignInstance Type=vm:TectonicsVM}"
-             Background="#FF2B2B2B"           
+             Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
              mc:Ignorable="d"           
-             d:DesignHeight="700" d:DesignWidth="400"
-             TextElement.FontFamily="{DynamicResource MahApps.Fonts.Family.Control}"
-             TextElement.Foreground="White"
-             
+             d:DesignHeight="700" d:DesignWidth="400"                              
              >
 
     <UserControl.Resources>
-        <!--<ResourceDictionary>
+        <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                --><!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! --><!--
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                --><!-- Theme setting --><!--
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
-            </ResourceDictionary.MergedDictionaries>-->
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
+        </ResourceDictionary.MergedDictionaries>
 
-            <view:BoolToObjectConverter2 x:Key="BoolToObjectConverter2"/>
+        <view:BoolToObjectConverter2 x:Key="BoolToObjectConverter2"/>
             <view:BoolToObjectConverter x:Key="BoolToObjectConverter"/>
             <view:intToMarginConverter x:Key="marginConverter"/>
             <view:nullToVisibiltiyConverter x:Key="nullToVisibiltiyConverter"/>
@@ -40,82 +35,26 @@
                     <componentmodel:SortDescription PropertyName="Title" />
                 </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
-        <!--</ResourceDictionary>-->
+        </ResourceDictionary>
     </UserControl.Resources>
 
+    <Border  
+        CornerRadius="15,0,0,15" Margin="0,0,0,0" Padding="10" 
+        BorderBrush="{DynamicResource MahApps.Brushes.Flyout.Foreground}"  BorderThickness="1,1 ,0,1"           
+        Background="{DynamicResource MahApps.Brushes.Flyout.Background}"  >
     <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"  />
-            <!--<RowDefinition Height="10"/>
-            <RowDefinition Height="2.5*"/>-->
-        </Grid.RowDefinitions>
+            <RowDefinition Height="*"  />           
+        </Grid.RowDefinitions>        
 
-        <!--<Grid Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <TextBlock Text="Kirchenbücher" FontSize="22" FontWeight="SemiBold" Margin="20,15,0,23"/>
 
-            <TextBlock Text="Favoriten" Style="{DynamicResource MahApps.Styles.TextBlock}"  FontSize="{DynamicResource MahApps.Font.Size.Flyout.Header}"/>
-            <ListBox      
-                Style="{DynamicResource MahApps.Styles.ListBox}"
-                ItemsSource="{Binding  Source={StaticResource FavoriteItems}}"               
-                Grid.Row="1" Margin="0,10,0,0"               
-                ScrollViewer.VerticalScrollBarVisibility="Visible"
-                Background="Transparent"                      
-                VerticalAlignment="Stretch"                 
-                SelectedValue="{Binding selectedBook}" >
-                <ListBox.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.HeaderTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" TextBlock.FontSize="16" TextBlock.FontWeight="Normal"  Margin="7,10,0,5">
-                                    <iconPacks:PackIconBoxIcons Width="16" Height="16" Kind="SolidChurch" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding Name.Title}" />
-                                    <TextBlock Text=", " />
-                                    <TextBlock Text="{Binding Name.Church}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </GroupStyle.HeaderTemplate>
-                    </GroupStyle>
-                </ListBox.GroupStyle>
-
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}" >
-                        <Setter Property="Margin" Value="20,0,0,0"/>
-                        <EventSetter Event="RequestBringIntoView" Handler="ListBoxItem_RequestBringIntoView"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                            <Button  
-                                Click="FavoritesMenu_Click"
-                                Padding="1"
-                                Style="{StaticResource MahApps.Styles.Button.ToolBar}"  
-                                Focusable="False" 
-                                ToolTip="Aus Favoriten entfernen">
-
-                                <iconPacks:PackIconMaterial Width="16" Height="16" Kind="Star" Margin="0,0,5,0"/>
-                            </Button>
-                            <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="Normal"  VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>-->
-
-        <!--<GridSplitter Grid.Row="1" Focusable="False" />-->
-
-        <TextBlock Text="Kirchenbücher" FontSize="24" FontWeight="SemiBold" Margin="20,15,0,23"/>
-
-        <TreeView x:Name="MainTreeView"  ItemsSource="{Binding CountryVMs}" 
-                  Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                  HorizontalAlignment="Stretch" Margin="0,20" VerticalAlignment="Stretch" 
-                  Background="Transparent"                      
-                >
+        <TreeView 
+            x:Name="MainTreeView"  ItemsSource="{Binding CountryVMs}" 
+            Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            HorizontalAlignment="Stretch" Margin="0,20" VerticalAlignment="Stretch" 
+            Background="Transparent">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
@@ -125,8 +64,8 @@
                     <Setter Property="FontFamily" Value="{DynamicResource MahApps.Fonts.Family.Control}"/>
                     <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
                 </Style>
-
             </TreeView.ItemContainerStyle>
+            
             <TreeView.Resources>
                 <HierarchicalDataTemplate ItemsSource="{Binding ArchiveVMs }" DataType="{x:Type vm:CountryVM}" >
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
@@ -200,4 +139,5 @@
             </TreeView.Resources>
         </TreeView>
     </Grid>
+    </Border>
 </UserControl>

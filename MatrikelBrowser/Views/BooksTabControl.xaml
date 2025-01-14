@@ -3,7 +3,7 @@
     xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:Behaviours="http://metro.mahapps.com/winfx/xaml/shared"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"     
-    xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels"
+    xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels"   
     xmlns:view="clr-namespace:MatrikelBrowser"     
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -20,69 +20,72 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
+                <ResourceDictionary Source="ToolTips.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <Grid Margin="0,5,0,0">
+        <mah:MetroTabControl
+            Grid.Row="0"
+            x:Name="tabControl"  
+            SelectedItem ="{Binding selectedTab}"                                    
+            ItemsSource="{Binding DisplayedBooks}"  
+            mah:TabControlHelper.Underlined="None"      
+            >
+            <TabControl.Resources>
+                <Style BasedOn="{StaticResource {x:Type mah:MetroTabItem}}" TargetType="{x:Type mah:MetroTabItem}">
+                    <Setter Property="CloseButtonEnabled" Value="True"/>
+                    <Setter Property="AllowDrop" Value="True"/>
+                    <EventSetter Event="PreviewMouseRightButtonDown" Handler="onMouseRightDown"/>
+                    <EventSetter Event="PreviewMouseMove" Handler="onMouseMove"/>
+                    <EventSetter Event="DragEnter" Handler="onDragEnter"/>
+                </Style>
+                <Style x:Key="CustomCircleButtonStyle" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                    <Setter Property="Width" Value="42"/>
+                    <Setter Property="Height" Value="42"/>
+                    <Setter Property="Margin" Value="0,10,0,0"/>
+                    <Setter Property="Background" Value="#7FFFFFFF"/>
+                    <Setter Property="ToolTipService.InitialShowDelay" Value="200"/>
+                </Style>
+            </TabControl.Resources>
 
+            <TabControl.ItemTemplate>
+                <DataTemplate >
+                    <Border BorderThickness="0" ToolTip="{StaticResource BookTooltip}" ToolTipService.InitialShowDelay="150">
+                        <Grid   
+                            MaxWidth="160" Margin="0,0,0,0"                           >
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-           
-        </Grid.RowDefinitions>
-    
-    <mah:MetroTabControl
-        Grid.Row="0"
-        x:Name="tabControl"  
-        SelectedItem ="{Binding selectedTab}"                                    
-        ItemsSource="{Binding DisplayedBooks}"  
-        mah:TabControlHelper.Underlined="None"      
-        >
-        <TabControl.Resources>
-            <Style BasedOn="{StaticResource {x:Type mah:MetroTabItem}}" TargetType="{x:Type mah:MetroTabItem}">
-                <Setter Property="CloseButtonEnabled" Value="True"/>
-                <Setter Property="AllowDrop" Value="True"/>
-                <EventSetter Event="PreviewMouseRightButtonDown" Handler="onMouseRightDown"/>
-                <EventSetter Event="PreviewMouseMove" Handler="onMouseMove"/>                
-                <EventSetter Event="DragEnter" Handler="onDragEnter"/>                
-            </Style>
-        </TabControl.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
 
-        <TabControl.ItemTemplate>
-            <DataTemplate>
-                <Border BorderBrush="Black" BorderThickness="0" Padding="2" CornerRadius="5">
-                    <Grid ToolTip="{Binding Header}"  Width="160" Margin="5,5,0,0" >
-                        <Grid.ColumnDefinitions>                            
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Text="{Binding Parish}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,2"  />
-                        <TextBlock Text="{Binding Letter}" Grid.Column="0" Grid.Row="1" FontSize="18" FontWeight="ExtraBold" LineHeight="18" LineStackingStrategy="BlockLineHeight"      Grid.RowSpan="1" VerticalAlignment="Center" Margin="0,0,5,0"  />
-                        <TextBlock Text="{Binding Date}"   Grid.Column="1" Grid.Row="1" FontSize="18" FontWeight="ExtraBold" LineHeight="18" LineStackingStrategy="BlockLineHeight"   HorizontalAlignment="Left" VerticalAlignment="Center"  />
-                        <TextBlock Text="{Binding Header}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" FontSize="12" FontWeight="SemiBold"  LineHeight="13" LineStackingStrategy="BlockLineHeight"    HorizontalAlignment="Left" Margin="0,2,0,0" />
-                    </Grid>
-                </Border>
-            </DataTemplate>
-        </TabControl.ItemTemplate>
+                            <TextBlock Text="{Binding Parish}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,2"  />
+                            <TextBlock Text="{Binding Letter}" Grid.Column="0" Grid.Row="1" FontSize="18" FontWeight="ExtraBold" LineHeight="18" LineStackingStrategy="BlockLineHeight"      Grid.RowSpan="1" VerticalAlignment="Center" Margin="0,0,5,0"  />
+                            <TextBlock Text="{Binding Date}"   Grid.Column="1" Grid.Row="1" FontSize="18" FontWeight="ExtraBold" LineHeight="18" LineStackingStrategy="BlockLineHeight"   HorizontalAlignment="Left" VerticalAlignment="Center"  />
+                            <TextBlock Text="{Binding Title}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" FontSize="12" FontWeight="SemiBold"  LineHeight="13" LineStackingStrategy="BlockLineHeight"    HorizontalAlignment="Left" Margin="0,2,0,0" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
 
             <!--Background="{DynamicResource MahApps.Brushes.Flyout.Background}"-->
 
             <TabControl.ContentTemplate  >
-            <DataTemplate>
-                <Border 
+                <DataTemplate>
+                    <Border 
                     x:Name="border" DataContext="{Binding book}"
                     CornerRadius="15"  Margin="0,10,0,0" >
-                    <Border.OpacityMask>
-                        <VisualBrush>
-                            <VisualBrush.Visual>
-                                <Border 
+                        <Border.OpacityMask>
+                            <VisualBrush>
+                                <VisualBrush.Visual>
+                                    <Border 
                                    Background="Black"
                                    BorderBrush="Black"
                                    SnapsToDevicePixels="True"
@@ -91,38 +94,54 @@
                                    Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"
                                    BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=Border}}"
                                    />
-                            </VisualBrush.Visual>
-                        </VisualBrush>
-                    </Border.OpacityMask>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Border.OpacityMask>
 
-                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <view:PageDisplay  
-                            Page="{Binding SelectedPage }"  
-                            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,0">
-                        </view:PageDisplay>
+                            <view:PageDisplay  
+                                Page="{Binding SelectedPage }"  
+                                Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,0">
+                            </view:PageDisplay>
 
-                        <view:PageSelector
-                            Background="#7FFFFFFF" 
-                            Grid.Row="1" Grid.Column="1" Width="500"  Margin="0,10,0,10" VerticalAlignment="Top"                      
-                            x:Name="pageSelector">
-                        </view:PageSelector>
-                    </Grid>
-                </Border>
-            </DataTemplate>
-        </TabControl.ContentTemplate>
-
-    </mah:MetroTabControl>
-    
-    <!--<view:NotesFlyout Grid.Row="1" DataContext="{Binding selectedTab.book }" />-->
+                            <StackPanel VerticalAlignment="Center" Grid.Column="0" Margin="5,0" >
+                                <Button  
+                                    ToolTip="Eine Seite zurück"
+                                    Command="{Binding cmdChangePage}" CommandParameter="-1"                                                                      
+                                    Style="{StaticResource CustomCircleButtonStyle}">
+                                    <iconPacks:PackIconMaterialDesign  Width="20" Height="20" Kind="KeyboardArrowLeftRound" HorizontalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+                                </Button>
+                                <Button  
+                                    ToolTip="Zehn Seiten zurück"
+                                    Command="{Binding cmdChangePage}" CommandParameter="-10"                                      
+                                    Style="{StaticResource CustomCircleButtonStyle}">
+                                    <iconPacks:PackIconMaterialDesign  Width="20" Height="20" Kind="KeyboardDoubleArrowLeftRound" HorizontalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+                                </Button>
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Center" Grid.Column="2" Margin="5,0" >
+                                <Button  
+                                    ToolTip="Eine Seite vorwärts"
+                                    Command="{Binding cmdChangePage}" CommandParameter="+1"                                                                      
+                                    Style="{StaticResource CustomCircleButtonStyle}">
+                                    <iconPacks:PackIconMaterialDesign  Width="20" Height="20" Kind="KeyboardArrowRightRound" HorizontalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+                                </Button>
+                                <Button  
+                                    ToolTip="Zehn Seiten vorwärts"
+                                    Command="{Binding cmdChangePage}" CommandParameter="+10"                                      
+                                    Style="{StaticResource CustomCircleButtonStyle}">
+                                    <iconPacks:PackIconMaterialDesign  Width="20" Height="20" Kind="KeyboardDoubleArrowRightRound" HorizontalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </mah:MetroTabControl>
     </Grid>
 </UserControl>

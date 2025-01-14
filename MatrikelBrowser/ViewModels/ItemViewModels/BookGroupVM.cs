@@ -28,7 +28,7 @@ namespace MatrikelBrowser.ViewModels
             if (books != null)
             {
                 this.Name = Enum.GetName(typeof(BookType), books.Key) ?? "?";
-                foreach (var book in books.OrderBy(b => b.RefId))
+                foreach (var book in books.OrderBy(b => b.StartDate))
                 {   
                     BookVMs.Add(new BookVM(book, this));
                 }

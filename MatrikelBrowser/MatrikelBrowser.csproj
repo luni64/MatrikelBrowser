@@ -10,11 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\BookmarkData.xaml.cs" />
+    <Compile Remove="Views\PageSelector.xaml.cs" />
     <Compile Remove="Views\ReportView.xaml.cs" />
   </ItemGroup>
  
   <ItemGroup>
     <Page Remove="Mainndow.xaml" />
+    <Page Remove="Views\BookmarkData.xaml" />
+    <Page Remove="Views\PageSelector.xaml" />
     <Page Remove="Views\ReportView.xaml" />
   </ItemGroup>
 
@@ -55,6 +59,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Settings\SettingsNewParish - Copy.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Settings\SettingsNewParish.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
  

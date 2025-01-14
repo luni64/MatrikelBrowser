@@ -23,10 +23,10 @@ namespace MbCore
         /// <remarks>
         /// The method performs a case-insensitive search for specific key-syllables in the title:
         /// <list type="bullet">
-        ///   <item><description>"tauf" maps to <see cref="BookType.Taufbücher"/>.</description></item>
+        ///   <item><description>"tauf || geburt " maps to <see cref="BookType.Taufbücher"/>.</description></item>
         ///   <item><description>"trau" maps to <see cref="BookType.Hochzeitsbücher"/>.</description></item>
         ///   <item><description>"misch" maps to <see cref="BookType.Mischbände"/>.</description></item>
-        ///   <item><description>"sterb" or "beerd" maps to <see cref="BookType.Sterbebücher"/>.</description></item>
+        ///   <item><description>"sterb" || "beerd" || "begr" maps to <see cref="BookType.Sterbebücher"/>.</description></item>
         /// </list>
         /// If no match is found, the method returns <see cref="BookType.Verschiedenes"/>.
         /// </remarks>
@@ -35,10 +35,10 @@ namespace MbCore
             var t = title.ToLower();
             BookType bt = BookType.None;
 
-            if (t.Contains("tauf")) bt |= BookType.Taufbücher;
+            if (t.Contains("tauf") || t.Contains("geburt")) bt |= BookType.Taufbücher;
             if (t.Contains("trau")) bt |= BookType.Hochzeitsbücher;
             if (t.Contains("misch")) bt |= BookType.Mischbände;
-            if (t.Contains("sterb") || t.Contains("beerd")) bt |= BookType.Sterbebücher;
+            if (t.Contains("sterb") || t.Contains("beerd") || t.Contains("begr")) bt |= BookType.Sterbebücher;
             if (bt == BookType.None) bt = BookType.Verschiedenes;
             return ((int)bt & ((int)bt - 1)) == 0 ? bt : BookType.Mischbände;
         }

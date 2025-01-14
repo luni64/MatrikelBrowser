@@ -161,8 +161,8 @@
 
     <!--Background="#FF2B2B2B"-->
     <Border  
-        CornerRadius="15,15,0,0" Margin="0,0,5,0" Padding="10" 
-        BorderBrush="{DynamicResource MahApps.Brushes.Flyout.Foreground}"  BorderThickness="1"           
+        CornerRadius="15,15,0,0" Margin="0,0,0,0" Padding="10" 
+        BorderBrush="{DynamicResource MahApps.Brushes.Flyout.Foreground}"  BorderThickness="1,1,1,0"           
         Background="{DynamicResource MahApps.Brushes.Flyout.Background}"         
         >
         <Grid Margin="0">
@@ -196,7 +196,7 @@
                 CaretBrush="White"
               />
 
-            <GridSplitter Grid.Column="1" Grid.Row="1"  Background="Transparent" />
+            <GridSplitter Grid.Column="1" Grid.Row="1"  Background="Transparent" ShowsPreview="False" />
 
             <Label  
                 Grid.Row="0"  Grid.Column="2"               
@@ -256,7 +256,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <GridSplitter Grid.Column="3" Grid.Row="1" Background="Transparent"/>
+            <GridSplitter Grid.Column="3" Grid.Row="1" Background="Transparent" ShowsPreview="False"/>
 
             <Label 
                 Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" 
@@ -274,10 +274,15 @@
                     Text="{Binding SelectedEvent.Title}"
                     mah:TextBoxHelper.Watermark="Titel" mah:TextBoxHelper.UseFloatingWatermark="True"   Margin="0,0,0,10" />
 
-                    <ComboBox Grid.Column="2" Margin="0,0,0,10" mah:TextBoxHelper.UseFloatingWatermark="True"  mah:TextBoxHelper.Watermark="Art der Fundstelle">
-                        <ComboBoxItem Content="Taufeintrag"/>
-                        <ComboBoxItem Content="Hochzeitseingrat"/>
-                        <ComboBoxItem Content="Todeseintrag"/>
+                    <ComboBox 
+                        Grid.Column="2" Margin="0,0,0,10" 
+                        mah:TextBoxHelper.UseFloatingWatermark="True"  
+                        mah:TextBoxHelper.Watermark="Art der Fundstelle"
+                        SelectedIndex ="{Binding SelectedEvent.EventIdx}"
+                        >
+                        <ComboBoxItem Content="Taufe"/>
+                        <ComboBoxItem Content="Hochzeit"/>
+                        <ComboBoxItem Content="Tod"/>
                         <ComboBoxItem Content="Verschiedenes"/>
                     </ComboBox>
                 </Grid>
@@ -289,7 +294,7 @@
                 </TextBox>
             </DockPanel>
 
-            <GridSplitter Grid.Column="5" Grid.Row="1" Width="20" Background="Transparent"/>
+            <GridSplitter Grid.Column="5" Grid.Row="1" Width="20" Background="Transparent" ShowsPreview="False"/>
 
             <ContentControl Grid.Column="6" Grid.Row="1" Content="{Binding SelectedEvent}" Background="AliceBlue" />
 

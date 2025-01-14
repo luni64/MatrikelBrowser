@@ -10,7 +10,7 @@
     xmlns:vm ="clr-namespace:MatrikelBrowser.ViewModels" 
     d:DataContext="{d:DesignInstance Type=vm:SettingsVM}"
     mc:Ignorable="d"
-    Title="Einstellungen" Height="450" Width="800">
+    Title="Einstellungen" Height="600" Width="950">
 
     <mah:MetroWindow.Resources>
         <ResourceDictionary 
@@ -31,26 +31,33 @@
             Margin="20"
             x:Name="TabControl"  mah:TabControlHelper.Transition="RightReplace"
             TabStripPlacement="Left"
-            Style="{DynamicResource MahApps.Styles.TabControl.Animated}"
+            Style="{DynamicResource MahApps.Styles.TabControl}"
             mah:TabControlHelper.Underlined="SelectedTabItem" mah:TabControlHelper.UnderlinePlacement="Left"             
-            mah:HeaderedControlHelper.HeaderFontSize="20" mah:HeaderedControlHelper.HeaderFontWeight="SemiBold" mah:HeaderedControlHelper.HeaderMargin="10,0,20,0"
+            mah:HeaderedControlHelper.HeaderFontSize="20" mah:HeaderedControlHelper.HeaderFontWeight="SemiBold" 
+            mah:HeaderedControlHelper.HeaderMargin="10,0,30,10"
             >
+
+            <mah:MetroTabItem Header="Reporte">
+                <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
+                    <local:SettingsDatabase/>
+                </Border>
+            </mah:MetroTabItem>
+
+            <mah:MetroTabItem Header="Pfarreien">                
+                <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
+                    <local:SettingsNewParish/>
+                </Border>
+            </mah:MetroTabItem>
+            
+            <mah:MetroTabItem Header="Image Cache">
+                <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
+                </Border>
+            </mah:MetroTabItem>            
+            
             <mah:MetroTabItem Header="Datenbank">
                 <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
                     <local:SettingsDatabase/>                 
                 </Border>
-            </mah:MetroTabItem>
-            
-            <mah:MetroTabItem Header="Verzeichnisse">
-                <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
-                </Border>
-            </mah:MetroTabItem>
-            
-            <mah:MetroTabItem Header="Pfarreien">                
-                <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
-                    <TextBlock Margin="0" Text="you can bind to a command" />
-                </Border>
-
             </mah:MetroTabItem>
         </mah:MetroTabControl>
 

@@ -63,13 +63,13 @@ namespace MatrikelBrowser
             }
         }
 
-        void RemoveBookmarks(IList bookmarkVMs)
+        void RemoveBookmarks(IList eventVMs)
         {
             var bookmarkUIs = PageCanvas.Children.OfType<Bookmark>();  // we are only interested in canvas-children of type Bookmark
 
-            foreach (BookmarkVM bookmarkVM in bookmarkVMs)
+            foreach (EventVM eventVM in eventVMs)
             {
-                var bookmarkUI = bookmarkUIs.FirstOrDefault(b => b.Uid == bookmarkVM.ID);  // find the canvas child which corresponds to the removed view marriageModel
+                var bookmarkUI = bookmarkUIs.FirstOrDefault(b => b.Uid == eventVM.model.Id.ToString());  // find the canvas child which corresponds to the removed view marriageModel
                 if (bookmarkUI != null)
                 {
                     PageCanvas.Children.Remove(bookmarkUI);

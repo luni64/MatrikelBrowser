@@ -39,9 +39,6 @@ namespace MatrikelBrowser.ViewModels
     public class TectonicsVM(aemCore model) : ItemVM(null)
     {
 
-
-
-
         #region commands
         // public RelayCommand cmdToogleFavorite => _cmdToogleFavorite ??= new RelayCommand(doToggleFavorite);
         //void doToggleFavorite(object? param)
@@ -118,18 +115,21 @@ namespace MatrikelBrowser.ViewModels
 
         public void UpdateData()
         {
+            using var ctx = new MatrikelBrowserCTX();
+            
             CountryVMs.Clear();
+           
             foreach (var country in model.Countries)
             {
                 CountryVMs.Add(new CountryVM(country, this));
             }
                         
             // open previously opened books
-            using var ctx = new MatrikelBrowserCTX();
-            var openBooksSetting = ctx.SettingsTable.FirstOrDefault(s => s.Key == "OpenBooks")?.Value;
+            var openBooksSetting = ctx.SettingsTable.FirstOrDefault(s => s.Key == "OpenBooks")?.Value;            
 
             if (openBooksSetting != null)
             {
+                DisplayedBooks.Clear();
                 var bookIDs = openBooksSetting.Split('-').Select(b => int.Parse(b));     // parse the list of book IDs from the settigs entry
                 var books = ctx.Books.Where(b => bookIDs.Contains(b.Id));                // get corresponding entities from db 
 

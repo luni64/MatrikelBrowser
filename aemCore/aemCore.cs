@@ -1,10 +1,14 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using AEM.Tectonics;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using MS.WindowsAPICodePack.Internal;
+using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MbCore
 {
@@ -15,11 +19,11 @@ namespace MbCore
     //    public int PendingMigrations { get; set; }
     //}
 
-    public class aemCore 
+    public class aemCore
     {
         public List<Country> Countries { get; private set; } = [];
 
-        public List<String> Favorites { get; } = [];
+        public List<string> Favorites { get; } = [];
 
 
         /// <summary>
@@ -57,13 +61,13 @@ namespace MbCore
             MatrikelBrowserCTX.DatabaseFile = database;
             try
             {
-                
+
                 using var ctx = new MatrikelBrowserCTX();
 
                 //ctx.Database.EnsureDeleted();
 
                 int n = ctx.Database.GetPendingMigrations().Count();
-                if (n> 0)
+                if (n > 0)
                 {
                     Trace.TraceInformation($"Apply {n} pending database migrations");
                     ctx.Database.Migrate();
@@ -71,7 +75,7 @@ namespace MbCore
 
                 Countries.Clear();
                 Countries.AddRange(
-                    ctx.Countries.Where(c=>c.Archives.Count > 0)
+                    ctx.Countries.Where(c => c.Archives.Count > 0)
                     //.Include(c => c.Archives)
                     //.ThenInclude(d => d.Parishes.Where(p => p.Books.Count != 0))
                     .OrderBy(c => c.Name)
@@ -121,7 +125,7 @@ namespace MbCore
 
         public static void saveNotes()
         {
-            
+
 
             //var allBookInfos = Parishes
             //    .SelectMany(p => p.Books)
@@ -140,20 +144,78 @@ namespace MbCore
             //File.WriteAllText(testFile.FullName, json);
         }
 
-        static public bool ImportParish(string parishInfoLink)
+        public Parish? ImportParish(string parishInfoLink)
         {
             var parishParser = new MatParishParser();
-            var parish = parishParser.Parse(new Uri(parishInfoLink));
-
-            if (parish != null)
+            var parishInfo = parishParser.Parse(new Uri(parishInfoLink));            
+                        
+            if (parishInfo != null)
             {
                 using var ctx = new MatrikelBrowserCTX();
+
+                var country = ctx.Countries.Include(c => c.Archives).FirstOrDefault(c => c.Name == parishInfo.CountryName) ?? new MbCore.Country
+                {
+                    Name = parishInfo.CountryName
+                };
+
+                var archive = country.Archives.FirstOrDefault(a => a.Name == parishInfo.ArchiveName) ?? new Archive
+                {
+                    Name = parishInfo.ArchiveName,
+                    Country = country,
+                    ArchiveType = ArchiveType.MAT,
+                    ViewerUrl = "",
+                    BookInfoUrl = "https://data.matricula-online.eu/{BOOKID}",
+                };
+
+                //archive.LoadParishes();
+
+                var parish = ctx.Parishes.Include(p => p.Books).FirstOrDefault(p => p.Name == parishInfo.ParishName) ?? new Parish
+                {
+                    Archive = archive,
+                    Name = parishInfo.ParishName,
+                    Place = parishInfo.ParishName,
+                    Church = parishInfo.ChurchName,
+                    BookBaseUrl = parishInfo.BookBaseUrl,
+                };
+
+                var bid = parish.Books.Select(b => b.RefId).ToList();
+
+                foreach (var bookInfo in parishInfo.bookInfos)
+                {
+                    if (!bid.Contains(bookInfo.BookREFID))
+                    {
+                        var book = new Book
+                        {
+                            Parish = parish,
+                            RefId = bookInfo.BookREFID,
+                            Title = bookInfo.Title,
+                            BookType = bookInfo.Type,
+                            BookInfoLink = bookInfo.InfoUrl,
+                        };
+
+                        book.StartDate = DateOnly.TryParse("1.1." + bookInfo.StartYear, out var sd) ? sd : null;
+                        book.EndDate = DateOnly.TryParse("31.12." + bookInfo.EndYear, out var ed) ? ed : null;
+
+                        parish.Books.Add(book);
+                    }
+                }
                 ctx.Update(parish);
                 ctx.SaveChanges();
 
-                // parishParser.UpdateDB(ctx);
+                using var ctx2 = new MatrikelBrowserCTX();
+
+                var c = ctx2.Countries.Where(c => c.Archives.Count > 0).ToList();
+
+                Countries.Clear();
+                Countries.AddRange(
+                    ctx2.Countries.Where(c => c.Archives.Count > 0)
+                    .OrderBy(c => c.Name)
+                );
+                OnDatabaseChanged();
+
+                return parish;
             }
-            return true;
+            return null;
         }
         private static bool CheckDatabase(string database)
         {
@@ -179,9 +241,9 @@ namespace MbCore
             return true;
         }
 
-              
-              
-        private void OnDatabaseChanged() => DatabaseChanged?.Invoke();      
-        
+
+
+        private void OnDatabaseChanged() => DatabaseChanged?.Invoke();
+
     }
 }

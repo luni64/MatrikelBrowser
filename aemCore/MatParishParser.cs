@@ -1,162 +1,99 @@
 ﻿using HtmlAgilityPack;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace MbCore
 {
     internal class MatParishParser
     {
-        public string REFID { get; set; } = string.Empty;
-        public string Country { get; set; } = string.Empty;
-        public string ArchiveName { get; set; } = string.Empty;
-        public string ParishName { get; set; } = string.Empty;
-        public string Church { get; set; } = string.Empty;
-        public string BookBaseUrl { get; set; } = string.Empty;
-        public IList<MatrikulaBookInfo> bookInfos { get; set; } = [];
-        //public string BookInfoUrl { get; set; }= string.Empty;
-
-
-        public Parish? Parse(Uri infoURL)
+        public MatrikulaParishInfo Parse(Uri parishInfoURL)
         {
-            // caching while developing
-            var filename = (infoURL.LocalPath.Trim('/') + infoURL.Query).toSafeFilename();
+            var result = new MatrikulaParishInfo();
 
             string html;
-            if (!File.Exists(filename))
+
+            var cachedFilename = (parishInfoURL.LocalPath.Trim('/') + parishInfoURL.Query).toSafeFilename(); // caching while developing
+            if (!File.Exists(cachedFilename))
             {
                 using var client = new WebClient();
-                html = client.DownloadString(infoURL);
-                File.WriteAllText(filename, html);
+                html = client.DownloadString(parishInfoURL);
+                File.WriteAllText(cachedFilename, html);
             }
-            else
-                html = File.ReadAllText(filename);
+            else html = File.ReadAllText(cachedFilename);
 
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
 
+            var matrikelCountNode = htmlDoc.DocumentNode.SelectSingleNode("//h3[@id='register-header']");
+            var smallNode = matrikelCountNode.SelectSingleNode(".//small");
+            string smallText = smallNode.InnerText;
+            var matches = Regex.Matches(smallText, @"\b-?\d+\b");
+            int total = 0; int loaded = 0;
+            //int total = int.Parse(matches[0].Value);
+            //int loaded = int.Parse(matches[1].Value);
+
             var breadCrumbs = htmlDoc.DocumentNode.SelectSingleNode("//ol[@class='breadcrumb']");
-            if (breadCrumbs == null) return null;
+            if (breadCrumbs == null) return result;
 
             var breadcrumbItems = breadCrumbs.SelectNodes(".//li");
-            if (breadcrumbItems == null) return null;
-
-            var CountryName = breadcrumbItems[1].InnerText.Trim();
-            var DioceseName = breadcrumbItems[2].InnerText.Trim();
-            var ParishName = breadcrumbItems[3].InnerText.Trim();
-
-            using var ctx = new MatrikelBrowserCTX();
-
-            var country = ctx.Countries.FirstOrDefault(c => c.Name == CountryName) ?? new MbCore.Country { Name = CountryName };
-            var archive = ctx.Archives.FirstOrDefault(a => a.Name == DioceseName && a.Country == country) ?? new Archive { Name = DioceseName, Country = country, ArchiveType = ArchiveType.MAT, ViewerUrl = "", BookInfoUrl = "https://data.matricula-online.eu/{BOOKID}", };
+            if (breadcrumbItems == null) return result;
 
             var booksTable = htmlDoc.DocumentNode.SelectSingleNode("//table[@class='table table-bordered w-100']");
-            if (booksTable == null) return null;
+            if (booksTable == null) return result;
             var rows = booksTable.SelectNodes(".//tr"); // extract books
 
             // use the fist book to look up the base url
             var c = rows[1].SelectNodes("td").FirstOrDefault();
-            if(c == null) return null;
+            if (c == null) return result;
             var path = Path.GetDirectoryName(c.SelectSingleNode(".//a[@href]").GetAttributeValue("href", string.Empty).Trim('/'))?.Replace('\\', '/');
-            if (path == null) return null;
+            if (path == null) return result;
 
-            var parish = new Parish
-            {
-                Name = ParishName,
-                Place = ParishName,
-                Church = Church,
-                Archive = archive,
-                BookBaseUrl = "https://data.matricula-online.eu/" + path
-            };
+            result.CountryName = breadcrumbItems[1].InnerText.Trim();
+            result.ArchiveName = breadcrumbItems[2].InnerText.Trim();
+            result.ParishName = breadcrumbItems[3].InnerText.Trim();
+            result.BookBaseUrl = "https://data.matricula-online.eu/" + path;
+            result.totalNrOfBooks = total;
+            result.loadedNrOfBooks = loaded;
 
             foreach (var row in rows.Skip(1)) // skip header
             {
                 var cells = row.SelectNodes("td");
                 if (cells == null || cells.Count != 4) continue;
 
-                var REFID = cells[1].InnerText.Trim().Replace("\r", "").Replace("\n", " | "); ;
-                var matrikeltyp = cells[2].InnerText.Trim().Replace("\r", "").Replace("\n", " | "); ;
-                var datum = cells[3].InnerText.Trim().Replace("\r", "").Replace("\n", " | "); ;
+                var REFID = cells[1].InnerText.Trim().Replace("\r", "").Replace("\n", " | ");
+                var title = cells[2].InnerText.Trim().Replace("\r", "").Replace("\n", " | ");
+                var date = cells[3].InnerText.Trim().Replace("\r", "").Replace("\n", " | ");
+
+                var years = Regex.Matches(date, @"\b\d{4}\b").Select(m => int.Parse(m.Value)).ToList();
+
+                string startYear = "", endYear = "";
+                if (years.Count > 0)
+                {
+                    startYear = years.Min().ToString();
+                    endYear = years.Max().ToString();
+                }
 
                 var linkNode = cells[0].SelectSingleNode(".//a[@href]");
                 var link = linkNode?.GetAttributeValue("href", string.Empty);
-                if (string.IsNullOrEmpty(link)) return null;
+                if (string.IsNullOrEmpty(link)) return result;
 
-                parish.Books.Add(new Book
+                result.bookInfos.Add(new MatrikulaBookInfo
                 {
-                    RefId = REFID,
-                    BookType = matrikeltyp.toBookType(),
-                    Title = $"{matrikeltyp} ({datum})",
-                    BookInfoLink = link,
-                });
+                    BookREFID = REFID,
+                    Type = title.toBookType(),
+                    StartYear = startYear,
+                    EndYear = endYear,
+                    Title = $"{title} {date}",
+                    InfoUrl = link,
+                }); ;
             }
 
-            return parish;
-        }
-
-        //public void UpdateDB(MatrikelBrowserCTX ctx)
-        //{
-        //    var country = ctx.Countries.FirstOrDefault(c => c.Name == Country);
-        //    if (country == null)
-        //    {
-        //        country = new Country
-        //        {
-        //            Name = Country
-        //        };
-        //        ctx.Countries.Add(country);
-        //    }
-
-        //    var archive = ctx.Archives.FirstOrDefault(d => d.Country == country && d.Name == ArchiveName);
-        //    if (archive == null)
-        //    {
-        //        archive = new Archive
-        //        {
-        //            Country = country,
-        //            Name = ArchiveName,
-        //            //REFID = REFID,
-        //            BookInfoUrl = "https://data.matricula-online.eu/{BOOKID}",
-        //            ViewerUrl = "the matricula viewer",
-        //            ArchiveType = ArchiveType.MAT,
-        //        };
-        //        ctx.Archives.Add(archive);
-        //    }
-
-        //    var parish = ctx.Parishes.FirstOrDefault(parish => parish.Archive == archive && parish.Name == ParishName);
-        //    if (parish == null)
-        //    {
-        //        parish = new Parish
-        //        {
-        //            Name = ParishName,
-        //            Place = ParishName,
-        //            RefId = REFID,
-        //            Church = Church,
-        //            Archive = archive,
-        //            BookBaseUrl = BookBaseUrl,
-        //        };
-        //        ctx.Parishes.Add(parish);
-        //    }
-
-        //    ctx.Entry(parish).Collection(c => c.Books).Load();
-
-        //    foreach (var bookInfo in bookInfos)
-        //    {
-        //        if (parish.Books.Any(b => b.RefId == bookInfo.REFID)) continue;
-
-        //        parish.Books.Add(new Book
-        //        {
-        //            Title = bookInfo.Title,
-        //            BookType = bookInfo.Type,
-        //            RefId = bookInfo.REFID,
-        //            BookInfoLink = bookInfo.InfoUrl,
-        //            Parish = parish,
-        //            Pages = [],
-        //        });
-        //    }
-
-        //    ctx.AddEvent();
-        //}
+            result.isOK = true;
+            return result;
+        }      
     }
 }
 

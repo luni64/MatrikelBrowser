@@ -1,11 +1,9 @@
-﻿using MbCore;
-using Interfaces;
+﻿using Interfaces;
+using MbCore;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using System.Runtime.CompilerServices;
-using static System.Net.WebRequestMethods;
-using File = System.IO.File;
 using System.IO;
+//sing File = System.IO.File;
 
 namespace OtherRepoTest
 {
@@ -19,6 +17,8 @@ namespace OtherRepoTest
             if (obj is string _url)
             {
                 var p = new MatrikulaParishParser();
+                _url = @"https://data.matricula-online.eu/de/oesterreich/salzburg/hallein/";
+
                 if (p.Parse(new Uri(_url)) == true)
                 {
                     using var ctx = new MatrikelBrowserCTX();
@@ -35,6 +35,8 @@ namespace OtherRepoTest
             if (File.Exists("tectonics.json"))
             {
                 using var ctx = new MatrikelBrowserCTX();
+                ctx.Database.EnsureDeleted();
+                ctx.Database.Migrate();
 
                 var country = ctx.Countries.FirstOrDefault(c => c.Name == "Deutschland");
                 if (country == null)
@@ -73,11 +75,11 @@ namespace OtherRepoTest
 
                     var parish = new Parish
                     {
-                        RefId = id,
-                        BookBaseUrl = "abc",
+                        RefId = id??"",
+                        BookBaseUrl = "",
                         Archive = archive,
                         Place = place!,
-                        Church = church,
+                        Church = church??"",
                         Name = $"{place} {church}",
                         Books = new List<Book>(),
                     };
@@ -89,7 +91,7 @@ namespace OtherRepoTest
                     JArray books = (JArray)parishEntry["Books"]!;
                     foreach (JObject bookInfo in books)
                     {
-                        string? bookId = bookInfo["ID"]!.ToString();
+                         string? bookId = bookInfo["ID"]!.ToString();
                         string? title = bookInfo["Title"]!.ToString();
                         string? BookInfoID = bookInfo["BookInfoID"]!.ToString();
 

@@ -24,29 +24,7 @@
         <view:StringToImageConverter x:Key="valueconverter"/>
     </Window.Resources>
 
-    <!--<mah:MetroWindow.LeftWindowCommands>
-        <mah:WindowCommands>
-            <Button Click="SaveButton_Click" >
-                <Button.ContentTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <iconPacks:PackIconModern 
-                                Width="16"
-                                Height="16"
-                                VerticalAlignment="Center"
-                                Kind="Save" />
-                            <TextBlock 
-                                Margin="4 0 0 0"
-                                VerticalAlignment="Center"
-                                Text="Save" />
-                        </StackPanel>
-                    </DataTemplate>
-                </Button.ContentTemplate>
-            </Button>
-        </mah:WindowCommands>
-    </mah:MetroWindow.LeftWindowCommands>-->
-
-    <mah:MetroWindow.RightWindowCommands>
+    <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
             <Button Command="{Binding cmdSettings}" >
                 <Button.ContentTemplate>
@@ -58,43 +36,99 @@
                                 VerticalAlignment="Center"
                                 Kind="Bars" />
                             <TextBlock 
-                            Margin="8 0 0 0"
-                            VerticalAlignment="Center"
-                            Text="Einstellungen" />
+                                Margin="8 0 0 0"
+                                VerticalAlignment="Center"
+                                Text="Menü" />
                         </StackPanel>
                     </DataTemplate>
                 </Button.ContentTemplate>
             </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <StackPanel Orientation="Horizontal" Margin="0,0,10,0"  >
+                <Slider   
+                    Style="{DynamicResource MahApps.Styles.Slider.Flat}"
+                    Value="{Binding tectonicsVM.selectedTab.book.SelectedPageNr, Delay=200}" 
+                    Maximum ="{Binding tectonicsVM.selectedTab.book.PageVMs.Count, Mode=OneWay}" 
+                    Minimum="1"
+                    BorderBrush="DarkGray"
+                    Background="White" Foreground="White"
+                               
+                mah:SliderHelper.EnableMouseWheel="MouseHover"
+                    mah:SliderHelper.ThumbFillBrush="White"
+                IsSnapToTickEnabled="True"
+                IsSelectionRangeEnabled="False"
+                                   
+                SelectionEnd="70"            
+                SmallChange="1" LargeChange="10"                      
+                Focusable="False"
+                VerticalAlignment="Center" Height="8" HorizontalAlignment="Left" Width="300" Margin="0,2,10,2"   />
+                <TextBlock VerticalAlignment="Center"  FontSize="14"  Text="{Binding tectonicsVM.selectedTab.book.SelectedPageNr, StringFormat=\{0:D\}\ }"  />
+                <TextBlock VerticalAlignment="Center"  FontSize="14"  Text="{Binding tectonicsVM.selectedTab.book.PageVMs.Count, StringFormat=/ \{0:D\}}"  />
+            </StackPanel>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 
     <!--<mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl x:Name="flyoutsControl">
             <mah:Flyout 
-                x:Name="FirstFlyout"                
-                Margin="0 30 0 0"
-                Width="350"
-                AreAnimationsEnabled="True"
-                AnimateOpacity="True"                      
-                IsOpen="False"
-                Header="Kirchenbücher"
-                Position="Right"
-                Theme="Inverse"
-             >
-                <Border BorderBrush="Transparent" BorderThickness="3 0 0 0">
-                    <view:Tectonics Margin="3" DataContext="{Binding tectonicsVM}"/>
-                </Border>
-            </mah:Flyout>
+                x:Name="MenuFlyout"
+                DataContext="{Binding tectonicsVM.selectedBook}"              
+               Position="Top" HorizontalAlignment ="Left" Width="500"   Height="500" Margin="0,0,500,0" HorizontalContentAlignment="Left" 
+                TitleVisibility="Collapsed"
+                Theme="Inverse" AreAnimationsEnabled="True" AnimateOpacity="True">
+                <Grid Margin="10" >
+                    --><!--<Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>--><!--
 
-            <mah:Flyout 
-                x:Name="NotesFlyout"
-                DataContext="{Binding tectonicsVM.selectedBook}"
-                Header="{Binding Title}"
-                Width="350" Margin="0,30,0,0" Position="Left"                     
-                Theme="Inverse"
-                AreAnimationsEnabled="True"
-                AnimateOpacity="True">
-                <view:NotesFlyout/>
+                    <mah:MetroTabControl
+                        Grid.Row="0"
+                        x:Name="tabControl"  
+                        SelectedItem ="{Binding selectedTab}"  
+                        TabStripPlacement="Left"
+                        Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
+                        
+                        
+                        
+                        mah:TabControlHelper.Underlined="SelectedTabItem" mah:TabControlHelper.UnderlinePlacement="Right"              >
+                        <TabControl.Resources>
+                            <Style BasedOn="{StaticResource {x:Type mah:MetroTabItem}}" TargetType="{x:Type mah:MetroTabItem}">
+                                --><!--<Setter Property="CloseButtonEnabled" Value="True"/>
+                                <Setter Property="AllowDrop" Value="True"/>-->
+                                <!--<EventSetter Event="PreviewMouseRightButtonDown" Handler="onMouseRightDown"/>
+                                <EventSetter Event="PreviewMouseMove" Handler="onMouseMove"/>
+                                <EventSetter Event="DragEnter" Handler="onDragEnter"/>--><!--
+                            </Style>
+                            <Style x:Key="CustomCircleButtonStyle" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                                --><!--<Setter Property="Width" Value="42"/>
+                                <Setter Property="Height" Value="42"/>
+                                <Setter Property="Margin" Value="0,10,0,0"/>
+                                <Setter Property="Background" Value="#7FFFFFFF"/>
+                                <Setter Property="ToolTipService.InitialShowDelay" Value="200"/>--><!--
+                            </Style>
+                        </TabControl.Resources>
+
+
+                        <TabControl.ContentTemplate  >
+                            <DataTemplate>
+                                <Border  x:Name="bbborder">
+                                    <view:SettingsNewParish/>
+                                </Border>
+                            </DataTemplate>
+                        </TabControl.ContentTemplate>
+
+                        <TabItem Header="Datenbank"/>
+                        <TabItem Header="Pfarreien"/>
+
+                    </mah:MetroTabControl>
+
+
+
+                </Grid>
             </mah:Flyout>
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>-->
@@ -110,11 +144,6 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="0"/>
         </Grid.RowDefinitions>
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="450" MinWidth="0"/>
-        </Grid.ColumnDefinitions>-->
 
         <Grid x:Name="grid2">
             <Grid.ColumnDefinitions>
@@ -126,7 +155,12 @@
             <view:HalfCircleButton x:Name="TecButton"  Grid.Column="1" VerticalAlignment="Top"  Click="Button_Click" Focusable="False" ToolTip="Ein/Ausklappen der Kirchenbuchliste" ToolTipService.InitialShowDelay="100"/>
             <view:Tectonics  Grid.Column="2" Margin="-0,0,0,-25" Grid.RowSpan="2" />
         </Grid>
-        <view:HalfCircleButton x:Name="NotesButton"  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Click="Button_Click_1" ToolTip="Ein/Ausklappen der Notizenleiste" ToolTipService.InitialShowDelay="100" Focusable="False" ButtonContent="N" RenderTransformOrigin="0.5,0.5">
+        <view:HalfCircleButton 
+            x:Name="NotesButton"  
+            Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" 
+            Click="Button_Click_1" ToolTip="Ein/Ausklappen der Notizenleiste" ToolTipService.InitialShowDelay="100" 
+            Focusable="False" ButtonContent="N"            
+            RenderTransformOrigin="0.5,0.5">
             <view:HalfCircleButton.LayoutTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -143,14 +177,6 @@
         <!--<Border Grid.Row="2" Grid.ColumnSpan="3" Background="#000000" CornerRadius="15" Margin="0,0,-25,0"/>-->
 
 
-        <Button  ToolTip="Leesezeichen und Notizen"
-          Click="Button_Click_1"
-          Background="#7FFFFFFF"
-          Width="42" Height="42"  Margin="20,100,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"                       
-          ToolTipService.InitialShowDelay="200"
-          Style="{DynamicResource MahApps.Styles.Button.Circle}">
-            <iconPacks:PackIconVaadinIcons Width="20" Height="20" Kind="Edit" Foreground="{DynamicResource MahApps.Brushes.Accent}" />
-        </Button>
 
     </Grid>
 </mah:MetroWindow>

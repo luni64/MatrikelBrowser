@@ -4,9 +4,6 @@
     <_LastSelectedProfileId>C:\Users\lutz\source\repos\MatrikelBrowser\MatrikelBrowser\Properties\PublishProfiles\ClickOnceProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="Views\BookmarkData.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\BooksTabControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -21,13 +18,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\BookmarkData.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="Views\BooksTabControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\HalfCircleButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Settings\SettingsNewParish - Copy.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ToolTips.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Settings\SettingsNewParish.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Settings\SettingsDatabase.xaml">

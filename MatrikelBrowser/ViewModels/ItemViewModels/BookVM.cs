@@ -10,6 +10,7 @@ using AEM.Tectonics.Events;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using iText.Kernel.Pdf.Canvas.Parser;
+using System.Diagnostics;
 
 namespace MatrikelBrowser.ViewModels
 {
@@ -17,10 +18,27 @@ namespace MatrikelBrowser.ViewModels
     {
         #region Commands ------------------------------------------------------
         public RelayCommand cmdChangePage => _cmdChangePage ??= new RelayCommand(doChangePage);
-        void doChangePage(object? delta)
+        void doChangePage(object? o)
         {
-            int pageNr = SelectedPageNr + (int)(delta ?? 0);
-            SelectedPageNr = Math.Min(Math.Max(1, pageNr), PageVMs.Count); // clamp
+            string d = o as string ?? string.Empty;
+            switch (d)
+            {
+                case "first":
+                    SelectedPageNr = 1;
+                    break;
+
+                case "last":
+                    SelectedPageNr = PageVMs.Count;
+                    break;
+
+                default:
+                    if (int.TryParse(d, out int delta))
+                    {
+                        int pageNr = SelectedPageNr + delta;
+                        SelectedPageNr = Math.Min(Math.Max(1, pageNr), PageVMs.Count); // clamp
+                    };
+                    break;
+            }
         }
 
         public RelayCommand cmdAddBookmark => _cmdAddBookmark ??= new RelayCommand(doAddBookmark);
@@ -55,41 +73,14 @@ namespace MatrikelBrowser.ViewModels
 
                 var evm = evnt.EventType switch
                 {
-                    BookmarkType.birth => (EventVM) new BirthEventVM(evnt),
-                    BookmarkType.death => (EventVM) new DeathEventVM(evnt),
+                    BookmarkType.birth => (EventVM)new BirthEventVM(evnt),
+                    BookmarkType.death => (EventVM)new DeathEventVM(evnt),
                     BookmarkType.marriage => (EventVM)new MarriageEventVM(evnt),
                     _ => new BirthEventVM(evnt)
-                } ;
+                };
                 evm.isLocked = false;
                 EventVMs.Add(evm);
-
-
-
-
-                //IBookmarkBase bm = new BookmarkBase()
-                //{
-                //    SheetNr = PageVMs.IndexOf(SelectedPage) + 1,
-                //    Title = "Neue Fundstelle",
-                //    X = x,
-                //    Y = y,
-                //};
-
-                //bookmarkVMs.Add(
-                //    new BookmarkVM(bm, this)
-                //    {
-                //        ID = Guid.NewGuid().ToString(),
-                //        Page = SelectedPage,
-                //        isLocked = false,
-                //        bookmarkType = this.model.BookType switch
-                //        {
-                //            BookType.Taufbücher => EventType.birth,
-                //            BookType.Hochzeitsbücher => EventType.marriage,
-                //            BookType.Sterbebücher => EventType.death,
-                //            _ => EventType.misc,
-                //        }
-                //    }
-                //);
-                //marriageModel.Info.Bookmarks.Add(bm);
+                SelectedEvent = evm;
             }
         }
 
@@ -115,26 +106,68 @@ namespace MatrikelBrowser.ViewModels
             get => _selectedPage;
             set => SetProperty(ref _selectedPage, value);
         }
-        public ObservableCollection<BookmarkVM> bookmarkVMs { get; } = [];
-        public BookmarkVM? SelectedBookmark
-        {
-            get => _selectedBookmark;
-            set
-            {
-                SetProperty(ref _selectedBookmark, value);
-                SelectedPageNr = _selectedBookmark?.SheetNr ?? 1;
-            }
-        }
+        //public ObservableCollection<BookmarkVM> bookmarkVMs { get; } = [];
+        //public BookmarkVM? SelectedBookmark
+        //{
+        //    get => _selectedBookmark;
+        //    set
+        //    {
+        //        SetProperty(ref _selectedBookmark, value);
+        //        SelectedPageNr = _selectedBookmark?.SheetNr ?? 1;
+        //    }
+        //}
         public ObservableCollection<EventVM> EventVMs { get; } = [];
         public EventVM? SelectedEvent
         {
             get => _selectedEvent;
             set
             {
-                SetProperty(ref _selectedEvent, value);
-                SelectedPageNr = _selectedEvent?.SheetNr ?? 1;
+                if (value != _selectedEvent)
+                {
+                    if (_selectedEvent != null) _selectedEvent.PropertyChanged -= _selectedEvent_PropertyChanged;
+                    if (value != null) value.PropertyChanged += _selectedEvent_PropertyChanged;
+
+                    SetProperty(ref _selectedEvent, value);
+                    SelectedPageNr = _selectedEvent?.SheetNr ?? 1;
+                }
             }
         }
+
+        private void _selectedEvent_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "EventIdx")
+            {
+                var evnt = SelectedEvent!.model;
+
+                EventVM newEvent; 
+                switch (SelectedEvent.EventIdx)
+                {
+                    case 0:
+                        evnt.EventType = BookmarkType.birth;
+                        newEvent = new BirthEventVM(evnt);
+                        break;
+
+                    case 1:
+                        evnt.EventType = BookmarkType.marriage;
+                        newEvent = new MarriageEventVM(evnt);
+                        break;
+                    case 2:
+                        evnt.EventType = BookmarkType.death;
+                        newEvent = new DeathEventVM(evnt);
+                        break;
+
+                    default:
+                        evnt.EventType = BookmarkType.misc;
+                        newEvent = new BirthEventVM(evnt);
+                        break;
+                };
+                
+                EventVMs.Remove(SelectedEvent);
+                EventVMs.Add(newEvent);
+                SelectedEvent = newEvent;
+            }
+        }
+
         public string Title => model.Title;
         public string ID => model.RefId;
         public string? SubTitle
@@ -163,7 +196,7 @@ namespace MatrikelBrowser.ViewModels
                     (parent as BookGroupVM)!.SelectedBook = value ? this : null;
 
                     base.IsSelected = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("IsSelected");
                 }
             }
         }
@@ -201,6 +234,7 @@ namespace MatrikelBrowser.ViewModels
         {
             if (model.Pages.Count == 0) // we lazy load pages
             {
+                    
                 SubTitle = $"downloading page informations for book: {Title}";
                 //await Task.Run(() =>
                 //{
@@ -222,27 +256,20 @@ namespace MatrikelBrowser.ViewModels
                 {
                     EventVMs.Clear();
 
-
-
                     foreach (var evnt in model.Events)
                     {
                         EventVMs.Add(evnt.EventType switch
                         {
                             BookmarkType.birth => (EventVM)new BirthEventVM(evnt),
-                            BookmarkType.marriage => (EventVM) new MarriageEventVM(evnt),
+                            BookmarkType.marriage => (EventVM)new MarriageEventVM(evnt),
                             BookmarkType.death => (EventVM)new DeathEventVM(evnt),
                             _ => new BirthEventVM(evnt),
                         });
-
-
-
-
-
-
-
                     }
                 }
                 SubTitle = $"{PageVMs.Count} Blätter";
+                //var x = parent.parent.parent.parent.parent.parent as TectonicsVM;
+                //x?.OnPropertyChanged("DisplayedBooks");  // First 
             }
             else
             {
@@ -287,7 +314,7 @@ namespace MatrikelBrowser.ViewModels
 
         private PageVM? _selectedPage;
         private int _selectedPageNr;
-        private BookmarkVM? _selectedBookmark = null;
+        //private BookmarkVM? _selectedBookmark = null;
         private NoteVM? _noteVM;
         private string? _subTitle;
         //private ReportVM? _reportVM;

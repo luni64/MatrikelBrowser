@@ -138,7 +138,10 @@ namespace MatrikelBrowser
         private readonly object upArrow = new PackIconMaterialDesign() { Kind = PackIconMaterialDesignKind.KeyboardArrowLeftRound, Width = 20, Height = 20, Margin = new Thickness(8, -5, 0, 0), Foreground = Brushes.White };
         private readonly object downArrow = new PackIconMaterialDesign() { Kind = PackIconMaterialDesignKind.KeyboardArrowRightRound, Width = 20, Height = 20, Margin = new Thickness(8, -5, 0, 0), Foreground = Brushes.White };
 
-
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            //MenuFlyout.IsOpen = !MenuFlyout.IsOpen;
+        }
     }
 }
 
