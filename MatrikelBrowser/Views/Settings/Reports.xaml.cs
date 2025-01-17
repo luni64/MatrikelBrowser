@@ -9,9 +9,9 @@ namespace MatrikelBrowser
     /// <summary>
     /// Interaction logic for SettingsDatabase.xaml
     /// </summary>
-    public partial class SettingsReports : UserControl
+    public partial class Reports : UserControl
     {
-        public SettingsReports()
+        public Reports()
         {
             InitializeComponent();
         }        

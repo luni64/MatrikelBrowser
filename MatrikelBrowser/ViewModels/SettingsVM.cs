@@ -1,4 +1,5 @@
 ﻿using MbCore;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -32,6 +33,10 @@ namespace MatrikelBrowser.ViewModels
         }
 
 
+        public ObservableCollection<Book> BookmarkedBooks { get; } = [];
+        public Book? SelectedBookmarkedBook { get; set; }
+
+
         public string DataBaseFile
         {
             get => _databaseFile;
@@ -48,11 +53,16 @@ namespace MatrikelBrowser.ViewModels
                             settings.DatabaseFile = value;
                             settings.Save();
                         }
+                        else
+                        {
+                            Trace.TraceWarning($"Errors opening new database file {value}");
+                            MainViewModel.dialogService.ShowDialog(new string($"Die Datenbank \n{value}\n\n konnte nicht geladen werden. Bitte wählen sie eine kompatible Datenbank aus"));
+                        }
                     }
                     catch
                     {
                         Trace.TraceWarning($"Errors opening new database file {value}");
-                        return;
+                        MainViewModel.dialogService.ShowDialog(new string($"Die Datenbank \n{value}\n\n konnte nicht geladen werden. Bitte wählen sie eine kompatible Datenbank aus"));
                     }
                 }
             }
@@ -64,12 +74,17 @@ namespace MatrikelBrowser.ViewModels
         public SettingsVM(aemCore model)
         {
             this.model = model;
-            _databaseFile = MatrikelBrowserCTX.DatabaseFile;
 
+            using var ctx = new MatrikelBrowserCTX();
 
+            var bb = ctx.Books.Include(b=>b.Events).Include(b=>b.Parish).ThenInclude(p=>p.Archive).ThenInclude(a=>a.Country).Where(b => b.Events.Count > 0);
 
-            //using var ctx = new MatrikelBrowserCTX();
-            //Parishes = new([.. ctx.Parishes]);
+            var b = model.Countries.SelectMany(c => c.Archives).SelectMany(a => a.Parishes).SelectMany(p => p.Books).Where(b => b.Events.Count > 0);
+            foreach (var book in bb)
+            {
+                BookmarkedBooks.Add(book);
+            }
+            SelectedBookmarkedBook = b.FirstOrDefault();
         }
 
         private string _databaseFile;

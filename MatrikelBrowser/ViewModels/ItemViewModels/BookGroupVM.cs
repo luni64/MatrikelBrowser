@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using MbCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,9 @@ namespace MatrikelBrowser.ViewModels
             if (books != null)
             {
                 this.Name = Enum.GetName(typeof(BookType), books.Key) ?? "?";
-                foreach (var book in books.OrderBy(b => b.StartDate))
+                              
+
+                foreach (var book in books.OrderBy(b => b.GetStartYear()))
                 {   
                     BookVMs.Add(new BookVM(book, this));
                 }

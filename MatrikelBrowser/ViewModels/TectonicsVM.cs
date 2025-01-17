@@ -116,18 +116,18 @@ namespace MatrikelBrowser.ViewModels
         public void UpdateData()
         {
             using var ctx = new MatrikelBrowserCTX();
-            
+
             CountryVMs.Clear();
-           
+
             foreach (var country in model.Countries)
             {
                 CountryVMs.Add(new CountryVM(country, this));
             }
-                        
-            // open previously opened books
-            var openBooksSetting = ctx.SettingsTable.FirstOrDefault(s => s.Key == "OpenBooks")?.Value;            
 
-            if (openBooksSetting != null)
+            // open previously opened books
+            var openBooksSetting = ctx.SettingsTable.FirstOrDefault(s => s.Key == "OpenBooks")?.Value;
+
+            if (!string.IsNullOrEmpty(openBooksSetting))
             {
                 DisplayedBooks.Clear();
                 var bookIDs = openBooksSetting.Split('-').Select(b => int.Parse(b));     // parse the list of book IDs from the settigs entry
@@ -140,20 +140,20 @@ namespace MatrikelBrowser.ViewModels
                 var archives = ctx.Archives.Where(a => archiveIDs.Contains(a.Id));       // get corresponding entities from db 
 
                 var countryIDs = archives.Select(a => a.Country.Id).Distinct().ToList(); // list of all country IDs belonging to the archives
-                                                                                                   
-                foreach (var countryVM in CountryVMs.Where(c=>countryIDs.Contains(c.model.Id)))  
+
+                foreach (var countryVM in CountryVMs.Where(c => countryIDs.Contains(c.model.Id)))
                 {
                     countryVM.LoadArchives();
                     foreach (var archiveVM in countryVM.ArchiveVMs.Where(a => archiveIDs.Contains(a.model.Id)))
                     {
                         archiveVM.LoadLetters();
                         foreach (var letterVM in archiveVM.LetterVMs.Where(l => l.ParishVMs.Any(p => parishIDs.Contains(p.model.Id))))
-                        {                            
+                        {
                             foreach (var parishVM in letterVM.ParishVMs.Where(p => parishIDs.Contains(p.model.Id)))
-                            {                                
+                            {
                                 parishVM.LoadBooks();
                                 foreach (var bookGroupVM in parishVM.BookTypeVMs.Where(x => x.BookVMs.Any(b => bookIDs.Contains(b.model.Id))))
-                                {                                   
+                                {
                                     foreach (var bookVM in bookGroupVM.BookVMs.Where(b => bookIDs.Contains(b.model.Id)))
                                     {
                                         bookVM.Initialize();

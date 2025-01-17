@@ -60,6 +60,23 @@ namespace MbCore
             ctx.SaveChanges();
         }
 
+        public static int GetStartYear(this Book book)
+        {
+            // For mets based archives we get the actual start dates only after opening the book. 
+            // to avoid opening all books (which would generate inacceptable traffic to the archives web page) we try to
+            // extract the date from the tile if the book was never opened.
+            // once the book was opened the start/end dates are available from the db. 
+
+            if (book.StartDate != null)  // database contains the start date (book was opened before)
+                return book.StartDate.Value.Year;
+            else
+            {
+                string pattern = @"(?<!\bzu\s)(?<!\bund\s)\b\d{4}\b";  // extract 4-digit numbers not preceeded by "und" or "zu"
+                var years = Regex.Matches(book.Title, pattern).Select(m => int.Parse(m.Value));
+                return years.Any() ? years.Min() : 0;
+            }            
+        }
+
 
         public static bool LoadPageInfo(this Book book)
         {
@@ -77,7 +94,6 @@ namespace MbCore
             if (!ok) Trace.TraceError("Page info load error");
             return ok;
         }
-
 
         private async static Task<bool> LoadPageInfoAEM(this Book book)
         {
@@ -102,7 +118,7 @@ namespace MbCore
 
             //var x = httpClient.DefaultRequestHeaders;
 
-            string bookInfoXML =  httpClient.GetStringAsync(infoURL).GetAwaiter().GetResult();
+            string bookInfoXML = httpClient.GetStringAsync(infoURL).GetAwaiter().GetResult();
 
 
             if (!string.IsNullOrEmpty(bookInfoXML))
@@ -133,8 +149,6 @@ namespace MbCore
 
                 ctx.Update(book);
                 ctx.SaveChanges();
-
-                
             }
             return true;
         }

@@ -39,7 +39,7 @@
 
             <mah:MetroTabItem Header="Reporte">
                 <Border BorderBrush="LightGray" BorderThickness="2,0,0,0" Padding="20,0">
-                    <local:SettingsDatabase/>
+                    <local:Reports/>
                 </Border>
             </mah:MetroTabItem>
 

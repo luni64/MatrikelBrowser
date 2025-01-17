@@ -24,7 +24,7 @@
     <Page Update="Views\HalfCircleButton.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\Settings\SettingsNewParish - Copy.xaml">
+    <Page Update="Views\Settings\Reports.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ToolTips.xaml">

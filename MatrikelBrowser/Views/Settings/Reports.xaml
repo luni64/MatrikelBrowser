@@ -1,0 +1,84 @@
+﻿<UserControl 
+    x:Class="MatrikelBrowser.Reports"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"  
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"    
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:MatrikelBrowser"
+    xmlns:vm="clr-namespace:MatrikelBrowser.ViewModels" 
+    d:DataContext="{d:DesignInstance Type=vm:SettingsVM}"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800"
+    d:Background="AliceBlue"
+    >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <!--<RowDefinition Height="auto"/>-->
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock TextWrapping="Wrap" Margin="0,0,0,30" TextAlignment="Justify" Grid.Row="0" FontSize="14" >                                                  
+            <Run Text="Fundstellen Reporte" FontWeight="SemiBold" FontSize="18"/> <LineBreak /> 
+            <LineBreak />
+            <Run>
+                Hier können Sie pdf Reports der Fundstellen in einem ausgewählten Buch oder für alle Bücher erzeugen.
+                Wählen Sie dazu aus der Liste unten ein oder mehrere Kirchenbücher aus.
+                benutzen sie bitte die Auswahlbox links oben.
+            </Run>
+        </TextBlock>
+
+
+        <Button Grid.Row="1" Grid.Column="1"
+                    Margin="0,10,0,0" Width="auto" HorizontalAlignment="Right"
+                    Command="{Binding cmdAddParish}"                    
+                    Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}">
+            <StackPanel   
+                        Orientation="Horizontal">
+                <iconPacks:PackIconMaterialDesign 
+                            Width="16" Height="18" VerticalAlignment="Center"
+                            Kind="ChurchOutline"/>
+                <TextBlock 
+                            Margin="8 0 0 0" VerticalAlignment="Center" 
+                            Text="Information lesen" 
+                            />
+            </StackPanel>
+        </Button>
+
+
+
+        <DockPanel Grid.Row="1" LastChildFill="True" VerticalAlignment="Stretch"  >
+            <TextBlock
+                    Text="Bücher mit Fundstellen" 
+                    DockPanel.Dock="Top" Margin="0,0,0,5" FontSize="16" Width="400" HorizontalAlignment="Left"></TextBlock>
+            <ListBox 
+                ItemsSource="{Binding BookmarkedBooks}"  
+                Width="400"  HorizontalAlignment="Left" VerticalAlignment="Stretch" BorderThickness="1" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <CheckBox Content="Check this checkbox!"/>
+                            <TextBlock Text="{Binding Title}"/>
+                            <TextBlock Text="{Binding Parish.}"/>
+                            <TextBlock Text="{Binding Title}"/>
+                            <TextBlock Text="{Binding Title}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+        </DockPanel>
+        <!--//</Border>-->
+
+    </Grid>
+
+</UserControl>

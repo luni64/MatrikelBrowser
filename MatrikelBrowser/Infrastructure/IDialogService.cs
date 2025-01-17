@@ -1,6 +1,6 @@
 ﻿namespace MatrikelBrowser.Infrastructure
 {
-    internal interface IDialogService
+    public interface IDialogService
     {
         object? ShowDialog(object viewModel);
     }

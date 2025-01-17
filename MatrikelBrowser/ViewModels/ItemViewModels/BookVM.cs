@@ -278,11 +278,11 @@ namespace MatrikelBrowser.ViewModels
         }
 
 
-        public bool IsFavorite
-        {
-            get => _isFavorite;
-            set => SetProperty(ref _isFavorite, value);
-        }
+        //public bool IsFavorite
+        //{
+        //    get => _isFavorite;
+        //    set => SetProperty(ref _isFavorite, value);
+        //}
 
 
         public BookVM(MbCore.Book model, BookGroupVM parent) : base(parent)

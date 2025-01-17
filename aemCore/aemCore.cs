@@ -61,11 +61,7 @@ namespace MbCore
             MatrikelBrowserCTX.DatabaseFile = database;
             try
             {
-
                 using var ctx = new MatrikelBrowserCTX();
-
-                //ctx.Database.EnsureDeleted();
-
                 int n = ctx.Database.GetPendingMigrations().Count();
                 if (n > 0)
                 {
@@ -75,10 +71,7 @@ namespace MbCore
 
                 Countries.Clear();
                 Countries.AddRange(
-                    ctx.Countries.Where(c => c.Archives.Count > 0)
-                    //.Include(c => c.Archives)
-                    //.ThenInclude(d => d.Parishes.Where(p => p.Books.Count != 0))
-                    .OrderBy(c => c.Name)
+                    ctx.Countries.Where(c => c.Archives.Count > 0).OrderBy(c => c.Name)
                 );
                 OnDatabaseChanged();
             }
@@ -147,8 +140,8 @@ namespace MbCore
         public Parish? ImportParish(string parishInfoLink)
         {
             var parishParser = new MatParishParser();
-            var parishInfo = parishParser.Parse(new Uri(parishInfoLink));            
-                        
+            var parishInfo = parishParser.Parse(new Uri(parishInfoLink));
+
             if (parishInfo != null)
             {
                 using var ctx = new MatrikelBrowserCTX();
@@ -220,26 +213,38 @@ namespace MbCore
         private static bool CheckDatabase(string database)
         {
             if (!File.Exists(database)) return false;
-            using (var connection = new SqliteConnection($"Data Source={database}"))
+            try
             {
-                connection.Open();
-                var command = new SqliteCommand("SELECT name FROM sqlite_master WHERE type='table';", connection);
 
-                // check if the database is a MatrikelBrowser db by requiring a few table names               
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SqliteConnection($"Data Source={database}"))
                 {
-                    List<string> expected = ["Countries", "Archives", "Parishes", "Books"];
+                    connection.Open();
+                    var command = new SqliteCommand("SELECT name FROM sqlite_master WHERE type='table';", connection);
 
-                    while (reader.Read() && expected.Count > 0)
+                    // check if the database is a MatrikelBrowser db by requiring a few table names               
+                    using (var reader = command.ExecuteReader())
                     {
-                        expected.Remove(reader.GetString(0));
-                    }
+                        List<string> expected = ["Countries", "Archives", "Parishes", "Books"];
 
-                    if (expected.Count > 0) return false;
+                        while (reader.Read() && expected.Count > 0)
+                        {
+                            expected.Remove(reader.GetString(0));
+                        }
+
+                        if (expected.Count > 0) return false;
+                    }
                 }
+                return true;
             }
-            return true;
+            catch (SqliteException ex)
+            {
+
+                return false;
+            }
+
         }
+
+
 
 
 

@@ -28,10 +28,11 @@ namespace MatrikelBrowser.ViewModels
             tectonicsVM = new(model);
             model.DatabaseChanged += () => tectonicsVM.UpdateData();  // update the displayed data in case of db changes
 
-            var dbFilname = getDatabaseFilename(); // read from user settings
-            if (!model.SetDatabase(dbFilname))     // try to set the database, data will be empty in case of errors
+            var dbFilename = getDatabaseFilename(); // read from user settings
+            if (!model.SetDatabase(dbFilename))     // try to set the database, data will be empty in case of errors
             {
                 Trace.TraceInformation("Error loading data");
+                dialogService.ShowDialog(new string($"Die Datenbank \n{dbFilename}\n\n konnte nicht geladen werden. Bitte wählen sie in den Datenbank Einstellungen eine kompatible Datenbank aus"));
             }
         }
 
@@ -58,7 +59,7 @@ namespace MatrikelBrowser.ViewModels
         private RelayCommand? _cmdSave;
         private RelayCommand? _cmdSettings;
         private aemCore model { get; set; }
-        private readonly IDialogService dialogService = new DialogService();
+        public static IDialogService dialogService = new DialogService();
         #endregion
     }
 }

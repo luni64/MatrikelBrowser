@@ -60,7 +60,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="Views\Settings\SettingsNewParish - Copy.xaml.cs">
+    <Compile Update="Views\Settings\Reports.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\Settings\SettingsNewParish.xaml.cs">
