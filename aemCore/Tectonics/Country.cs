@@ -14,8 +14,9 @@ namespace MbCore
     {
         public int Id { get; set; }
         required public string Name { get; set; }
+        public string InfoLink { get; set; } = string.Empty;
 
-        virtual public ICollection<Archive> Archives { get; set; } = [];
+        virtual public List<Archive> Archives { get; set; } = [];
         public override string ToString() => Name;
     }
 

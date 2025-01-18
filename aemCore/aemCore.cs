@@ -31,7 +31,7 @@ namespace MbCore
         /// </summary>
         /// <remarks>
         /// This event is triggered whenever there are changes to the database,
-        /// such as updates, deletions, or insertions of countries, archieves, and parishes.        
+        /// such as updates, deletions, or insertions of foundCountries, archieves, and parishes.        
         /// </remarks>
         public event Action? DatabaseChanged;
 
@@ -69,9 +69,21 @@ namespace MbCore
                     ctx.Database.Migrate();
                 }
 
+
+                if (ctx.Countries.Count() < 2)
+                {
+                    var foundCountries = MatParser.ParseCountries("https://data.matricula-online.eu/de/bestande/");
+                    var existingCountries = ctx.Countries.Select(c => c.Name).ToList();
+                    foreach (var country in foundCountries.Where(c => !existingCountries.Contains(c.Name)))
+                    {
+                        ctx.Countries.Add(country);
+                    }
+                    ctx.SaveChanges();
+                }
+
                 Countries.Clear();
                 Countries.AddRange(
-                    ctx.Countries.Where(c => c.Archives.Count > 0).OrderBy(c => c.Name)
+                    ctx.Countries/*.Where(c => c.Archives.Count > 0).OrderBy(c => c.Name)*/
                 );
                 OnDatabaseChanged();
             }
@@ -86,6 +98,8 @@ namespace MbCore
 
         public aemCore()
         {
+
+
             //baseFolder.Create();
             //FileInfo notesFile = new(Path.Combine(baseFolder.FullName, "test.json"));
             //FileInfo favoritesFile = new(Path.Combine(baseFolder.FullName, "favorites.json"));
@@ -137,10 +151,10 @@ namespace MbCore
             //File.WriteAllText(testFile.FullName, json);
         }
 
+
         public Parish? ImportParish(string parishInfoLink)
-        {
-            var parishParser = new MatParishParser();
-            var parishInfo = parishParser.Parse(new Uri(parishInfoLink));
+        {            
+            var parishInfo = MatParser.ParseBooks(parishInfoLink);
 
             if (parishInfo != null)
             {
@@ -215,7 +229,6 @@ namespace MbCore
             if (!File.Exists(database)) return false;
             try
             {
-
                 using (var connection = new SqliteConnection($"Data Source={database}"))
                 {
                     connection.Open();
@@ -238,15 +251,10 @@ namespace MbCore
             }
             catch (SqliteException ex)
             {
-
                 return false;
             }
 
         }
-
-
-
-
 
         private void OnDatabaseChanged() => DatabaseChanged?.Invoke();
 

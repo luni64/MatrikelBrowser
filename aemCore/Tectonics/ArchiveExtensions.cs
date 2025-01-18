@@ -1,5 +1,7 @@
 ﻿using MbCore;
 using System.CodeDom;
+using System.Diagnostics.Metrics;
+using System.Linq;
 
 namespace AEM.Tectonics
 {
@@ -8,10 +10,17 @@ namespace AEM.Tectonics
         public static void LoadParishes(this Archive archive)
         {
             using var ctx = new MatrikelBrowserCTX();
-            //if (archive.Parishes.Count == 0)
+            ctx.Attach(archive);
+
+            if (ctx.Parishes.Where(p => p.Archive.Id == archive.Id).Count() == 0)
             {
-                ctx.Entry(archive).Collection(c => c.Parishes).Load();
+                var parishes = MatParser.ParseParishes(archive.BookInfoUrl);
+                archive.Parishes.AddRange(parishes);
+                ctx.SaveChanges();
             }
+
+            ctx.Entry(archive).Collection(c => c.Parishes).Load();
+
         }
     }
 }

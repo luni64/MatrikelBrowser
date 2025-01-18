@@ -178,7 +178,7 @@ namespace MbCore
                 var rawPageInfo = imageRawData?.Split(',');
                 if (rawPageInfo == null)
                 {
-                    Trace.TraceError("Parse Error in page info");
+                    Trace.TraceError("ParseBooks Error in page info");
                     return false;
                 }
 

@@ -13,7 +13,21 @@ namespace MbCore
         public static void LoadBooks(this Parish parish)
         {
             using var ctx = new MatrikelBrowserCTX();
-            ctx.Entry(parish).Collection(p => p.Books).Load();
+                        
+            ctx.Attach(parish);
+
+            if (ctx.Books.Where(b => b.Parish.Id == parish.Id).Count() == 0)
+            {
+                var books = MatParser.ParseBooks(parish.BookBaseUrl);
+                //parish.Books.AddRange(books.);
+                //ctx.SaveChanges();
+            }
+
+            ctx.Entry(parish).Collection(c => c.Books).Load();
+
+
+
+            //ctx.Entry(parish).Collection(p => p.Books).Load();
             //foreach (var book in parish.Books)
             //{
             //    ctx.Entry(book).Collection(b => b.Events).Load();  ///ToDo: this is not efficient                               

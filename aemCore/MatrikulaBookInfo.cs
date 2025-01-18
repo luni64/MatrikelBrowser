@@ -16,7 +16,7 @@ namespace MbCore
         public override string ToString() => $"{Title} [{StartYear} - {EndYear}]";
     }
 
-    public class MatrikulaParishInfo
+    public class MatParishInfo
     {
         public bool isOK = false;
         public string ParishREFID { get; set; } = string.Empty;
@@ -28,6 +28,19 @@ namespace MbCore
         public int totalNrOfBooks { get; set; }
         public int loadedNrOfBooks { get; set; }
         public IList<MatrikulaBookInfo> bookInfos { get; set; } = [];
+    }
+
+    public class MatCountryInfo
+    {
+        public string Name { get; set; } = string.Empty;
+        public string InfoLink { get; set; }= string.Empty;
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+
     }
 }
 
