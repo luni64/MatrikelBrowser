@@ -10,9 +10,9 @@ namespace MbCore
         public string RefId { get; set; } = string.Empty;
         public required string Place { get; set; }
         public string Church { get; set; } = string.Empty;
-        public string BookBaseUrl { get; set; } = string.Empty;
-        
-        virtual required public Archive Archive { get; set; }
+        public string Breadcrumb { get; set; } = string.Empty;
+
+        virtual public Archive Archive { get; set; } = null!;
         virtual public List<Book> Books { get; set; } = [];
 
         [NotMapped]

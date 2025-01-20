@@ -18,9 +18,11 @@ namespace MbCore
 
             if (ctx.Books.Where(b => b.Parish.Id == parish.Id).Count() == 0)
             {
-                var books = MatParser.ParseBooks(parish.BookBaseUrl);
-                //parish.Books.AddRange(books.);
-                //ctx.SaveChanges();
+                var infoURL = parish.Archive.Country.Breadcrumb +'/'+ parish.Archive.Breadcrumb + '/' + parish.Breadcrumb;
+
+                var books = MatParser.ParseBooks(infoURL);
+                parish.Books.AddRange(books);
+                ctx.SaveChanges();
             }
 
             ctx.Entry(parish).Collection(c => c.Books).Load();
@@ -39,7 +41,7 @@ namespace MbCore
             parish.Books.Add(new Book()
             {
                 Parish = parish,
-                BookInfoLink = bi,
+                Breadcrumb = bi,
                 Title = ti,
                 RefId = refid,
                 BookType = bt,

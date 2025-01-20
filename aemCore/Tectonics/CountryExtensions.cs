@@ -14,8 +14,8 @@ namespace MbCore
             ctx.Attach(country);
 
             if(ctx.Archives.Where(a=>a.Country.Id == country.Id).Count() == 0)
-            {
-                var archives = MatParser.ParseArchives(country.InfoLink);
+            {                
+                var archives = MatParser.ParseArchives(country.Breadcrumb);
                 country.Archives.AddRange(archives);
                 ctx.SaveChanges();
             }

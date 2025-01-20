@@ -28,10 +28,15 @@ namespace MatrikelBrowser.ViewModels
                 LetterVMs.Clear(); // remove dummy
 
                 model.LoadParishes();
+
+                var pp = model.ParishBatches(10);
+
                 var parishGroups = model.Parishes.ToLookup(l => l.Name[0]);  // group parishes by first letter
 
                 Trace.Write($"  {Name}: ");
-                foreach (var parishGroup in parishGroups)
+
+
+                foreach (var parishGroup in pp)
                 {
                     Trace.Write($"{parishGroup.Key} ");
                     LetterVMs.Add(new LetterVM(parishGroup, this)); // Create a new LetterVM for each letter and add it to the list.

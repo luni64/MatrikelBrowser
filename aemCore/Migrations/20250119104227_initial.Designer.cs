@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AEM.Migrations
 {
     [DbContext(typeof(MatrikelBrowserCTX))]
-    [Migration("20250103084248_Initial")]
-    partial class Initial
+    [Migration("20250119104227_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace AEM.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
 
-            modelBuilder.Entity("AEM.Tectonics.evnt", b =>
+            modelBuilder.Entity("AEM.Event", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -29,15 +29,81 @@ namespace AEM.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Discriminator")
+                    b.Property<string>("Date1")
                         .IsRequired()
-                        .HasMaxLength(21)
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Date2")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Date3")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Date4")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("H")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("Notes")
+                    b.Property<string>("Misc")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Occupation1")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Occupation2")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Occupation3")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Occupation4")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Occupation5")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person1")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person2")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person3")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person4")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person5")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person6")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Person7")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Remarks")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -66,47 +132,25 @@ namespace AEM.Migrations
                     b.HasIndex("BookId");
 
                     b.ToTable("Events");
-
-                    b.HasDiscriminator().HasValue("evnt");
-
-                    b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("AEM.Tectonics.Person", b =>
+            modelBuilder.Entity("AEM.Tectonics.SettingsEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BaptismDate")
+                    b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("BirthDate")
+                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<string>("DeathDate")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("Living")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Occupation")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("State")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Persons");
+                    b.ToTable("SettingsTable");
                 });
 
             modelBuilder.Entity("MbCore.Archive", b =>
@@ -118,7 +162,7 @@ namespace AEM.Migrations
                     b.Property<int>("ArchiveType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BookInfoUrl")
+                    b.Property<string>("Breadcrumb")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -150,12 +194,12 @@ namespace AEM.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BookInfoLink")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("BookType")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Breadcrumb")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateOnly?>("EndDate")
                         .HasColumnType("TEXT");
@@ -194,6 +238,10 @@ namespace AEM.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Breadcrumb")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -240,7 +288,7 @@ namespace AEM.Migrations
                     b.Property<int>("ArchiveId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BookBaseUrl")
+                    b.Property<string>("Breadcrumb")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -267,76 +315,7 @@ namespace AEM.Migrations
                     b.ToTable("Parishes");
                 });
 
-            modelBuilder.Entity("AEM.Tectonics.BirthEvent", b =>
-                {
-                    b.HasBaseType("AEM.Tectonics.evnt");
-
-                    b.Property<int?>("ChildId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("FatherId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("GodParentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("MotherId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("ChildId");
-
-                    b.HasIndex("FatherId");
-
-                    b.HasIndex("GodParentId");
-
-                    b.HasIndex("MotherId");
-
-                    b.HasDiscriminator().HasValue("BirthEvent");
-                });
-
-            modelBuilder.Entity("AEM.Tectonics.MarriageEvent", b =>
-                {
-                    b.HasBaseType("AEM.Tectonics.evnt");
-
-                    b.Property<int?>("BrideFatherId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BrideId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BrideMotherId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("GroomFatherId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("GroomId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("GroomMotherId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("WitnessesId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("BrideFatherId");
-
-                    b.HasIndex("BrideId");
-
-                    b.HasIndex("BrideMotherId");
-
-                    b.HasIndex("GroomFatherId");
-
-                    b.HasIndex("GroomId");
-
-                    b.HasIndex("GroomMotherId");
-
-                    b.HasIndex("WitnessesId");
-
-                    b.HasDiscriminator().HasValue("MarriageEvent");
-                });
-
-            modelBuilder.Entity("AEM.Tectonics.evnt", b =>
+            modelBuilder.Entity("AEM.Event", b =>
                 {
                     b.HasOne("MbCore.Book", "Book")
                         .WithMany("Events")
@@ -389,78 +368,6 @@ namespace AEM.Migrations
                         .IsRequired();
 
                     b.Navigation("Archive");
-                });
-
-            modelBuilder.Entity("AEM.Tectonics.BirthEvent", b =>
-                {
-                    b.HasOne("AEM.Tectonics.Person", "Child")
-                        .WithMany()
-                        .HasForeignKey("ChildId");
-
-                    b.HasOne("AEM.Tectonics.Person", "Father")
-                        .WithMany()
-                        .HasForeignKey("FatherId");
-
-                    b.HasOne("AEM.Tectonics.Person", "GodParent")
-                        .WithMany()
-                        .HasForeignKey("GodParentId");
-
-                    b.HasOne("AEM.Tectonics.Person", "Mother")
-                        .WithMany()
-                        .HasForeignKey("MotherId");
-
-                    b.Navigation("Child");
-
-                    b.Navigation("Father");
-
-                    b.Navigation("GodParent");
-
-                    b.Navigation("Mother");
-                });
-
-            modelBuilder.Entity("AEM.Tectonics.MarriageEvent", b =>
-                {
-                    b.HasOne("AEM.Tectonics.Person", "BrideFather")
-                        .WithMany()
-                        .HasForeignKey("BrideFatherId");
-
-                    b.HasOne("AEM.Tectonics.Person", "Bride")
-                        .WithMany()
-                        .HasForeignKey("BrideId");
-
-                    b.HasOne("AEM.Tectonics.Person", "BrideMother")
-                        .WithMany()
-                        .HasForeignKey("BrideMotherId");
-
-                    b.HasOne("AEM.Tectonics.Person", "GroomFather")
-                        .WithMany()
-                        .HasForeignKey("GroomFatherId");
-
-                    b.HasOne("AEM.Tectonics.Person", "Groom")
-                        .WithMany()
-                        .HasForeignKey("GroomId");
-
-                    b.HasOne("AEM.Tectonics.Person", "GroomMother")
-                        .WithMany()
-                        .HasForeignKey("GroomMotherId");
-
-                    b.HasOne("AEM.Tectonics.Person", "Witnesses")
-                        .WithMany()
-                        .HasForeignKey("WitnessesId");
-
-                    b.Navigation("Bride");
-
-                    b.Navigation("BrideFather");
-
-                    b.Navigation("BrideMother");
-
-                    b.Navigation("Groom");
-
-                    b.Navigation("GroomFather");
-
-                    b.Navigation("GroomMother");
-
-                    b.Navigation("Witnesses");
                 });
 
             modelBuilder.Entity("MbCore.Archive", b =>

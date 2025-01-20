@@ -1,6 +1,9 @@
 ﻿using MbCore;
+using System;
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using System.IO;
 using System.Linq;
 
 namespace AEM.Tectonics
@@ -14,12 +17,34 @@ namespace AEM.Tectonics
 
             if (ctx.Parishes.Where(p => p.Archive.Id == archive.Id).Count() == 0)
             {
-                var parishes = MatParser.ParseParishes(archive.BookInfoUrl);
+                var URL = archive.Country.Breadcrumb + '/' + archive.Breadcrumb;
+                var parishes = MatParser.ParseParishes(URL);
                 archive.Parishes.AddRange(parishes);
                 ctx.SaveChanges();
             }
 
             ctx.Entry(archive).Collection(c => c.Parishes).Load();
+
+        }
+
+        public static Dictionary<string, List<Parish>> ParishBatches(this Archive archive, int batchSize)
+        {
+            var ps = archive.Parishes;
+            var result = new Dictionary<string, List<Parish>>();
+            int totalItems = ps.Count;
+            int groupSize = (int)Math.Ceiling(totalItems / (double)batchSize);
+
+            for (int i = 0; i < totalItems; i += groupSize)
+            {
+                var groupItems = ps.Skip(i).Take(groupSize).ToList();
+                string startKey = groupItems.First().Name.Substring(0, Math.Min(10, groupItems.First().Name.Length));
+                string endKey = groupItems.Last().Name.Substring(0, Math.Min(10, groupItems.Last().Name.Length));
+                string key = $"{startKey} - {endKey}";
+
+                result[key] = groupItems;
+            }
+
+            return result;
 
         }
     }

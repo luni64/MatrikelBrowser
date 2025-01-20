@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,11 +21,16 @@ namespace MbCore
                 var cachedFilename = (countryInfoURL.Trim('/')).toSafeFilename(); // caching while developing
                 if (!File.Exists(cachedFilename))
                 {
+                    Trace.TraceInformation($"Load Country Metadata from {countryInfoURL}");
                     using var client = new WebClient();
                     html = client.DownloadString(countryInfoURL);
                     File.WriteAllText(cachedFilename, html);
                 }
-                else html = File.ReadAllText(cachedFilename);
+                else
+                {
+                    Trace.TraceInformation($"Use cached country Metadata from {countryInfoURL}");
+                    html = File.ReadAllText(cachedFilename);
+                }
 
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
@@ -38,11 +44,11 @@ namespace MbCore
                     {
                         string fullText = node.InnerText.Trim();
                         string country = Regex.Replace(fullText, @"^\d+", "").Trim();
-                        string href = node.GetAttributeValue("href", string.Empty);
+                        string href = node.GetAttributeValue("href", string.Empty).Trim('/').Substring(3);  // remove /de/ from href
                         result.Add(new Country
                         {
                             Name = country,
-                            InfoLink = "https://data.matricula-online.eu" + href,
+                            Breadcrumb = href
                         });
                     }
                 }
@@ -60,21 +66,27 @@ namespace MbCore
                 var cachedFilename = (archiveInfoURL.Trim('/')).toSafeFilename(); // caching while developing
                 if (!File.Exists(cachedFilename))
                 {
+                    var url = "https://data.matricula-online.eu/de/" + archiveInfoURL;
+                    Trace.TraceInformation($"Load Archive Metadata from {url}");
                     using var client = new WebClient();
-                    html = client.DownloadString(archiveInfoURL);
+                    html = client.DownloadString(url);
                     File.WriteAllText(cachedFilename, html);
                 }
-                else html = File.ReadAllText(cachedFilename);
+                else
+                {
+                    html = File.ReadAllText(cachedFilename);
+                    Trace.TraceInformation($"Use cached archive metadata from {cachedFilename}");
+                }
 
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
 
 
-                var countryNodes = doc.DocumentNode.SelectNodes("//div[@class='list-group']/a");
+                var archiveNodes = doc.DocumentNode.SelectNodes("//div[@class='list-group']/a");
 
-                if (countryNodes != null)
+                if (archiveNodes != null)
                 {
-                    foreach (var node in countryNodes)
+                    foreach (var node in archiveNodes)
                     {
                         string fullText = node.InnerText.Trim();
                         string archive = Regex.Replace(fullText, @"^\d+", "").Trim();
@@ -84,10 +96,8 @@ namespace MbCore
                         {
                             Name = archive,
                             ArchiveType = ArchiveType.MAT,
-                            BookInfoUrl = "https://data.matricula-online.eu" + href,
-                            Country = null,
-                            ViewerUrl = "asfasdf",
-
+                            Breadcrumb = href.Substring(archiveInfoURL.Length + 4).Trim('/'),                            
+                            ViewerUrl = "",
                         });
                     }
                 }
@@ -95,21 +105,27 @@ namespace MbCore
             catch { }
             return result;
         }
-        public static List<Parish> ParseParishes(string archiveInfoURL)
+        public static List<Parish> ParseParishes(string parishInfoURL)
         {
             var result = new List<Parish>();
 
             try
             {
                 string html;
-                var cachedFilename = (archiveInfoURL.Trim('/')).toSafeFilename(); // caching while developing
+                var cachedFilename = (parishInfoURL.Trim('/')).toSafeFilename(); // caching while developing
                 if (!File.Exists(cachedFilename))
                 {
+                    var url = "https://data.matricula-online.eu/de/" + parishInfoURL;
+                    Trace.TraceInformation($"Load Parish metadata from {parishInfoURL}");
                     using var client = new WebClient();
-                    html = client.DownloadString(archiveInfoURL);
+                    html = client.DownloadString(url);
                     File.WriteAllText(cachedFilename, html);
                 }
-                else html = File.ReadAllText(cachedFilename);
+                else
+                {
+                    Trace.TraceInformation($"Use cached parish metadata from {cachedFilename}");
+                    html = File.ReadAllText(cachedFilename);
+                }
 
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
@@ -129,8 +145,7 @@ namespace MbCore
                         {
                             Name = parish,
                             Place = parish,
-                            BookBaseUrl = href,
-                            Archive = null,
+                            Breadcrumb = href.Substring(parishInfoURL.Length + 4).Trim('/'),                            
                         });
                     }
                 }
@@ -138,55 +153,37 @@ namespace MbCore
             catch { }
             return result;
         }
-        public static MatParishInfo ParseBooks(string parishInfoURL)
+        public static List<Book> ParseBooks(string bookInfoURL)
         {
-            var result = new MatParishInfo();
+            List<Book> result = [];
 
             string html;
 
-            var cachedFilename = parishInfoURL.Trim('/').toSafeFilename(); // caching while developing
+            var cachedFilename = bookInfoURL.Trim('/').toSafeFilename(); // caching while developing
             if (!File.Exists(cachedFilename))
             {
+                Trace.TraceInformation($"Load Parish metadata from {bookInfoURL}");
+                var url = "https://data.matricula-online.eu/de/" + bookInfoURL;
                 using var client = new WebClient();
-                html = client.DownloadString(parishInfoURL);
+                html = client.DownloadString(url);
                 File.WriteAllText(cachedFilename, html);
             }
-            else html = File.ReadAllText(cachedFilename);
+            else
+            {
+                Trace.TraceInformation($"Use cached book metadata from {cachedFilename}");
+                html = File.ReadAllText(cachedFilename);
+            }
 
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
 
-            var matrikelCountNode = htmlDoc.DocumentNode.SelectSingleNode("//h3[@id='register-header']");
-            var smallNode = matrikelCountNode.SelectSingleNode(".//small");
-            string smallText = smallNode.InnerText;
-            var matches = Regex.Matches(smallText, @"\b-?\d+\b");
-            int total = 0; int loaded = 0;
-            //int total = int.ParseBooks(matches[0].Value);
-            //int loaded = int.ParseBooks(matches[1].Value);
-
-            var breadCrumbs = htmlDoc.DocumentNode.SelectSingleNode("//ol[@class='breadcrumb']");
-            if (breadCrumbs == null) return result;
-
-            var breadcrumbItems = breadCrumbs.SelectNodes(".//li");
-            if (breadcrumbItems == null) return result;
+        
 
             var booksTable = htmlDoc.DocumentNode.SelectSingleNode("//table[@class='table table-bordered w-100']");
             if (booksTable == null) return result;
             var rows = booksTable.SelectNodes(".//tr"); // extract books
 
-            // use the fist book to look up the base url
-            var c = rows[1].SelectNodes("td").FirstOrDefault();
-            if (c == null) return result;
-            var path = Path.GetDirectoryName(c.SelectSingleNode(".//a[@href]").GetAttributeValue("href", string.Empty).Trim('/'))?.Replace('\\', '/');
-            if (path == null) return result;
-
-            result.CountryName = breadcrumbItems[1].InnerText.Trim();
-            result.ArchiveName = breadcrumbItems[2].InnerText.Trim();
-            result.ParishName = breadcrumbItems[3].InnerText.Trim();
-            result.BookBaseUrl = "https://data.matricula-online.eu/" + path;
-            result.totalNrOfBooks = total;
-            result.loadedNrOfBooks = loaded;
-
+         
             foreach (var row in rows.Skip(1)) // skip header
             {
                 var cells = row.SelectNodes("td");
@@ -198,30 +195,32 @@ namespace MbCore
 
                 var years = Regex.Matches(date, @"\b\d{4}\b").Select(m => int.Parse(m.Value)).ToList();
 
-                string startYear = "", endYear = "";
+                int startYear = 0, endYear = 0;
                 if (years.Count > 0)
                 {
-                    startYear = years.Min().ToString();
-                    endYear = years.Max().ToString();
+                    startYear = years.Min();
+                    endYear = years.Max();
                 }
 
                 var linkNode = cells[0].SelectSingleNode(".//a[@href]");
                 var link = linkNode?.GetAttributeValue("href", string.Empty);
                 if (string.IsNullOrEmpty(link)) return result;
 
-                result.bookInfos.Add(new MatrikulaBookInfo
-                {
-                    BookREFID = REFID,
-                    Type = title.toBookType(),
-                    StartYear = startYear,
-                    EndYear = endYear,
-                    Title = $"{title} {date}",
-                    InfoUrl = link,
-                }); ;
-            }
+                if (link.Length <= bookInfoURL.Length) continue;  // book not accessible or other issue, just skip this book
 
-            result.isOK = true;
-            return result;
+                //Trace.TraceInformation($"link: {link.Substring(bookInfoURL.Length + 4).Trim('/')}");
+
+                result.Add(new Book
+                {
+                    RefId = REFID,
+                    BookType = title.toBookType(),
+                    StartDate = new DateOnly(startYear, 1, 1),
+                    EndDate = new DateOnly(endYear, 1, 1),
+                    Title = $"{title} {date}",
+                    Breadcrumb = link.Substring(bookInfoURL.Length+4).Trim('/'),
+                });
+            }
+             return result;
         }
 
     }

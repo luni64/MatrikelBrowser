@@ -19,7 +19,7 @@ namespace MbCore
     //    public int PendingMigrations { get; set; }
     //}
 
-    public class aemCore
+    public class Core
     {
         public List<Country> Countries { get; private set; } = [];
 
@@ -50,7 +50,8 @@ namespace MbCore
         /// </list>
         /// </remarks>
         public bool SetDatabase(string database)
-        {
+        {            
+
             Trace.TraceInformation($"Trying to set database {database}");
             if (!CheckDatabase(database))
             {
@@ -59,9 +60,14 @@ namespace MbCore
             }
 
             MatrikelBrowserCTX.DatabaseFile = database;
+                      
+
             try
             {
                 using var ctx = new MatrikelBrowserCTX();
+
+                //ctx.Database.EnsureDeleted();
+
                 int n = ctx.Database.GetPendingMigrations().Count();
                 if (n > 0)
                 {
@@ -69,10 +75,10 @@ namespace MbCore
                     ctx.Database.Migrate();
                 }
 
-
-                if (ctx.Countries.Count() < 2)
+                // grab a list of all supported countries not yet in the database
+                if (ctx.Countries.Count() < 2) /// hack
                 {
-                    var foundCountries = MatParser.ParseCountries("https://data.matricula-online.eu/de/bestande/");
+                    var foundCountries = MatParser.ParseCountries(MatBaseURL + "bestande/");
                     var existingCountries = ctx.Countries.Select(c => c.Name).ToList();
                     foreach (var country in foundCountries.Where(c => !existingCountries.Contains(c.Name)))
                     {
@@ -96,7 +102,7 @@ namespace MbCore
             return true;
         }
 
-        public aemCore()
+        public Core()
         {
 
 
@@ -151,77 +157,77 @@ namespace MbCore
             //File.WriteAllText(testFile.FullName, json);
         }
 
-
         public Parish? ImportParish(string parishInfoLink)
-        {            
-            var parishInfo = MatParser.ParseBooks(parishInfoLink);
+        {
+            //return null;
+            //var parishInfo = MatParser.ParseBooks(parishInfoLink);
 
-            if (parishInfo != null)
-            {
-                using var ctx = new MatrikelBrowserCTX();
+            //if (parishInfo != null)
+            //{
+            //    using var ctx = new MatrikelBrowserCTX();
 
-                var country = ctx.Countries.Include(c => c.Archives).FirstOrDefault(c => c.Name == parishInfo.CountryName) ?? new MbCore.Country
-                {
-                    Name = parishInfo.CountryName
-                };
+            //    var country = ctx.Countries.Include(c => c.Archives).FirstOrDefault(c => c.Name == parishInfo.CountryName) ?? new MbCore.Country
+            //    {
+            //        Name = parishInfo.CountryName
+            //    };
 
-                var archive = country.Archives.FirstOrDefault(a => a.Name == parishInfo.ArchiveName) ?? new Archive
-                {
-                    Name = parishInfo.ArchiveName,
-                    Country = country,
-                    ArchiveType = ArchiveType.MAT,
-                    ViewerUrl = "",
-                    BookInfoUrl = "https://data.matricula-online.eu/{BOOKID}",
-                };
+            //    var archive = country.Archives.FirstOrDefault(a => a.Name == parishInfo.ArchiveName) ?? new Archive
+            //    {
+            //        Name = parishInfo.ArchiveName,
+            //        Country = country,
+            //        ArchiveType = ArchiveType.MAT,
+            //        ViewerUrl = "",
+            //        Breadcrumb = "https://data.matricula-online.eu/{BOOKID}",
+            //    };
 
-                //archive.LoadParishes();
+            //    //archive.LoadParishes();
 
-                var parish = ctx.Parishes.Include(p => p.Books).FirstOrDefault(p => p.Name == parishInfo.ParishName) ?? new Parish
-                {
-                    Archive = archive,
-                    Name = parishInfo.ParishName,
-                    Place = parishInfo.ParishName,
-                    Church = parishInfo.ChurchName,
-                    BookBaseUrl = parishInfo.BookBaseUrl,
-                };
+            //    var parish = ctx.Parishes.Include(p => p.Books).FirstOrDefault(p => p.Name == parishInfo.ParishName) ?? new Parish
+            //    {
+            //        Archive = archive,
+            //        Name = parishInfo.ParishName,
+            //        Place = parishInfo.ParishName,
+            //        Church = parishInfo.ChurchName,
+            //        Breadcrumb = parishInfo.Breadcrumb,
+            //    };
 
-                var bid = parish.Books.Select(b => b.RefId).ToList();
+            //    var bid = parish.Books.Select(b => b.RefId).ToList();
 
-                foreach (var bookInfo in parishInfo.bookInfos)
-                {
-                    if (!bid.Contains(bookInfo.BookREFID))
-                    {
-                        var book = new Book
-                        {
-                            Parish = parish,
-                            RefId = bookInfo.BookREFID,
-                            Title = bookInfo.Title,
-                            BookType = bookInfo.Type,
-                            BookInfoLink = bookInfo.InfoUrl,
-                        };
+            //    foreach (var bookInfo in parishInfo.bookInfos)
+            //    {
+            //        if (!bid.Contains(bookInfo.BookREFID))
+            //        {
+            //            var book = new Book
+            //            {
+            //                Parish = parish,
+            //                RefId = bookInfo.BookREFID,
+            //                Title = bookInfo.Title,
+            //                BookType = bookInfo.Type,
+            //                Breadcrumb = bookInfo.InfoUrl,
+            //            };
 
-                        book.StartDate = DateOnly.TryParse("1.1." + bookInfo.StartYear, out var sd) ? sd : null;
-                        book.EndDate = DateOnly.TryParse("31.12." + bookInfo.EndYear, out var ed) ? ed : null;
+            //            book.StartDate = DateOnly.TryParse("1.1." + bookInfo.StartYear, out var sd) ? sd : null;
+            //            book.EndDate = DateOnly.TryParse("31.12." + bookInfo.EndYear, out var ed) ? ed : null;
 
-                        parish.Books.Add(book);
-                    }
-                }
-                ctx.Update(parish);
-                ctx.SaveChanges();
+            //            parish.Books.Add(book);
+            //        }
+            //    }
+            //    ctx.Update(parish);
+            //    ctx.SaveChanges();
 
-                using var ctx2 = new MatrikelBrowserCTX();
+            //    using var ctx2 = new MatrikelBrowserCTX();
 
-                var c = ctx2.Countries.Where(c => c.Archives.Count > 0).ToList();
+            //    var c = ctx2.Countries.Where(c => c.Archives.Count > 0).ToList();
 
-                Countries.Clear();
-                Countries.AddRange(
-                    ctx2.Countries.Where(c => c.Archives.Count > 0)
-                    .OrderBy(c => c.Name)
-                );
-                OnDatabaseChanged();
+            //    Countries.Clear();
+            //    Countries.AddRange(
+            //        ctx2.Countries.Where(c => c.Archives.Count > 0)
+            //        .OrderBy(c => c.Name)
+            //    );
+            //    OnDatabaseChanged();
 
-                return parish;
-            }
+            //    return parish;
+            //}
             return null;
         }
         private static bool CheckDatabase(string database)
@@ -255,6 +261,8 @@ namespace MbCore
             }
 
         }
+
+        public static string MatBaseURL = "https://data.matricula-online.eu/de/";
 
         private void OnDatabaseChanged() => DatabaseChanged?.Invoke();
 

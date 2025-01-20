@@ -52,7 +52,7 @@ namespace OtherRepoTest
                     {
                         Name = "München Freising",
                         Country = country,
-                        BookInfoUrl = "https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?id=Rep_{BOOKID}_mets_actapro.xml",
+                        Breadcrumb = "https://digitales-archiv.erzbistum-muenchen.de/actaproweb/mets?id=Rep_{BOOKID}_mets_actapro.xml",
                         ViewerUrl = "https://dfg-viewer.de/show/?tx_dlf[Id]={BOOKURL}",
                         ArchiveType = ArchiveType.AEM,
                     };
@@ -76,7 +76,7 @@ namespace OtherRepoTest
                     var parish = new Parish
                     {
                         RefId = id??"",
-                        BookBaseUrl = "",
+                        Breadcrumb = "",
                         Archive = archive,
                         Place = place!,
                         Church = church??"",
@@ -100,7 +100,7 @@ namespace OtherRepoTest
                         //parish.Books.Add(new Book()
                         //{
                         //    Parish = parish,
-                        //    BookInfoLink = BookInfoID,
+                        //    Breadcrumb = BookInfoID,
                         //    Title = title,
                         //    RefId = bookId,
                         //    BookType = title.toBookType(),
@@ -115,7 +115,7 @@ namespace OtherRepoTest
 
         public MainVM()
         {
-            var core = new aemCore();
+            var core = new Core();
 
             var DatabaseFile = (Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "MatrikelBrowser", "MatrikelBrowser.db"));
             MatrikelBrowserCTX.DatabaseFile = DatabaseFile;

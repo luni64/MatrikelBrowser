@@ -112,7 +112,7 @@ namespace OtherRepoTest
                     Country = country,
                     Name = Diocese,
                     REFID = REFID,
-                    BookInfoUrl = "https://data.matricula-online.eu/{BOOKID}",
+                    Breadcrumb = "https://data.matricula-online.eu/{BOOKID}",
                     ViewerUrl = "the matricula viewer",
                     ArchiveType = ArchiveType.MAT,
                 };
@@ -129,7 +129,7 @@ namespace OtherRepoTest
                     RefId = REFID,
                     Church = Church,
                     Archive = archive,
-                    BookBaseUrl = BookBaseUrl,                    
+                    Breadcrumb = BookBaseUrl,                    
                 };
                 ctx.Parishes.Add(parish);
             }
@@ -147,7 +147,7 @@ namespace OtherRepoTest
                 //    Title = bookInfo.Title,
                 //    BookType = bookInfo.Type,
                 //    RefId = bookInfo.REFID,
-                //    BookInfoLink = bookInfo.InfoUrl,
+                //    Breadcrumb = bookInfo.InfoUrl,
                 //    Parish = parish,                    
                 //    Pages = [],                    
                 //});

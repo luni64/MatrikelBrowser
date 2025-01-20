@@ -47,7 +47,7 @@ namespace OtherRepoTest
 
     //    public string Name { get; set; } = string.Empty;
     //    required public Diocese Diocese { get; set; }
-    //    required public string BookBaseUrl { get; set; }
+    //    required public string Breadcrumb { get; set; }
     //    public List<Book> Books { get; set; } = [];
     //    public override string ToString() => Name;
     //}
@@ -57,7 +57,7 @@ namespace OtherRepoTest
     //    public int Id { get; set; }
     //    public string REFID { get; set; }=string.Empty;
     //    public string Name { get; set; } = string.Empty;
-    //    public string BookInfoLink { get; set; } = string.Empty;
+    //    public string Breadcrumb { get; set; } = string.Empty;
 
     //    public List<Page> Pages { get; set; } = [];
     //    required public Parish Parish { get; set; }

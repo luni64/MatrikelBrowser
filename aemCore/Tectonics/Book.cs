@@ -39,7 +39,7 @@ namespace MbCore
         /// <summary>
         /// Gets or sets the link to detailed book information, typically pointing to an external resource.
         /// </summary>
-        public string BookInfoLink { get; internal set; } = string.Empty;
+        public string Breadcrumb { get; internal set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets notes associated with this book.

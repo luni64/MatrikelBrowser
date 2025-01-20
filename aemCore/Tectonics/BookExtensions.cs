@@ -74,7 +74,7 @@ namespace MbCore
                 string pattern = @"(?<!\bzu\s)(?<!\bund\s)\b\d{4}\b";  // extract 4-digit numbers not preceeded by "und" or "zu"
                 var years = Regex.Matches(book.Title, pattern).Select(m => int.Parse(m.Value));
                 return years.Any() ? years.Min() : 0;
-            }            
+            }
         }
 
 
@@ -107,8 +107,8 @@ namespace MbCore
             }
 
             // download the book info from the archive, and update database accordingly
-            var infoURLTemplate = book.Parish.Archive.BookInfoUrl;
-            var infoURL = infoURLTemplate.Replace("{BOOKID}", book.BookInfoLink);
+            var infoURLTemplate = book.Parish.Archive.Breadcrumb;
+            var infoURL = infoURLTemplate.Replace("{BOOKID}", book.Breadcrumb);
 
             Trace.TraceInformation($"download page info for book {book.Title} ({book.Parish.Name}) from archive {book.Parish.Archive}");
             using HttpClient httpClient = new HttpClient();
@@ -165,8 +165,16 @@ namespace MbCore
             }
 
             // construct the url where we can download information about the book and its pages
-            string infoURLTemplate = book.Parish.Archive.BookInfoUrl;
-            string infoURL = infoURLTemplate.Replace("{BOOKID}", book.BookInfoLink);
+            string infoURLTemplate = book.Parish.Archive.Breadcrumb;
+            string infoURL = infoURLTemplate.Replace("{BOOKID}", book.Breadcrumb);
+
+            infoURL = "https://data.matricula-online.eu/de/" +
+                  book.Parish.Archive.Country.Breadcrumb + "/" +
+                  book.Parish.Archive.Breadcrumb + "/" +
+                  book.Parish.Breadcrumb + "/" +
+                  book.Breadcrumb;
+
+
             Trace.TraceInformation($"download page info from archive {infoURL}");
 
             // download corresponding information and extract from contained script

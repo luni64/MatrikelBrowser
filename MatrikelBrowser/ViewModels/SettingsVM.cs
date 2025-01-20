@@ -71,7 +71,7 @@ namespace MatrikelBrowser.ViewModels
         public string importLink { get; set; } = "";
         // public ObservableCollection<Parish> Parishes { get; }
 
-        public SettingsVM(aemCore model)
+        public SettingsVM(Core model)
         {
             this.model = model;
 
@@ -89,6 +89,6 @@ namespace MatrikelBrowser.ViewModels
 
         private string _databaseFile;
         private RelayCommand? _cmdAddParish;
-        private readonly aemCore model;
+        private readonly Core model;
     }
 }

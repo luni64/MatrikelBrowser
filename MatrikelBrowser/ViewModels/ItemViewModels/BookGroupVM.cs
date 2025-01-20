@@ -37,7 +37,7 @@ namespace MatrikelBrowser.ViewModels
                 }
             }
 
-            Indent = 10;
+            Indent = 5;
         }
 
         private BookVM? _selectedBook;

@@ -36,7 +36,7 @@ namespace MatrikelBrowser.ViewModels
     }
 
 
-    public class TectonicsVM(aemCore model) : ItemVM(null)
+    public class TectonicsVM(Core model) : ItemVM(null)
     {
 
         #region commands
@@ -192,6 +192,6 @@ namespace MatrikelBrowser.ViewModels
         TabItemVM? _selectedTab;
         private BookVM? _selectedBook;
         private RelayCommand? _cmdToogleFavorite;
-        private readonly aemCore model = model;
+        private readonly Core model = model;
     }
 }

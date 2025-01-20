@@ -58,7 +58,7 @@ namespace MatrikelBrowser.ViewModels
 
         private RelayCommand? _cmdSave;
         private RelayCommand? _cmdSettings;
-        private aemCore model { get; set; }
+        private Core model { get; set; }
         public static IDialogService dialogService = new DialogService();
         #endregion
     }

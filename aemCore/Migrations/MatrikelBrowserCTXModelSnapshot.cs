@@ -159,7 +159,7 @@ namespace AEM.Migrations
                     b.Property<int>("ArchiveType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BookInfoUrl")
+                    b.Property<string>("Breadcrumb")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -191,12 +191,12 @@ namespace AEM.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BookInfoLink")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("BookType")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Breadcrumb")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateOnly?>("EndDate")
                         .HasColumnType("TEXT");
@@ -236,7 +236,7 @@ namespace AEM.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("InfoLink")
+                    b.Property<string>("Breadcrumb")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -285,7 +285,7 @@ namespace AEM.Migrations
                     b.Property<int>("ArchiveId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BookBaseUrl")
+                    b.Property<string>("Breadcrumb")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
