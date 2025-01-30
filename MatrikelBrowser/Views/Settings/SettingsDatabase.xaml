@@ -13,30 +13,33 @@
     d:DesignHeight="450" d:DesignWidth="800"
     d:Background="AliceBlue"
     >
-    
+
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBox  
-                x:Name="tbDatabase"
-                Grid.Row="1"
-                Text="{Binding DataBaseFile}"
-                FontSize="14"
-                IsReadOnly="True"
-                mah:TextBoxHelper.Watermark="Datenbank" 
-                mah:TextBoxHelper.UseFloatingWatermark="True"
-                mah:TextBoxHelper.IsSpellCheckContextMenuEnabled="False"
-                mah:TextBoxHelper.AutoWatermark="True"
-                VerticalScrollBarVisibility="Visible"                  
-                />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="0,10,0,0">
+
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,0" TextAlignment="Justify">
+                <Run Text="Datenbank Verzeichnis:" FontWeight="Bold" FontSize="17"/>
+                <LineBreak/>
+                <TextBlock FontSize="13" TextWrapping="Wrap" Margin="0,0">
+                    <Run> Wählen Sie die zu verwendende Datenbank (*.mbdb) aus.</Run><LineBreak/>
+                    <Run> Bitte beachten Sie: Wenn die Datenbank an einem gemeinsam genutzten Speicherort 
+                    (z. B. Cloud, Netzwerkfreigabe, externer Speicher) abgelegt wird, ist gleichzeitiger 
+                    Zugriff durch mehrere Benutzer nicht empfohlen, da der verwendete SQLite-Datenbankserver 
+                    nur eingeschränkte Multi-User-Fähigkeiten besitzt.</Run>
+                </TextBlock>
+            </TextBlock>
+
+            <DockPanel LastChildFill="True" Grid.Row="1" Margin="0,10,0,0">                
                 <Button 
-                    Margin="0,0,0,0" Width="120"
+                    DockPanel.Dock="Right"
+                    Margin="10,0,0,0" Width="120"
                     Click="SelectDatabaseClick"
                     Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}">
                     <StackPanel   
@@ -50,49 +53,57 @@
                             />
                     </StackPanel>
                 </Button>
-                <!--<Button                     
-                    Width="130"
+                <TextBox  
+                    DockPanel.Dock="Left"
+                    x:Name="tbDatabase"
+                    Grid.Row="1"
+                    Text="{Binding foldersVM.DataBaseFile}"
+                    FontSize="14"
+                    IsReadOnly="True"                   
+                    mah:TextBoxHelper.IsSpellCheckContextMenuEnabled="False"                    
+                />
+
+            </DockPanel>
+
+
+            <TextBlock TextWrapping="Wrap" Margin= "0,50,0,0" TextAlignment="Justify" Grid.Row="2">
+                <Run Text="Scan-Verzeichnis:" FontWeight="Bold" FontSize="17"/>
+                <LineBreak/>
+                <TextBlock FontSize="13" TextWrapping="Wrap" Margin="0,0">
+                    Wählen Sie das Verzeichnis, in dem der Matrikelbrowser 
+                    heruntergeladene Scans speichert, um sie schneller laden zu können. 
+                    Verzeichnisse für Länder, Archive, Pfarreien und Bücher werden automatisch erstellt, 
+                    sobald sie besucht werden.           
+                </TextBlock>
+            </TextBlock>
+
+            <DockPanel LastChildFill="True" Grid.Row="3" Margin="0,10,0,0">
+                <Button 
+                    DockPanel.Dock="Right" Margin="10,0,0,0" Width="120"
+                    Click="SelectCacheFolder"
                     Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}">
-                    <StackPanel
+                    <StackPanel   
                         Orientation="Horizontal">
-                        <iconPacks:PackIconMaterialDesign 
-                            Width="22" Height="22" VerticalAlignment="Center"
-                            Kind="FileCopy"/>
+                        <iconPacks:PackIconMaterial 
+                            Width="16" Height="18" VerticalAlignment="Center"
+                            Kind="FileTree"/>
                         <TextBlock 
-                            Margin="10 0 0 0" VerticalAlignment="Center" 
-                            Text="Kopieren" 
-                            />
+                            Margin="8 0 0 0" VerticalAlignment="Center" 
+                            Text="Auswählen"/>
                     </StackPanel>
                 </Button>
-                <Button 
-                    Margin="10,0,0,0" Width="130"
-                    Style="{DynamicResource MahApps.Styles.Button.Accent.Win10}">
-                    <StackPanel
-                        Orientation="Horizontal">
-                        <iconPacks:PackIconEvaIcons    
-                            Width="22" Height="22" VerticalAlignment="Center"
-                            Kind="FileAdd"/>
-                        <TextBlock 
-                            Margin="10 0 0 0" VerticalAlignment="Center" 
-                            Text="Neu" 
-                            />
-                    </StackPanel>
-                </Button>-->
-            </StackPanel>
+                <TextBox  
+                    x:Name="tbCache"
+                    DockPanel.Dock="Left"    
+                    Text="{Binding foldersVM.CacheFolder}"
+                    FontSize="14"
+                    IsReadOnly="True"                   
+                    mah:TextBoxHelper.IsSpellCheckContextMenuEnabled="False"
+                    mah:TextBoxHelper.AutoWatermark="True"                                     
+                    />
 
-            <TextBlock TextWrapping="Wrap" Margin="0,0,0,30" TextAlignment="Justify">
-                <Run Text="Hinweis:" FontWeight="Bold" FontSize="17"/>
-                <LineBreak/>
-                <TextBlock FontSize="15" TextWrapping="Wrap" Margin="0,0">
-                    Sie können die Datenbank mit einem Dateimanager an einen beliebigen Speicherort verschieben oder kopieren. 
-                    Anschließend müssen Sie unten den neuen Speicherort auswählen.
-                    <LineBreak/>
-                    <LineBreak/>
-                    Falls Sie die Datenbank an einem von mehreren Benutzern zugänglichen Ort speichern (z. B. Cloud, Netzwerkfreigabe, 
-                    externer Speicher), beachten Sie bitte, dass die Multi-User-Fähigkeiten des hier verwendeten SQLite-Datenbankservers 
-                    nicht sehr ausgeprägt sind und gleichzeitiges Zugreifen auf die Datenbank nicht empfohlen wird.
-                </TextBlock>
-            </TextBlock>    
+            </DockPanel>
+
         </Grid>
     </Grid>
 </UserControl>

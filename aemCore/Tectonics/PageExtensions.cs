@@ -9,11 +9,11 @@ namespace MbCore
     {
         public static string GetOrCreateImage(this Page page)
         {
-            var baseFolder = "C:\\Users\\lutz\\AppData\\Roaming\\lunOptics\\cache";
+           // var baseFolder = "C:\\Users\\lutz\\AppData\\Roaming\\lunOptics\\cache";
 
             var sheetNr = page.Book.Pages.IndexOf(page) + 1;
 
-            string cacheFolder = Path.Combine(baseFolder,
+            string cacheFolder = Path.Combine(Core.CacheFolder,
                 page.Book.Parish.Archive.Country.Name.toSafeFilename(),
                 page.Book.Parish.Archive.Name.toSafeFilename(),
                 $"{page.Book.Parish.RefId}_{page.Book.Parish.Name}".toSafeFilename(),
