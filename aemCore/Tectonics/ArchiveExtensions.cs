@@ -20,6 +20,11 @@ namespace AEM.Tectonics
                 var URL = archive.Country.Breadcrumb + '/' + archive.Breadcrumb;
                 var parishes = MatParser.ParseParishes(URL);
                 archive.Parishes.AddRange(parishes);
+                var firstParish = archive.Parishes.FirstOrDefault();
+                if (firstParish != null && firstParish.RefId.Length == 5 && firstParish.RefId.StartsWith("CB"))
+                {
+                    archive.ArchiveType = ArchiveType.AEM;
+                }
                 ctx.SaveChanges();
             }
 

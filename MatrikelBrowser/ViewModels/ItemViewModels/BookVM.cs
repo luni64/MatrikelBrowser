@@ -96,6 +96,8 @@ namespace MatrikelBrowser.ViewModels
             }
         }
 
+       
+
         public RelayCommand cmdGenerateReport => _cmdGenerateReport ??= new RelayCommand((object? _) => ReportFile = Report.Generate(model)?.FullName);
         #endregion
 
@@ -235,7 +237,7 @@ namespace MatrikelBrowser.ViewModels
             if (model.Pages.Count == 0) // we lazy load pages
             {
                     
-                SubTitle = $"downloading page informations for book: {Title}";
+                SubTitle = $"downloading page information for book: {Title}";
                 //await Task.Run(() =>
                 //{
                 model.LoadPageInfo(); // load or read page info from mets.xml

@@ -8,7 +8,7 @@ using System.IO;
 
 namespace MbCore
 {
-    public enum ArchiveType { AEM, MAT }
+    public enum ArchiveType { AEM, MAT, UNKNOWN }
 
     public class MatrikelBrowserCTX : DbContext
     {

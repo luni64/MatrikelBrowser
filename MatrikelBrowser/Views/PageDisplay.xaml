@@ -11,7 +11,7 @@
     d:DesignHeight="450" d:DesignWidth="800" d:Background="White"
     d:DataContext="{d:DesignInstance Type={x:Type vm:BookVM}}">
 
-    <UserControl.Resources>       
+    <UserControl.Resources>
         <view:StringToImageConverter x:Key="StringToImageConverter"/>
     </UserControl.Resources>
 
@@ -22,11 +22,16 @@
         PanY="{Binding PanY, Mode=TwoWay}"
         Zoom="{Binding zoom, Mode=TwoWay}"
         >
-        
+
         <Canvas x:Name="PageCanvas">
             <Canvas.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Neue Fundstelle anlegen" Click="AddBookmarkClick"/>               
+                    <MenuItem Header="Neue Fundstelle anlegen" Click="AddBookmarkClick"/>
+                    <MenuItem Header="Kopieren">
+                        <MenuItem Header="Link auf Seite im Browser" Command="{Binding SelectedPage.cmdCopyViewerLink, Mode=OneWay}"/>
+                        <MenuItem Header="Link auf die Bilddatei" Command="{Binding SelectedPage.cmdCopyImageLink, Mode=OneWay}"/>
+                        <MenuItem Header="Link auf Lokal gespeichertes Bild" Command="{Binding SelectedPage.cmdCopyImageFile, Mode=OneWay}"/>
+                    </MenuItem>
                 </ContextMenu>
             </Canvas.ContextMenu>
             <Image 

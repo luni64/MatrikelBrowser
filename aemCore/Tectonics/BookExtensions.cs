@@ -64,7 +64,7 @@ namespace MbCore
         {
             // For mets based archives we get the actual start dates only after opening the book. 
             // to avoid opening all books (which would generate inacceptable traffic to the archives web page) we try to
-            // extract the date from the tile if the book was never opened.
+            // extract the date from the title if the book was never opened.
             // once the book was opened the start/end dates are available from the db. 
 
             if (book.StartDate != null)  // database contains the start date (book was opened before)
@@ -107,7 +107,7 @@ namespace MbCore
             }
 
             // download the book info from the archive, and update database accordingly
-            var infoURLTemplate = book.Parish.Archive.Breadcrumb;
+            var infoURLTemplate = book.Parish.Archive.ViewerUrl;
             var infoURL = infoURLTemplate.Replace("{BOOKID}", book.Breadcrumb);
 
             Trace.TraceInformation($"download page info for book {book.Title} ({book.Parish.Name}) from archive {book.Parish.Archive}");
@@ -253,5 +253,7 @@ namespace MbCore
 
             return prefix;
         }
+
+       
     }
 }
