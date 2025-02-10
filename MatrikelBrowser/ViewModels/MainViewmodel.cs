@@ -22,39 +22,40 @@ namespace MatrikelBrowser.ViewModels
         public TectonicsVM tectonicsVM { get; }
         #endregion
 
-        public MainViewModel()
+        public MainViewModel(Core model)
         {
-            model = new();
+            this.model = model;
             tectonicsVM = new(model);
             model.DatabaseChanged += () => tectonicsVM.UpdateData();  // update the displayed data in case of db changes
+            tectonicsVM.UpdateData();
 
-            var dbFilename = getDatabaseFilename(); // read from user settings
-            if (!model.SetDatabase(dbFilename))     // try to set the database, data will be empty in case of errors
-            {
-                Trace.TraceInformation("Error loading data");
-                dialogService.ShowDialog(new string($"Die Datenbank \n{dbFilename}\n\n konnte nicht geladen werden. Bitte wählen sie in den Datenbank Einstellungen eine kompatible Datenbank aus"));
-            }
+            //var dbFilename = getDatabaseSetting(); // read from user settings
+            //if (!model.SetDatabase(dbFilename))     // try to set the database, data will be empty in case of errors
+            //{
+            //    Trace.TraceInformation("Error loading data");
+            //    dialogService.ShowDialog(new string($"Die Datenbank \n{dbFilename}\n\n konnte nicht geladen werden. Bitte wählen sie in den Datenbank Einstellungen eine kompatible Datenbank aus"));
+            //}
         }
 
         #region private methods and fields  
-        private static string getDatabaseFilename()
-        {
-            var settings = MatrikelBrowser.Properties.Settings.Default;
+        //private static string getDatabaseSetting()
+        //{
+        //    var settings = MatrikelBrowser.Properties.Settings.Default;
 
-            if (settings.MustUpgrade) // handle app version upgrades
-            {
-                settings.Upgrade();
-                settings.MustUpgrade = false;
-                settings.Save();
-            }
+        //    if (settings.MustUpgrade) // handle app version upgrades
+        //    {
+        //        settings.Upgrade();
+        //        settings.MustUpgrade = false;
+        //        settings.Save();
+        //    }
 
-            if (string.IsNullOrEmpty(settings.DatabaseFile))
-            {
-                settings.DatabaseFile = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "MatrikelBrowser", "MatrikelBrowser.db"));
-                settings.Save();
-            }
-            return settings.DatabaseFile;
-        }
+        //    if (string.IsNullOrEmpty(settings.DatabaseFile))
+        //    {
+        //        settings.DatabaseFile = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "lunOptics", "MatrikelBrowser", "MatrikelBrowser.db"));
+        //        settings.Save();
+        //    }
+        //    return settings.DatabaseFile;
+        //}
 
         private RelayCommand? _cmdSave;
         private RelayCommand? _cmdSettings;

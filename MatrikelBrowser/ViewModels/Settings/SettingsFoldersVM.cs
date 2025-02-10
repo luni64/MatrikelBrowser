@@ -7,11 +7,26 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Data.Common;
 
 namespace MatrikelBrowser.ViewModels.Settings
 {
-    public class SettingsFoldersVM : BaseViewModel
-    {      
+    public class SettingsFoldersVM : BaseViewModel, IDataErrorInfo
+    {
+        public async Task trySetNewDbAsync(string dbFile)
+        {           
+            dbOK = await Core.CheckDatabaseAsync(dbFile);       
+            if(dbOK)
+            {
+                await model.SetDatabase(dbFile);
+                await Task.Delay(5000);
+            }
+            DataBaseFile = dbFile;
+        }
+
+        private bool dbOK = true;
+
         public string CacheFolder
         {
             //get => Core.GetSetting("CacheFolder") ?? Core.DefaultCacheFolder;
@@ -26,30 +41,45 @@ namespace MatrikelBrowser.ViewModels.Settings
 
         public string DataBaseFile
         {
-            get => settings.DatabaseFile;
+            get => _databaseFile;
             set
             {
-                if (_databaseFile != value)
+                SetProperty(ref _databaseFile, value);
+                //if (_databaseFile != value)
+                //{
+                //    try
+                //    {
+                //        if (await model.SetDatabase(value))
+                //        {
+                //            SetProperty(settings, s => s.DatabaseFile, value);
+                //            settings.Save();
+                //        }
+                //        else
+                //        {
+                //            Trace.TraceWarning($"Errors opening new database file {value}");
+                //            MainViewModel.dialogService.ShowDialog($"Die Datenbank \n{value}\n\n konnte nicht geladen werden. Bitte wählen sie eine kompatible Datenbank aus");
+                //        }
+                //    }
+                //    catch
+                //    {
+                //        Trace.TraceWarning($"Errors opening new database file {value}");
+                //        MainViewModel.dialogService.ShowDialog(new string($"Die Datenbank \n{value}\n\n konnte nicht geladen werden. Bitte wählen sie eine kompatible Datenbank aus"));
+                //    }
+                //}
+            }
+        }
+
+        public string Error => null!;
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (columnName == nameof(DataBaseFile))
                 {
-                    try
-                    {
-                        if (model.SetDatabase(value))
-                        {                            
-                            SetProperty(settings, s=>s.DatabaseFile, value);                                                       
-                            settings.Save();
-                        }
-                        else
-                        {
-                            Trace.TraceWarning($"Errors opening new database file {value}");
-                            MainViewModel.dialogService.ShowDialog($"Die Datenbank \n{value}\n\n konnte nicht geladen werden. Bitte wählen sie eine kompatible Datenbank aus");
-                        }
-                    }
-                    catch
-                    {
-                        Trace.TraceWarning($"Errors opening new database file {value}");
-                        MainViewModel.dialogService.ShowDialog(new string($"Die Datenbank \n{value}\n\n konnte nicht geladen werden. Bitte wählen sie eine kompatible Datenbank aus"));
-                    }
+                    return dbOK ? null : "Datenbank nicht kompatibel";                    
                 }
+                return null;
             }
         }
 
@@ -63,6 +93,7 @@ namespace MatrikelBrowser.ViewModels.Settings
             this.model = model;
 
             settings = Properties.Settings.Default;
+            _databaseFile = settings.DatabaseFile;
         }
     }
 

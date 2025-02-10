@@ -4,8 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MbCore
 {
@@ -70,48 +73,64 @@ namespace MbCore
         ///   <item>Triggers the <c>DatabaseChanged</c> event in case anything changed</item>
         /// </list>
         /// </remarks>
-        public bool SetDatabase(string database)
+        public async Task<bool> SetDatabase(string database, IProgress<string>? progress = null)
         {
-
             Trace.TraceInformation($"Trying to set database {database}");
-            if (!CheckDatabase(database))
+        
+            bool ok = await CheckDatabaseAsync(database, progress);
+
+            if (!ok)
             {
-                Trace.TraceWarning("Database missing or not compatible");
+                Trace.TraceWarning("Database missing or not compatible");                
                 return false;
             }
 
             MatrikelBrowserCTX.DatabaseFile = database;
 
-
             try
             {
+                progress?.Report("Öffne Datenbank");                
                 using var ctx = new MatrikelBrowserCTX();
 
-                //ctx.Database.EnsureDeleted();
+                progress?.Report("Überprüfe auf nötige updates");                
+                var pendingMigrations = (await ctx.Database.GetPendingMigrationsAsync()).ToList();
 
-                int n = ctx.Database.GetPendingMigrations().Count();
-                if (n > 0)
+                if (pendingMigrations.Count > 0)
                 {
-                    Trace.TraceInformation($"Apply {n} pending database migrations");
+                    progress?.Report($"Führe {pendingMigrations.Count} updates aus");                    
+                    Trace.TraceInformation($"Apply {pendingMigrations.Count} pending database migrations");
                     ctx.Database.Migrate();
+                }
+                else
+                {
+                    progress?.Report("Datenbank ist aktuell");
                 }
 
                 // grab a list of all supported countries not yet in the database
-                if (ctx.Countries.Count() < 2) /// hack
+                if (ctx.Countries.Count() == 0)
                 {
+                    progress?.Report("Lade Länderinformationen...");
+                  
                     var foundCountries = MatParser.ParseCountries(BaseURL + "bestande/");
                     var existingCountries = ctx.Countries.Select(c => c.Name).ToList();
                     foreach (var country in foundCountries.Where(c => !existingCountries.Contains(c.Name)))
                     {
-                        ctx.Countries.Add(country);
+                        await ctx.Countries.AddAsync(country);                       
                     }
-                    ctx.SaveChanges();
+                    await ctx.SaveChangesAsync();
                 }
-
+                
                 Countries.Clear();
                 Countries.AddRange(
                     ctx.Countries/*.Where(c => c.Archives.Count > 0).OrderBy(c => c.Name)*/
                 );
+
+                progress?.Report($"Gefundene Länder:");
+                foreach (var country in Countries )
+                {
+                    progress?.Report($"- {country.Name}");
+                    await Task.Delay(25);
+                }
                 OnDatabaseChanged();
             }
             catch
@@ -127,7 +146,7 @@ namespace MbCore
         {
             using var ctx = new MatrikelBrowserCTX();
             var setting = ctx.SettingsTable.FirstOrDefault(s => s.Key == key);
-            return setting?.Value;            
+            return setting?.Value;
         }
 
 
@@ -138,7 +157,7 @@ namespace MbCore
             if (setting == null)
             {
                 setting = new SettingsEntry { Key = key, };
-                ctx.SettingsTable.Add(setting);                
+                ctx.SettingsTable.Add(setting);
             }
             setting.Value = value;
             ctx.SaveChanges();
@@ -165,33 +184,48 @@ namespace MbCore
         //    //File.WriteAllText(testFile.FullName, json);
         //}
 
-        private static bool CheckDatabase(string database)
+        public async static Task<bool> CheckDatabaseAsync(string database, IProgress<string>? progress = null)
         {
-            if (!File.Exists(database)) return false;
+            if (!File.Exists(database))
+            {
+                progress?.Report("Datenbank nicht gefunden");
+                return false;
+            }
             try
             {
+                progress?.Report("Datenbank gefunden");
+                await Task.Delay(50);
                 using (var connection = new SqliteConnection($"Data Source={database}"))
                 {
-                    connection.Open();
+                    progress?.Report("Überprüfe Kompatibilität...");
+                    await Task.Delay(50);
+                    await connection.OpenAsync();
                     var command = new SqliteCommand("SELECT name FROM sqlite_master WHERE type='table';", connection);
-
+                                        
                     // check if the database is a MatrikelBrowser db by requiring a few table names               
-                    using (var reader = command.ExecuteReader())
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
                         List<string> expected = ["Countries", "Archives", "Parishes", "Books"];
 
-                        while (reader.Read() && expected.Count > 0)
+                        while (await reader.ReadAsync() && expected.Count > 0)
                         {
                             expected.Remove(reader.GetString(0));
                         }
 
-                        if (expected.Count > 0) return false;
+                        if (expected.Count > 0)
+                        {
+                            progress?.Report("FEHLER: Datenbank nicht kompatibel!");
+                            return false;
+                        }
                     }
                 }
+                progress?.Report("Datenbank ist kompatibel");
+                await Task.Delay(100);
                 return true;
             }
-            catch (SqliteException ex)
+            catch (SqliteException)
             {
+                progress?.Report("Unbekannter Fehler!");
                 return false;
             }
 

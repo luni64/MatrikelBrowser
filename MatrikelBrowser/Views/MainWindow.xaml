@@ -14,9 +14,9 @@
                  d:DataContext="{d:DesignInstance Type={x:Type vm:MainViewModel}}"                                                   
                  Title="Matrikel Browser" Height="900" Width="1440">
 
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <vm:MainViewModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <Window.Resources>
         <view:BookTypeToIconConverter x:Key="BookType2IconConverter"/>

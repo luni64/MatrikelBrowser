@@ -57,10 +57,12 @@
                     DockPanel.Dock="Left"
                     x:Name="tbDatabase"
                     Grid.Row="1"
-                    Text="{Binding foldersVM.DataBaseFile}"
+                    Text="{Binding foldersVM.DataBaseFile, ValidatesOnDataErrors=True}"
+                    mah:ValidationHelper.ShowValidationErrorOnMouseOver="True"
+                    mah:TextBoxHelper.IsSpellCheckContextMenuEnabled="False"                    
+                    
                     FontSize="14"
                     IsReadOnly="True"                   
-                    mah:TextBoxHelper.IsSpellCheckContextMenuEnabled="False"                    
                 />
 
             </DockPanel>

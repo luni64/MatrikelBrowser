@@ -1,8 +1,10 @@
 ﻿using MatrikelBrowser.ViewModels;
 using Microsoft.Win32;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MatrikelBrowser
 {
@@ -15,21 +17,25 @@ namespace MatrikelBrowser
         {
             InitializeComponent();
         }
-
-        private void SelectDatabaseClick(object sender, RoutedEventArgs e)
+               
+        private async void SelectDatabaseClick(object sender, RoutedEventArgs e)
         {
+                Cursor = Cursors.ArrowCD;
             var dialog = new OpenFileDialog();
             dialog.InitialDirectory = Path.GetDirectoryName(tbDatabase.Text);
             dialog.DefaultExt = ".mbdb"; // Default file extension           
             dialog.Filter = "MatrikelBrowser Datenbanken (.mbdb)|*.mbdb|Alle Dateien|*.*"; // Filter files by extension
             dialog.CheckFileExists = true;
 
-            bool? result = dialog.ShowDialog();
+            //bool? result = dialog.ShowDialog();
 
-            if (result == true && DataContext is SettingsVM vm)
+            if (dialog.ShowDialog() == true && DataContext is SettingsVM vm)
             {
-                vm.foldersVM.DataBaseFile = dialog.FileName;
+                await vm.foldersVM.trySetNewDbAsync(dialog.FileName);                
             }
+
+
+                Cursor = Cursors.Arrow;
 
         }
 
@@ -41,12 +47,12 @@ namespace MatrikelBrowser
                 {
                     Title = "Verzeichnis Auswählen",
                     InitialDirectory = vm.foldersVM.CacheFolder,
-                   // FolderName = vm.foldersVM.CacheFolder,
+                    // FolderName = vm.foldersVM.CacheFolder,
                 };
 
                 if (dialog.ShowDialog() == true)
                 {
-                    tbCache.Text = dialog.FolderName; 
+                    tbCache.Text = dialog.FolderName;
                     vm.foldersVM.CacheFolder = dialog.FolderName;
                 };
             }
